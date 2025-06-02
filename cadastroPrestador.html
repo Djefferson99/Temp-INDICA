@@ -189,14 +189,6 @@
     </div>
   </div>
 
-  <!-- Tipo de usuário --
-  <div class="col-md-12">
-    <div class="form-floating">
-      <input type="text" class="form-control" id="tipo_usuario" placeholder="Prestador ou Cliente">
-      <label for="tipo_usuario">Prestador ou Cliente</label>
-    </div>
-  </div>
-
   <!-- Senha -->
   <div class="col-md-12">
     <div class="form-floating">
@@ -278,12 +270,13 @@
   </div>
 
   <!-- Foto de perfil -->
-  <div class="col-12">
-    <div class="form-floating">
-      <input type="text" class="form-control" id="foto_perfil" placeholder="URL da foto de perfil">
-      <label for="foto_perfil">URL da Foto de Perfil</label>
-    </div>
-  </div>
+<div class="col-12">
+  <label for="fotoPerfil" style="display:block; border: 2px dashed #aaa; padding: 20px; text-align: center; cursor: pointer;">
+    Arraste e solte sua foto de perfil aqui ou clique para selecionar
+  </label>
+  <input type="file" id="fotoPerfil" accept="image/*" style="display:none" />
+  <div id="previewFoto" style="margin-top: 10px;"></div>
+</div>
   <div onclick={validarSenha()} id="botaoCadastrar" class="btn btn-primary w-100 py-3">
   Salvar dados de sua empresa
 </div>
@@ -394,6 +387,48 @@
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
 	  <script>
+      const fotoPerfilInput = document.getElementById('fotoPerfil');
+const previewFoto = document.getElementById('previewFoto');
+const labelFoto = document.querySelector('label[for="fotoPerfil"]');
+
+// Quando o usuário soltar arquivo na label (drop)
+labelFoto.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  labelFoto.style.borderColor = 'green';
+});
+labelFoto.addEventListener('dragleave', (e) => {
+  e.preventDefault();
+  labelFoto.style.borderColor = '#aaa';
+});
+labelFoto.addEventListener('drop', (e) => {
+  e.preventDefault();
+  labelFoto.style.borderColor = '#aaa';
+
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) {
+    fotoPerfilInput.files = e.dataTransfer.files; // Atualiza o input file com o arquivo dropado
+    mostrarPreview(file);
+  } else {
+    alert('Por favor, envie um arquivo de imagem válido.');
+  }
+});
+
+// Quando clicar no label, abre o seletor de arquivos
+fotoPerfilInput.addEventListener('change', () => {
+  const file = fotoPerfilInput.files[0];
+  if (file) {
+    mostrarPreview(file);
+  }
+});
+
+// Função para mostrar preview da imagem selecionada
+function mostrarPreview(file) {
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    previewFoto.innerHTML = `<img src="${e.target.result}" alt="Foto de Perfil" style="max-width: 150px; max-height: 150px; border-radius: 50%;">`;
+  };
+  reader.readAsDataURL(file);
+}
   const senha = document.getElementById('senha');
   const senhaConfirm = document.getElementById('senhaConfirm');
   const msgErroSenha = document.getElementById('msgErroSenha');
@@ -412,45 +447,69 @@
 
  
 
-  async function cadastrarTudo() {
-    botao.disabled = true;
+ async function cadastrarTudo() {
+  botao.disabled = true;
 
-    try {
-      const usuario = {
-        nome: document.getElementById('nome').value,
-        email: document.getElementById('email').value,
-        senha: senha.value,
-        telefone: document.getElementById('telefone').value,
-        
-      };
+  try {
+    // Cria o FormData para envio multipart/form-data (imagem + dados)
+    const formData = new FormData();
 
-      const responseUsuario = await axios.post('https://marketplace-production-4ad4.up.railway.app/usuarios', usuario);
-      const usuarioId = responseUsuario.data.id;
-      alert("✅ Cadastro de usuário realizado com sucesso!");
+    // Adiciona dados do usuário
+    formData.append('nome', document.getElementById('nome').value);
+    formData.append('email', document.getElementById('email').value);
+    formData.append('senha', senha.value);
+    formData.append('telefone', document.getElementById('telefone').value);
 
-      const empresa = {
-        usuario_id: usuarioId,
-        nome_empresa: document.getElementById('nome_empresa').value,
-        apresentacao: document.getElementById('apresentacao').value,
-        descricao: document.getElementById('descricao').value,
-        site: document.getElementById('site').value,
-        facebook: document.getElementById('facebook').value,
-        linkedin: document.getElementById('linkedin').value,
-        instagram: document.getElementById('instagram').value,
-        youtube: document.getElementById('youtube').value,
-        foto_perfil: document.getElementById('foto_perfil').value
-      };
+    // Primeiro cria usuário (se sua API aceita FormData para isso, senão, faça separadamente)
+    // Vou assumir que o usuário é criado separadamente com JSON (igual seu código original)
 
-      await axios.post('https://marketplace-production-4ad4.up.railway.app/empresas', empresa);
-      alert("✅ Cadastro da empresa realizado com sucesso!");
+    const usuario = {
+      nome: document.getElementById('nome').value,
+      email: document.getElementById('email').value,
+      senha: senha.value,
+      telefone: document.getElementById('telefone').value,
+    };
 
-    } catch (error) {
-      console.error("Erro no cadastro:", error);
-      alert("❌ Erro no cadastro. Verifique os dados e tente novamente.");
-    } finally {
-      botao.disabled = false;
+    const responseUsuario = await axios.post('https://marketplace-production-4ad4.up.railway.app/usuarios', usuario);
+    const usuarioId = responseUsuario.data.id;
+    alert("✅ Cadastro de usuário realizado com sucesso!");
+
+    // Agora cria o FormData para a empresa (incluindo a foto)
+    const empresaFormData = new FormData();
+
+    empresaFormData.append('usuario_id', usuarioId);
+    empresaFormData.append('nome_empresa', document.getElementById('nome_empresa').value);
+    empresaFormData.append('apresentacao', document.getElementById('apresentacao').value);
+    empresaFormData.append('descricao', document.getElementById('descricao').value);
+    empresaFormData.append('site', document.getElementById('site').value);
+    empresaFormData.append('facebook', document.getElementById('facebook').value);
+    empresaFormData.append('linkedin', document.getElementById('linkedin').value);
+    empresaFormData.append('instagram', document.getElementById('instagram').value);
+    empresaFormData.append('youtube', document.getElementById('youtube').value);
+
+    // Pega o arquivo da foto de perfil
+    const arquivoFoto = fotoPerfilInput.files[0];
+    if (arquivoFoto) {
+      empresaFormData.append('foto_perfil', arquivoFoto);
     }
+
+    // Envia empresa com foto como multipart/form-data
+    await axios.post('https://marketplace-production-4ad4.up.railway.app/empresas', empresaFormData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+
+    alert("✅ Cadastro da empresa realizado com sucesso!");
+
+  } catch (error) {
+    console.error("Erro no cadastro:", error);
+    alert("❌ Erro no cadastro. Verifique os dados e tente novamente.");
+  } finally {
+    botao.disabled = false;
   }
+}
+
 </script>
 </body>
 
