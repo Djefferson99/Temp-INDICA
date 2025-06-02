@@ -264,7 +264,7 @@
   <!-- Instagram -->
   <div class="col-12">
     <div class="form-floating">
-      <input type="text" class="form-control" id="instagran" placeholder="Instagram">
+      <input type="text" class="form-control" id="instagram" placeholder="Instagram">
       <label for="instagran">Link do Instagram</label>
     </div>
   </div>
@@ -393,67 +393,45 @@
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
-	  <script>
-  const senha = document.getElementById('senha');
-  const senhaConfirm = document.getElementById('senhaConfirm');
-  const msgErroSenha = document.getElementById('msgErroSenha');
-  const botao = document.getElementById('botaoCadastrar');
+    <script>
+function validarSenha() {
+    const senha = document.getElementById("senha").value;
+    const senhaConfirm = document.getElementById("senhaConfirm").value;
 
-  // Função para validar senha e confirmação
-  function validarSenha() {
-    if (senha.value !== senhaConfirm.value) {
-    alert("Senhas não correspondente!!!")
-      return false;
-    } else {
-      cadastrarTudo();
-      return true;
+    if (senha !== senhaConfirm) {
+        alert("As senhas não conferem!");
+        return;
     }
-  }
 
- 
+    const data = {
+        nome: document.getElementById("nome").value,
+        email: document.getElementById("email").value,
+        telefone: document.getElementById("telefone").value,
+        senha: senha,
+        nome_empresa: document.getElementById("nome_empresa").value,
+        site: document.getElementById("site").value,
+        apresentacao: document.getElementById("apresentacao").value,
+        descricao: document.getElementById("descricao").value,
+        facebook: document.getElementById("facebook").value,
+        instagram: document.getElementById("instagram").value,
+        youtube: document.getElementById("youtube").value,
+        foto_perfil: document.getElementById("foto_perfil").value,
+        tipo_usuario: "prestador" // ou cliente, conforme seu backend
+    };
 
-  async function cadastrarTudo() {
-    botao.disabled = true;
-
-    try {
-      const usuario = {
-        nome: document.getElementById('nome').value,
-        email: document.getElementById('email').value,
-        senha: senha.value,
-        telefone: document.getElementById('telefone').value,
-        
-      };
-
-      const responseUsuario = await axios.post('https://marketplace-production-4ad4.up.railway.app/usuarios', usuario);
-      const usuarioId = responseUsuario.data.id;
-      alert("✅ Cadastro de usuário realizado com sucesso!");
-
-      const empresa = {
-        usuario_id: usuarioId,
-        nome_empresa: document.getElementById('nome_empresa').value,
-        apresentacao: document.getElementById('apresentacao').value,
-        descricao: document.getElementById('descricao').value,
-        site: document.getElementById('site').value,
-        facebook: document.getElementById('facebook').value,
-        instagram: document.getElementById('instagram').value,
-        youtube: document.getElementById('youtube').value,
-        foto_perfil: document.getElementById('foto_perfil').value
-      };
-
-      await axios.post('https://marketplace-production-4ad4.up.railway.app/empresa', empresa);
-      alert("✅ Cadastro da empresa realizado com sucesso!");
-
-      // Você pode limpar o formulário aqui, se quiser:
-      // document.getElementById('formCadastro').reset();
-
-    } catch (error) {
-      console.error("Erro no cadastro:", error);
-      alert("❌ Erro no cadastro. Verifique os dados e tente novamente.");
-    } finally {
-      botao.disabled = false;
-    }
-  }
+    axios.post('http://localhost:3000/prestadores', data)
+        .then(response => {
+            alert("Cadastro realizado com sucesso!");
+            console.log(response.data);
+            window.location.href = "login.html"; // Redireciona após cadastro
+        })
+        .catch(error => {
+            console.error(error);
+            alert("Erro ao cadastrar. Verifique os dados ou tente novamente.");
+        });
+}
 </script>
+
 </body>
 
 </html>
