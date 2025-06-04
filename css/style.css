@@ -157,7 +157,6 @@
         background: var(--primary);
         transition: .5s;
     }
-
     .navbar-light .navbar-nav .nav-link:hover::before,
     .navbar-light .navbar-nav .nav-link.active::before {
         width: calc(100% - 2px);
