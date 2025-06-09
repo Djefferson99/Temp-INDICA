@@ -72,7 +72,7 @@
     <div class="container-fluid position-relative p-0">
         <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
             <a href="" class="navbar-brand p-0">
-                <h1 class="text-primary m-0"><i class="fa fa-map-marker-alt me-3"></i>Nome Empresa</h1>
+                <h1 class="text-primary m-0"id="nome_empresa"><i class="fa fa-map-marker-alt me-3"></i>Nome Empresa</h1>
                 <!-- <img src="img/logo.png" alt="Logo"> -->
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -264,7 +264,7 @@
   <!-- Confirmar Senha -->
   <div class="col-md-12">
     <div class="form-floating">
-      <input type="password" class="form-control" id="senha" placeholder="Confirme sua Senha">
+      <input type="password" class="form-control" id="senhaConfirm" placeholder="Confirme sua Senha">
       <label for="senhaConfirm">Confirme sua Senha</label>
     </div>
   </div>
@@ -692,7 +692,24 @@
                 localStorage.setItem("idEmpresa", idEmpresa); // Salva para uso posterior
 
                 // (Opcional) Preencher algum campo do formulário da empresa aqui
-                // document.getElementById("nome_empresa").value = empresa.nome_empresa || '';
+                document.getElementById("nome_empresa").value = empresa.nome_empresa || '';
+                document.getElementById("apresentacao").value = empresa.apresentacao || '';
+                document.getElementById("descricao").value = empresa.descricao || '';
+                document.getElementById("site").value = empresa.site || '';
+                document.getElementById("instagram").value = empresa.instagram || '';
+                document.getElementById("linkedin").value = empresa.linkedin || '';
+                document.getElementById("facebook").value = empresa.facebook || '';
+                document.getElementById("youtube").value = empresa.youtube || '';
+
+                // Exibir foto de perfil (se existir)
+                if (empresa.foto_perfil) {
+                const preview = document.getElementById("previewFoto");
+                preview.innerHTML = `
+                    <img src="https://marketplace-production-4ad4.up.railway.app/uploads/${empresa.foto_perfil}" 
+                        alt="Foto de perfil" 
+                        style="max-width: 200px; max-height: 200px; object-fit: cover;" />
+                `;
+                }
             }
 
         } catch (error) {
