@@ -681,8 +681,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById('emailUsuario').value = usuario.email || '';
     document.getElementById('telefone').value = usuario.telefone || '';
 
-    // Função para preencher formulário da empresa
-    const preencherFormularioEmpresa = (empresa) => {
+    // Buscar empresa se não tiver idEmpresa salvo
+    if (!idEmpresa) {
+      const responseEmpresa = await axios.get(`https://marketplace-production-4ad4.up.railway.app/empresas/usuario/${idUsuario}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const empresa = responseEmpresa.data;
+      idEmpresa = empresa.id;
+      localStorage.setItem("idEmpresa", idEmpresa);
+      
       document.getElementById("nome_empresa").value = empresa.nome_empresa || '';
       document.getElementById("apresentacao").value = empresa.apresentacao || '';
       document.getElementById("descricao").value = empresa.descricao || '';
@@ -700,29 +707,37 @@ document.addEventListener("DOMContentLoaded", async () => {
                style="max-width: 200px; max-height: 200px; object-fit: cover;" />
         `;
       }
-    };
-    console.log(preencherFormularioEmpresa)
-    // Buscar empresa se não tiver idEmpresa salvo
-    if (!idEmpresa) {
-      const responseEmpresa = await axios.get(`https://marketplace-production-4ad4.up.railway.app/empresas/usuario/${idUsuario}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const empresa = responseEmpresa.data;
-      idEmpresa = empresa.id;
-      localStorage.setItem("idEmpresa", idEmpresa);
-      preencherFormularioEmpresa(empresa);
     } else {
       // Buscar empresa usando idEmpresa salvo
       const responseEmpresa = await axios.get(`https://marketplace-production-4ad4.up.railway.app/empresas/${idEmpresa}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const empresa = responseEmpresa.data;
-      // Atualiza idEmpresa no localStorage só se for diferente (caso a empresa tenha sido atualizada)
+      idEmpresa = empresa.id;
+      localStorage.setItem("idEmpresa", idEmpresa);
+      
+      document.getElementById("nome_empresa").value = empresa.nome_empresa || '';
+      document.getElementById("apresentacao").value = empresa.apresentacao || '';
+      document.getElementById("descricao").value = empresa.descricao || '';
+      document.getElementById("site").value = empresa.site || '';
+      document.getElementById("instagram").value = empresa.instagram || '';
+      document.getElementById("linkedin").value = empresa.linkedin || '';
+      document.getElementById("facebook").value = empresa.facebook || '';
+      document.getElementById("youtube").value = empresa.youtube || '';
+
+      if (empresa.foto_perfil) {
+        const preview = document.getElementById("previewFoto");
+        preview.innerHTML = `
+          <img src="https://marketplace-production-4ad4.up.railway.app/uploads/${empresa.foto_perfil}" 
+               alt="Foto de perfil" 
+               style="max-width: 200px; max-height: 200px; object-fit: cover;" />
+        `;
+      }
       if (empresa.id !== idEmpresa) {
         idEmpresa = empresa.id;
         localStorage.setItem("idEmpresa", idEmpresa);
       }
-      preencherFormularioEmpresa(empresa);
+    
     }
 
     // Carregar serviços existentes
