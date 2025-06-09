@@ -662,17 +662,17 @@
 <script>
 document.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem('token');
-  const id = localStorage.getItem('id');
+  const idUsuario = localStorage.getItem('id');
   let idEmpresa = localStorage.getItem("idEmpresa");
 
-  if (!token || !id) {
+  if (!token || !idUsuario) {
     alert("Usuário não está logado");
     return;
   }
 
   try {
     // Buscar dados do usuário
-    const responseUsuario = await axios.get(`https://marketplace-production-4ad4.up.railway.app/usuarios/${id}`, {
+    const responseUsuario = await axios.get(`https://marketplace-production-4ad4.up.railway.app/usuarios/${idUsuario}`, {
       headers: { Authorization: `Bearer ${token}` }
     });
 
@@ -702,9 +702,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     };
 
-    // Se idEmpresa não está salvo, buscar pela API usando id do usuário
+    // Buscar empresa se não tiver idEmpresa salvo
     if (!idEmpresa) {
-      const responseEmpresa = await axios.get(`https://marketplace-production-4ad4.up.railway.app/empresas/usuario/${id}`, {
+      const responseEmpresa = await axios.get(`https://marketplace-production-4ad4.up.railway.app/empresas/usuario/${idUsuario}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const empresa = responseEmpresa.data;
@@ -712,11 +712,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       localStorage.setItem("idEmpresa", idEmpresa);
       preencherFormularioEmpresa(empresa);
     } else {
-      // Se já tem idEmpresa, buscar os dados da empresa direto
+      // Buscar empresa usando idEmpresa salvo
       const responseEmpresa = await axios.get(`https://marketplace-production-4ad4.up.railway.app/empresas/${idEmpresa}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      preencherFormularioEmpresa(responseEmpresa.data);
+      const empresa = responseEmpresa.data;
+      // Atualiza idEmpresa no localStorage só se for diferente (caso a empresa tenha sido atualizada)
+      if (empresa.id !== idEmpresa) {
+        idEmpresa = empresa.id;
+        localStorage.setItem("idEmpresa", idEmpresa);
+      }
+      preencherFormularioEmpresa(empresa);
     }
 
     // Carregar serviços existentes
@@ -729,7 +735,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // Evento do formulário de serviços
-  document.getElementById("servicoForm").addEventListener("submit", async function (e) {
+  document.getElementById("servicoForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const nome = document.getElementById("nomeServico").value;
