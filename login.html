@@ -293,30 +293,55 @@
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
 	 <script>
-    function login() {
-      const usuario = {
-        
-        email: document.getElementById('email').value,
-        senha: document.getElementById('senha').value,
-        
-      };
+        function parseJwt (token) {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
 
-        console.log(usuario)
-    axios.post('https://marketplace-production-4ad4.up.railway.app/login', usuario)
-        .then(response => {
-		 const { token, id } = response.data;
-		localStorage.setItem('token', token);
-		localStorage.setItem('id', id);
+    return JSON.parse(jsonPayload);
+}
+
+axios.post('https://marketplace-production-4ad4.up.railway.app/login', usuario)
+  .then(response => {
+    const { token } = response.data;
+    localStorage.setItem('token', token);
+
+    const decoded = parseJwt(token);
+    localStorage.setItem('id', decoded.id);
+
+    alert("Login realizado com sucesso!");
+    window.location.href = 'prestadorAdm.html';
+  })
+  .catch(error => {
+    alert("Erro ao logar.");
+    console.error(error);
+  });
+    // function login() {
+    //   const usuario = {
+        
+    //     email: document.getElementById('email').value,
+    //     senha: document.getElementById('senha').value,
+        
+    //   };
+
+    //     console.log(usuario)
+    // axios.post('https://marketplace-production-4ad4.up.railway.app/login', usuario)
+    //     .then(response => {
+	// 	 const { token, id } = response.data;
+	// 	localStorage.setItem('token', token);
+	// 	localStorage.setItem('id', id);
 		
-            alert("Login realizado com sucesso!");
-			window.location.href = 'prestadorAdm.html'
-            console.log(response.data);
-        })
-        .catch(error => {
-            alert("Erro ao logar.");
-            console.error(error);
-        });
-    }
+    //         alert("Login realizado com sucesso!");
+	// 		window.location.href = 'prestadorAdm.html'
+    //         console.log(response.data);
+    //     })
+    //     .catch(error => {
+    //         alert("Erro ao logar.");
+    //         console.error(error);
+    //     });
+    // }
   </script>
 </body>
 
