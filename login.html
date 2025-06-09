@@ -309,7 +309,8 @@ axios.post('https://marketplace-production-4ad4.up.railway.app/login', usuario)
     localStorage.setItem('token', token);
 
     const decoded = parseJwt(token);
-    localStorage.setItem('id', decoded.id);
+    console.log('Token decodificado:', decoded);
+    localStorage.setItem('id', decoded.sub);
 
     alert("Login realizado com sucesso!");
     window.location.href = 'prestadorAdm.html';
