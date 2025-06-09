@@ -701,7 +701,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         `;
       }
     };
-
+    console.log(preencherFormularioEmpresa)
     // Buscar empresa se não tiver idEmpresa salvo
     if (!idEmpresa) {
       const responseEmpresa = await axios.get(`https://marketplace-production-4ad4.up.railway.app/empresas/usuario/${idUsuario}`, {
