@@ -138,7 +138,7 @@
     <div class="row g-3">
         <div class="col-md-6">
             <div class="form-floating">
-                <input type="text" class="form-control bg-transparent" id="nome" placeholder="Nome do Serviço">
+                <input type="text" class="form-control bg-transparent" id="nomeServico" placeholder="Nome do Serviço">
                 <label for="nome">Nome do serviço</label>
             </div>
         </div>
@@ -224,7 +224,7 @@
                 <center><div class="col-lg-4 col-md-12 wow fadeInUp" data-wow-delay="0.5s">
                     <center><div class="col-12">
     <div class="form-floating">
-      <input type="text" class="form-control" id="nome" placeholder="Seu Nome">
+      <input type="text" class="form-control" id="nomeUsuario" placeholder="Seu Nome">
       <label for="nome">Seu Nome</label>
     </div>
   </div>
@@ -232,7 +232,7 @@
   <!-- Email -->
   <div class="col-12">
     <div class="form-floating">
-      <input type="email" class="form-control" id="email" placeholder="Seu Email">
+      <input type="email" class="form-control" id="emailUsuario" placeholder="Seu Email">
       <label for="email">Email</label>
     </div>
   </div>
@@ -657,107 +657,98 @@
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
-	<script>
-document.getElementById("servicoForm").addEventListener("submit", async function (e) {
-    e.preventDefault();
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        const token = localStorage.getItem('token');
+        const id = localStorage.getItem('id');
+        const idEmpresa = localStorage.getItem("idEmpresa");
 
-    const nome = document.getElementById("nome").value;
-    const valor = document.getElementById("valor").value;
-    const prazo = document.getElementById("prazo").value;
-    const descricao = document.getElementById("descricao").value;
+        // Carregar dados do usuário
+        if (token && id) {
+            try {
+                const response = await axios.get(`https://marketplace-production-4ad4.up.railway.app/usuarios/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
 
-    const token = localStorage.getItem("token");
-    const idEmpresa = localStorage.getItem("idEmpresa");
+                const usuario = response.data;
+                document.getElementById('nomeUsuario').value = usuario.nome || '';
+                document.getElementById('emailUsuario').value = usuario.email || '';
+                document.getElementById('telefone').value = usuario.telefone || '';
 
-    if (!token || !idEmpresa) {
-        alert("Usuário não autenticado ou empresa não identificada.");
-        return;
-    }
-
-    const novoServico = { nome, valor, prazo, descricao, idEmpresa };
-
-    try {
-        const response = await axios.post(
-            "https://marketplace-production-4ad4.up.railway.app/servicos",
-            novoServico,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+            } catch (error) {
+                console.error("Erro ao pegar dados do usuário:", error);
+                alert("Erro ao buscar dados do usuário");
             }
-        );
-
-        adicionarNaLista(response.data);
-        document.getElementById("servicoForm").reset();
-    } catch (error) {
-        console.error("Erro ao cadastrar:", error);
-        alert("Erro ao cadastrar serviço.");
-    }
-});
-
-
-function adicionarNaLista(servico) {
-    const lista = document.getElementById("listaServicos");
-
-    const li = document.createElement("li");
-    li.textContent = `${servico.nome} - R$${servico.valor} - ${servico.prazo} dias - ${servico.descricao}`;
-
-    const btn = document.createElement("button");
-    btn.textContent = "Excluir";
-    btn.classList.add("btn", "btn-danger", "btn-sm", "ms-2");
-    btn.onclick = async () => {
-        try {
-            await axios.delete(`http://localhost:3000/servicos/${servico.id}`);
-            li.remove();
-        } catch (error) {
-            console.error("Erro ao excluir:", error);
+        } else {
+            alert("Usuário não está logado");
         }
-    };
 
-    li.appendChild(btn);
-    lista.appendChild(li);
-}
+        // Carregar serviços existentes
+        try {
+            const response = await axios.get("https://marketplace-production-4ad4.up.railway.app/servicos");
+            response.data.forEach(servico => adicionarNaLista(servico));
+        } catch (error) {
+            console.error("Erro ao carregar lista:", error);
+        }
 
-// Carrega serviços existentes ao iniciar a página
-window.addEventListener("DOMContentLoaded", async () => {
-    try {
-        const response = await axios.get("http://localhost:3000/servicos");
-        response.data.forEach(servico => adicionarNaLista(servico));
-    } catch (error) {
-        console.error("Erro ao carregar lista:", error);
-    }
-});
-//   function pegarDadosUsuario() {
-//     const token = localStorage.getItem('token');
-//     const id = localStorage.getItem('id');
+        // Lidar com envio de novo serviço
+        document.getElementById("servicoForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
 
-//     if (!token || !id) {
-//       alert('Usuário não está logado');
-//       return;
-//     }
+            const nome = document.getElementById("nomeServico").value;
+            const valor = document.getElementById("valor").value;
+            const prazo = document.getElementById("prazo").value;
+            const descricao = document.getElementById("descricao").value;
 
-//     axios.get(https://marketplace-production-4ad4.up.railway.app/usuarios/${id}, {
-//       headers: {
-//         Authorization: Bearer ${token}
-//       }
-//     })
-//     .then(response => {
-//       const usuario = response.data;
-//       console.log('Dados do usuário:', usuario);
+            if (!token || !idEmpresa) {
+                alert("Usuário não autenticado ou empresa não identificada.");
+                return;
+            }
 
-//       // Preencher na tela, exemplo:
-//       document.getElementById('nome').value = usuario.nome;
-//       document.getElementById('email').value = usuario.email;
-//       document.getElementById('telefone').value = usuario.telefone;
-//       document.getElementById('tipo_usuario').value = usuario.tipo_usuario;
-//     })
-//     .catch(error => {
-//       console.error('Erro ao pegar dados do usuário:', error);
-//       alert('Erro ao buscar dados do usuário');
-//     });
-//   }
+            const novoServico = { nome, valor, prazo, descricao, idEmpresa };
 
-  window.onload = pegarDadosUsuario;
+            try {
+                const response = await axios.post(
+                    "https://marketplace-production-4ad4.up.railway.app/servicos",
+                    novoServico,
+                    { headers: { Authorization: `Bearer ${token}` } }
+                );
+
+                adicionarNaLista(response.data);
+                document.getElementById("servicoForm").reset();
+            } catch (error) {
+                console.error("Erro ao cadastrar:", error);
+                alert("Erro ao cadastrar serviço.");
+            }
+        });
+
+        // Adicionar serviço à lista visual
+        function adicionarNaLista(servico) {
+            const lista = document.getElementById("listaServicos");
+
+            const li = document.createElement("li");
+            li.textContent = `${servico.nome} - R$${servico.valor} - ${servico.prazo} dias - ${servico.descricao}`;
+
+            const btn = document.createElement("button");
+            btn.textContent = "Excluir";
+            btn.classList.add("btn", "btn-danger", "btn-sm", "ms-2");
+            btn.onclick = async () => {
+                try {
+                    await axios.delete(`https://marketplace-production-4ad4.up.railway.app/servicos/${servico.id}`, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+                    li.remove();
+                } catch (error) {
+                    console.error("Erro ao excluir:", error);
+                }
+            };
+
+            li.appendChild(btn);
+            lista.appendChild(li);
+        }
+    });
 </script>
 </body>
 
