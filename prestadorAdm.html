@@ -72,7 +72,7 @@
     <div class="container-fluid position-relative p-0">
         <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
             <a href="" class="navbar-brand p-0">
-                <h1 class="text-primary m-0"id="nomeEmpresa"><i class="fa fa-map-marker-alt me-3"id="nomeEmpresa"></i></h1>
+                <h1 class="text-primary m-0"id="nomeEmpresaTitulo"><i class="fa fa-map-marker-alt me-3"></i></h1>
                 <!-- <img src="img/logo.png" alt="Logo"> -->
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -272,7 +272,7 @@
   <!-- Nome da Empresa -->
   <div class="col-12">
     <div class="form-floating">
-      <input type="text" class="form-control" id="nomeEmpresa" placeholder="Nome da Empresa">
+      <input type="text" class="form-control" id="nomeEmpresaInput" placeholder="Nome da Empresa">
       <label for="nome_empresa">Nome da Sua Empresa</label>
     </div>
   </div>
@@ -296,7 +296,7 @@
   <!-- Descrição / Marketing -->
   <div class="col-12">
     <div class="form-floating">
-      <textarea class="form-control" placeholder="Descrição detalhada" id="descricao" style="height: 100px"></textarea>
+      <textarea class="form-control" placeholder="Descrição detalhada" id="descricaoMark" style="height: 100px"></textarea>
       <label for="descricao">Marketing da sua empresa</label>
     </div>
   </div>
@@ -690,9 +690,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       idEmpresa = empresa.id;
       localStorage.setItem("idEmpresa", idEmpresa);
       console.log(empresa)
-      document.getElementById("nomeEmpresa").value = empresa.nome_empresa || '';
+      document.getElementById("nomeEmpresaTitulo").textContent = empresa.nome_empresa || '';
+      document.getElementById("nomeEmpresaInput").value = empresa.nome_empresa || '';
       document.getElementById("apresentacao").value = empresa.apresentacao || '';
-      document.getElementById("descricao").value = empresa.descricao || '';
+      document.getElementById("descricaoMark").value = empresa.descricao || '';
       document.getElementById("site").value = empresa.site || '';
       document.getElementById("instagram").value = empresa.instagram || '';
       document.getElementById("linkedin").value = empresa.linkedin || '';
@@ -716,9 +717,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       idEmpresa = empresa.id;
       localStorage.setItem("idEmpresa", idEmpresa);
       console.log(empresa)
-      document.getElementById("nomeEmpresa").value = empresa.nome_empresa || '';
+      document.getElementById("nomeEmpresaTitulo").textContent = empresa.nome_empresa || '';
+      document.getElementById("nomeEmpresaInput").value = empresa.nome_empresa || '';
       document.getElementById("apresentacao").value = empresa.apresentacao || '';
-      document.getElementById("descricao").value = empresa.descricao || '';
+      document.getElementById("descricaoMark").value = empresa.descricao || '';
       document.getElementById("site").value = empresa.site || '';
       document.getElementById("instagram").value = empresa.instagram || '';
       document.getElementById("linkedin").value = empresa.linkedin || '';
