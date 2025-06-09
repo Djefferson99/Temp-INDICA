@@ -118,6 +118,65 @@
         </div>
     </div>
     <!-- Navbar & Hero End -->
+ <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+        <div class="container">
+            <div class="booking p-5">
+                <div class="row g-5 align-items-center">
+                    <div class="col-md-6 text-white">
+                        <h6 class="text-white text-uppercase">Serviços</h6>
+                        <h1 class="text-white mb-4">Valorize o que você sabe fazer. Cadastre seus serviços agora!</h1>
+                        <p class="mb-4">Você tem talento, experiência e sabe fazer um bom trabalho — agora é hora de mostrar isso para quem realmente está procurando por você.</p>
+                        <p class="mb-4">Ao cadastrar os serviços que você oferece, você amplia suas chances de ser encontrado por clientes reais, interessados exatamente no que você faz.</p>
+						<p class="mb-4">Seja você eletricista, encanador, designer, fotógrafo, manicure ou qualquer outro profissional, existe alguém precisando da sua habilidade <strong>agora mesmo</strong>.</p>
+    
+                        <a class="btn btn-outline-light py-3 px-5 mt-2" href="">Excliuir Serviço</a>
+                    </div>
+                    <div class="col-md-6">
+                        <h1 class="text-white mb-4">Cadastro de servços</h1>
+               <!-- FORMULÁRIO -->
+<form id="servicoForm">
+    <div class="row g-3">
+        <div class="col-md-6">
+            <div class="form-floating">
+                <input type="text" class="form-control bg-transparent" id="nome" placeholder="Nome do Serviço">
+                <label for="nome">Nome do serviço</label>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-floating">
+                <input type="text" class="form-control bg-transparent" id="valor" placeholder="Valor">
+                <label for="valor">Valor</label>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-floating">
+                <select class="form-select bg-transparent" id="prazo">
+                    <option value="1">1 Dia</option>
+                    <option value="2">2 Dias</option>
+                    <option value="3">3 Dias</option>
+                </select>
+                <label for="prazo">Prazo</label>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-floating">
+                <textarea class="form-control bg-transparent" placeholder="Descrição" id="descricao" style="height: 100px"></textarea>
+                <label for="descricao">Descrição do serviço</label>
+            </div>
+        </div>
+        <div class="col-12">
+            <button class="btn btn-outline-light w-100 py-3" type="submit">Cadastrar</button>
+        </div>
+    </div>
+</form>
+
+<!-- LISTA DE SERVIÇOS -->
+<ul id="listaServicos" class="mt-4"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
  <div class="container-xxl py-5">
         <div class="container">
             <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
@@ -355,6 +414,9 @@
             </div>
         </div>
     </div>
+	
+	<!-- Booking Start -->
+   
     <!-- Team Start -->
     <div class="container-xxl py-5">
         <div class="container">
@@ -596,35 +658,104 @@
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
 	<script>
-  function pegarDadosUsuario() {
-    const token = localStorage.getItem('token');
-    const id = localStorage.getItem('id');
+document.getElementById("servicoForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
 
-    if (!token || !id) {
-      alert('Usuário não está logado');
-      return;
+    const nome = document.getElementById("nome").value;
+    const valor = document.getElementById("valor").value;
+    const prazo = document.getElementById("prazo").value;
+    const descricao = document.getElementById("descricao").value;
+
+    const token = localStorage.getItem("token");
+    const idEmpresa = localStorage.getItem("idEmpresa");
+
+    if (!token || !idEmpresa) {
+        alert("Usuário não autenticado ou empresa não identificada.");
+        return;
     }
 
-    axios.get(https://marketplace-production-4ad4.up.railway.app/usuarios/${id}, {
-      headers: {
-        Authorization: Bearer ${token}
-      }
-    })
-    .then(response => {
-      const usuario = response.data;
-      console.log('Dados do usuário:', usuario);
+    const novoServico = { nome, valor, prazo, descricao, idEmpresa };
 
-      // Preencher na tela, exemplo:
-      document.getElementById('nome').value = usuario.nome;
-      document.getElementById('email').value = usuario.email;
-      document.getElementById('telefone').value = usuario.telefone;
-      document.getElementById('tipo_usuario').value = usuario.tipo_usuario;
-    })
-    .catch(error => {
-      console.error('Erro ao pegar dados do usuário:', error);
-      alert('Erro ao buscar dados do usuário');
-    });
-  }
+    try {
+        const response = await axios.post(
+            "https://marketplace-production-4ad4.up.railway.app/servicos",
+            novoServico,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+
+        adicionarNaLista(response.data);
+        document.getElementById("servicoForm").reset();
+    } catch (error) {
+        console.error("Erro ao cadastrar:", error);
+        alert("Erro ao cadastrar serviço.");
+    }
+});
+
+
+function adicionarNaLista(servico) {
+    const lista = document.getElementById("listaServicos");
+
+    const li = document.createElement("li");
+    li.textContent = `${servico.nome} - R$${servico.valor} - ${servico.prazo} dias - ${servico.descricao}`;
+
+    const btn = document.createElement("button");
+    btn.textContent = "Excluir";
+    btn.classList.add("btn", "btn-danger", "btn-sm", "ms-2");
+    btn.onclick = async () => {
+        try {
+            await axios.delete(`http://localhost:3000/servicos/${servico.id}`);
+            li.remove();
+        } catch (error) {
+            console.error("Erro ao excluir:", error);
+        }
+    };
+
+    li.appendChild(btn);
+    lista.appendChild(li);
+}
+
+// Carrega serviços existentes ao iniciar a página
+window.addEventListener("DOMContentLoaded", async () => {
+    try {
+        const response = await axios.get("http://localhost:3000/servicos");
+        response.data.forEach(servico => adicionarNaLista(servico));
+    } catch (error) {
+        console.error("Erro ao carregar lista:", error);
+    }
+});
+//   function pegarDadosUsuario() {
+//     const token = localStorage.getItem('token');
+//     const id = localStorage.getItem('id');
+
+//     if (!token || !id) {
+//       alert('Usuário não está logado');
+//       return;
+//     }
+
+//     axios.get(https://marketplace-production-4ad4.up.railway.app/usuarios/${id}, {
+//       headers: {
+//         Authorization: Bearer ${token}
+//       }
+//     })
+//     .then(response => {
+//       const usuario = response.data;
+//       console.log('Dados do usuário:', usuario);
+
+//       // Preencher na tela, exemplo:
+//       document.getElementById('nome').value = usuario.nome;
+//       document.getElementById('email').value = usuario.email;
+//       document.getElementById('telefone').value = usuario.telefone;
+//       document.getElementById('tipo_usuario').value = usuario.tipo_usuario;
+//     })
+//     .catch(error => {
+//       console.error('Erro ao pegar dados do usuário:', error);
+//       alert('Erro ao buscar dados do usuário');
+//     });
+//   }
 
   window.onload = pegarDadosUsuario;
 </script>
