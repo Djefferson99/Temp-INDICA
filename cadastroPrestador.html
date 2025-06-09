@@ -495,9 +495,6 @@ function mostrarPreview(file) {
 
     // Envia empresa com foto como multipart/form-data
     await axios.post('https://marketplace-production-4ad4.up.railway.app/empresas', empresaFormData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
     });
 
     alert("✅ Cadastro da empresa realizado com sucesso!");
