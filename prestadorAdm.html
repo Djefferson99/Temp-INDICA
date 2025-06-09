@@ -689,7 +689,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const empresa = responseEmpresa.data;
       idEmpresa = empresa.id;
       localStorage.setItem("idEmpresa", idEmpresa);
-      
+      console.log(empresa)
       document.getElementById("nome_empresa").value = empresa.nome_empresa || '';
       document.getElementById("apresentacao").value = empresa.apresentacao || '';
       document.getElementById("descricao").value = empresa.descricao || '';
@@ -715,7 +715,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const empresa = responseEmpresa.data;
       idEmpresa = empresa.id;
       localStorage.setItem("idEmpresa", idEmpresa);
-      
+      console.log(empresa)
       document.getElementById("nome_empresa").value = empresa.nome_empresa || '';
       document.getElementById("apresentacao").value = empresa.apresentacao || '';
       document.getElementById("descricao").value = empresa.descricao || '';
