@@ -660,139 +660,132 @@
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", async () => {
-    const token = localStorage.getItem('token');
-    const id = localStorage.getItem('id');
-    let idEmpresa = localStorage.getItem("idEmpresa");
+document.addEventListener("DOMContentLoaded", async () => {
+  const token = localStorage.getItem('token');
+  const id = localStorage.getItem('id');
+  let idEmpresa = localStorage.getItem("idEmpresa");
 
-    // Carregar dados do usuário
-    if (token && id) {
-        try {
-            const response = await axios.get(`https://marketplace-production-4ad4.up.railway.app/usuarios/${id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
+  if (!token || !id) {
+    alert("Usuário não está logado");
+    return;
+  }
 
-            const usuario = response.data;
-            document.getElementById('nomeUsuario').value = usuario.nome || '';
-            document.getElementById('emailUsuario').value = usuario.email || '';
-            document.getElementById('telefone').value = usuario.telefone || '';
+  try {
+    // Buscar dados do usuário
+    const responseUsuario = await axios.get(`https://marketplace-production-4ad4.up.railway.app/usuarios/${id}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
 
-            // 🔄 Buscar a empresa associada ao usuário
-            if (!idEmpresa) {
-                const empresaRes = await axios.get(`https://marketplace-production-4ad4.up.railway.app/empresas/usuario/${id}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
+    const usuario = responseUsuario.data;
+    document.getElementById('nomeUsuario').value = usuario.nome || '';
+    document.getElementById('emailUsuario').value = usuario.email || '';
+    document.getElementById('telefone').value = usuario.telefone || '';
 
-                const empresa = empresaRes.data;
-                idEmpresa = empresa.id;
-                localStorage.setItem("idEmpresa", idEmpresa); // Salva para uso posterior
+    // Função para preencher formulário da empresa
+    const preencherFormularioEmpresa = (empresa) => {
+      document.getElementById("nome_empresa").value = empresa.nome_empresa || '';
+      document.getElementById("apresentacao").value = empresa.apresentacao || '';
+      document.getElementById("descricao").value = empresa.descricao || '';
+      document.getElementById("site").value = empresa.site || '';
+      document.getElementById("instagram").value = empresa.instagram || '';
+      document.getElementById("linkedin").value = empresa.linkedin || '';
+      document.getElementById("facebook").value = empresa.facebook || '';
+      document.getElementById("youtube").value = empresa.youtube || '';
 
-                // (Opcional) Preencher algum campo do formulário da empresa aqui
-                document.getElementById("nome_empresa").value = empresa.nome_empresa || '';
-                document.getElementById("apresentacao").value = empresa.apresentacao || '';
-                document.getElementById("descricao").value = empresa.descricao || '';
-                document.getElementById("site").value = empresa.site || '';
-                document.getElementById("instagram").value = empresa.instagram || '';
-                document.getElementById("linkedin").value = empresa.linkedin || '';
-                document.getElementById("facebook").value = empresa.facebook || '';
-                document.getElementById("youtube").value = empresa.youtube || '';
+      if (empresa.foto_perfil) {
+        const preview = document.getElementById("previewFoto");
+        preview.innerHTML = `
+          <img src="https://marketplace-production-4ad4.up.railway.app/uploads/${empresa.foto_perfil}" 
+               alt="Foto de perfil" 
+               style="max-width: 200px; max-height: 200px; object-fit: cover;" />
+        `;
+      }
+    };
 
-                // Exibir foto de perfil (se existir)
-                if (empresa.foto_perfil) {
-                const preview = document.getElementById("previewFoto");
-                preview.innerHTML = `
-                    <img src="https://marketplace-production-4ad4.up.railway.app/uploads/${empresa.foto_perfil}" 
-                        alt="Foto de perfil" 
-                        style="max-width: 200px; max-height: 200px; object-fit: cover;" />
-                `;
-                }
-            }
-
-        } catch (error) {
-            console.error("Erro ao buscar dados:", error);
-            alert("Erro ao buscar dados do usuário ou da empresa");
-        }
+    // Se idEmpresa não está salvo, buscar pela API usando id do usuário
+    if (!idEmpresa) {
+      const responseEmpresa = await axios.get(`https://marketplace-production-4ad4.up.railway.app/empresas/usuario/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const empresa = responseEmpresa.data;
+      idEmpresa = empresa.id;
+      localStorage.setItem("idEmpresa", idEmpresa);
+      preencherFormularioEmpresa(empresa);
     } else {
-        alert("Usuário não está logado");
-        return;
+      // Se já tem idEmpresa, buscar os dados da empresa direto
+      const responseEmpresa = await axios.get(`https://marketplace-production-4ad4.up.railway.app/empresas/${idEmpresa}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      preencherFormularioEmpresa(responseEmpresa.data);
     }
 
     // Carregar serviços existentes
+    const responseServicos = await axios.get("https://marketplace-production-4ad4.up.railway.app/servicos");
+    responseServicos.data.forEach(servico => adicionarNaLista(servico));
+
+  } catch (error) {
+    console.error("Erro ao buscar dados:", error);
+    alert("Erro ao buscar dados do usuário ou da empresa");
+  }
+
+  // Evento do formulário de serviços
+  document.getElementById("servicoForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const nome = document.getElementById("nomeServico").value;
+    const valor = document.getElementById("valor").value;
+    const prazo = document.getElementById("prazo").value;
+    const descricao = document.getElementById("descricao").value;
+
+    if (!token || !idEmpresa) {
+      alert("Usuário não autenticado ou empresa não identificada.");
+      return;
+    }
+
+    const novoServico = { nome, valor, prazo, descricao, idEmpresa };
+
     try {
-        const response = await axios.get("https://marketplace-production-4ad4.up.railway.app/servicos");
-        response.data.forEach(servico => adicionarNaLista(servico));
+      const response = await axios.post(
+        "https://marketplace-production-4ad4.up.railway.app/servicos",
+        novoServico,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      adicionarNaLista(response.data);
+      document.getElementById("servicoForm").reset();
     } catch (error) {
-        console.error("Erro ao carregar lista:", error);
+      console.error("Erro ao cadastrar:", error);
+      alert("Erro ao cadastrar serviço.");
     }
+  });
 
-    // Lidar com envio de novo serviço
-    document.getElementById("servicoForm").addEventListener("submit", async function (e) {
-        e.preventDefault();
+  // Função para adicionar serviço na lista
+  function adicionarNaLista(servico) {
+    const lista = document.getElementById("listaServicos");
 
-        const nome = document.getElementById("nomeServico").value;
-        const valor = document.getElementById("valor").value;
-        const prazo = document.getElementById("prazo").value;
-        const descricao = document.getElementById("descricao").value;
+    const li = document.createElement("li");
+    li.textContent = `${servico.nome} - R$${servico.valor} - ${servico.prazo} dias - ${servico.descricao}`;
 
-        if (!token || !idEmpresa) {
-            alert("Usuário não autenticado ou empresa não identificada.");
-            return;
-        }
+    const btn = document.createElement("button");
+    btn.textContent = "Excluir";
+    btn.classList.add("btn", "btn-danger", "btn-sm", "ms-2");
+    btn.onclick = async () => {
+      try {
+        await axios.delete(`https://marketplace-production-4ad4.up.railway.app/servicos/${servico.id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        li.remove();
+      } catch (error) {
+        console.error("Erro ao excluir:", error);
+      }
+    };
 
-        const novoServico = {
-            nome,
-            valor,
-            prazo,
-            descricao,
-            idEmpresa // já está atualizado
-        };
-
-        try {
-            const response = await axios.post(
-                "https://marketplace-production-4ad4.up.railway.app/servicos",
-                novoServico,
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-
-            adicionarNaLista(response.data);
-            document.getElementById("servicoForm").reset();
-        } catch (error) {
-            console.error("Erro ao cadastrar:", error);
-            alert("Erro ao cadastrar serviço.");
-        }
-    });
-
-    // Adicionar serviço à lista visual
-    function adicionarNaLista(servico) {
-        const lista = document.getElementById("listaServicos");
-
-        const li = document.createElement("li");
-        li.textContent = `${servico.nome} - R$${servico.valor} - ${servico.prazo} dias - ${servico.descricao}`;
-
-        const btn = document.createElement("button");
-        btn.textContent = "Excluir";
-        btn.classList.add("btn", "btn-danger", "btn-sm", "ms-2");
-        btn.onclick = async () => {
-            try {
-                await axios.delete(`https://marketplace-production-4ad4.up.railway.app/servicos/${servico.id}`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                li.remove();
-            } catch (error) {
-                console.error("Erro ao excluir:", error);
-            }
-        };
-
-        li.appendChild(btn);
-        lista.appendChild(li);
-    }
+    li.appendChild(btn);
+    lista.appendChild(li);
+  }
 });
-
 </script>
+
 </body>
 
 </html>
