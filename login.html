@@ -338,9 +338,9 @@ function login() {
       if (!userId) {
         Toastify({
             text: "Não foi possível obter o usuário 😥",
-            duration: 3000,
+            duration: 5000,
             gravity: "top",
-            position: "right",
+            position: "center",
             backgroundColor: "#1f1f1f",
         }).showToast();
         return;
@@ -349,21 +349,19 @@ function login() {
       localStorage.setItem('id', userId);
         Toastify({
             text: "Login realizado com sucesso!😄",
-            duration: 3000,
+            duration: 5000,
             gravity: "top",
-            position: "right",
+            position: "center",
             backgroundColor: "#28a745",
         }).showToast();
-
-      alert('Login realizado com sucesso!');
       window.location.href = 'prestadorAdm.html';
     })
     .catch(error => {
         Toastify({
             text: "Erro ao logar. 😥",
-            duration: 3000,
+            duration: 5000,
             gravity: "top",
-            position: "right",
+            position: "center",
             backgroundColor: "#1f1f1f",
         }).showToast();
       console.error(error);
