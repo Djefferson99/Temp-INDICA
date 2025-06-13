@@ -807,19 +807,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     lista.appendChild(li);
   }
 });
-    function validarSenha() {
+ const senha = document.getElementById('senha');
+  const senhaConfirm = document.getElementById('senhaConfirm');
+  const fotoPerfilInput = document.getElementById('fotoPerfil');
+  const botao = document.getElementById('botaoCadastrar');
+
+  // Valida se as senhas coincidem
+  function validarSenha() {
     if (senha.value !== senhaConfirm.value) {
-    alert("Senhas não correspondente!!!")
+      alert("❌ As senhas não coincidem!");
       return false;
-    } else {
+    }else{
       atualizarTudo();
       return true;
     }
   }
 
-  const fotoPerfilInput = document.getElementById('fotoPerfil');
-  const botao = document.getElementById('botaoCadastrar');
-
+  // Atualiza os dados do usuário e da empresa
   async function atualizarTudo() {
     botao.disabled = true;
 
@@ -834,11 +838,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     try {
-      // Atualizar usuário
+      // Atualizar dados do usuário
       const dadosUsuario = {
         nome: document.getElementById('nomeUsuario').value,
         email: document.getElementById('emailUsuario').value,
         telefone: document.getElementById('telefone').value,
+        senha: senha.value // Inclui nova senha se quiser permitir alteração
       };
 
       await axios.put(
@@ -851,7 +856,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       );
 
-      // Atualizar empresa
+      // Atualizar dados da empresa
       const empresaFormData = new FormData();
       empresaFormData.append('nome_empresa', document.getElementById('nomeEmpresaInput').value);
       empresaFormData.append('apresentacao', document.getElementById('apresentacao').value);
@@ -887,11 +892,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       botao.disabled = false;
     }
   }
-
-  botao.addEventListener("click", (e) => {
-    e.preventDefault();
-    atualizarTudo();
-  });
 </script>
 
 </body>
