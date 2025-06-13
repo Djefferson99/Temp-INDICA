@@ -290,20 +290,32 @@
     <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
     <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
+        <!-- Toastify -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    
+    <style>
+        /* Personalização do estilo do toast */
+        .toastify {
+            font-size: 20px; /* Aumenta o tamanho da fonte */
+            font-family: Arial, sans-serif;
+            border-radius: 50px;
+        }
+    </style>
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
 	 <script>
         function parseJwt(token) {
-  const base64Url = token.split('.')[1];
-  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-  const jsonPayload = decodeURIComponent(
-    atob(base64)
-      .split('')
-      .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-      .join('')
-  );
-  return JSON.parse(jsonPayload);
-}
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(
+                atob(base64)
+                .split('')
+                .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+                .join('')
+            );
+            return JSON.parse(jsonPayload);
+        }
 
 function login() {
   const usuario = {
@@ -324,44 +336,39 @@ function login() {
       const userId = decoded.id;
 
       if (!userId) {
-        alert('Não foi possível obter o ID do usuário.');
+        Toastify({
+            text: "Não foi possível obter o usuário 😥",
+            duration: 3000,
+            gravity: "top",
+            position: "right",
+            backgroundColor: "#1f1f1f",
+        }).showToast();
         return;
       }
 
       localStorage.setItem('id', userId);
+        Toastify({
+            text: "Login realizado com sucesso!😄",
+            duration: 3000,
+            gravity: "top",
+            position: "right",
+            backgroundColor: "#28a745",
+        }).showToast();
 
       alert('Login realizado com sucesso!');
       window.location.href = 'prestadorAdm.html';
     })
     .catch(error => {
-      alert('Erro ao logar.');
+        Toastify({
+            text: "Erro ao logar. 😥",
+            duration: 3000,
+            gravity: "top",
+            position: "right",
+            backgroundColor: "#1f1f1f",
+        }).showToast();
       console.error(error);
     });
 }
-    // function login() {
-    //   const usuario = {
-        
-    //     email: document.getElementById('email').value,
-    //     senha: document.getElementById('senha').value,
-        
-    //   };
-
-    //     console.log(usuario)
-    // axios.post('https://marketplace-production-4ad4.up.railway.app/login', usuario)
-    //     .then(response => {
-	// 	 const { token, id } = response.data;
-	// 	localStorage.setItem('token', token);
-	// 	localStorage.setItem('id', id);
-		
-    //         alert("Login realizado com sucesso!");
-	// 		window.location.href = 'prestadorAdm.html'
-    //         console.log(response.data);
-    //     })
-    //     .catch(error => {
-    //         alert("Erro ao logar.");
-    //         console.error(error);
-    //     });
-    // }
   </script>
 </body>
 

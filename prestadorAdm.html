@@ -656,7 +656,24 @@
     <script src="lib/tempusdominus/js/moment.min.js"></script>
     <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
     <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+    <!-- Seus scripts -->
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="lib/tempusdominus/js/moment.min.js"></script>
+    <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
+    <!-- Toastify -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    
+    <style>
+        /* Personalização do estilo do toast */
+        .toastify {
+            font-size: 20px; /* Aumenta o tamanho da fonte */
+            font-family: Arial, sans-serif;
+            border-radius: 50px;
+        }
+    </style>
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
 <script>
@@ -666,7 +683,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   let idEmpresa = localStorage.getItem("idEmpresa");
 
   if (!token || !idUsuario) {
-    alert("Usuário não está logado");
+        Toastify({
+            text: "Usuário não está logado! 😥",
+            duration: 5000,
+            gravity: "top",
+            position: "center",
+            backgroundColor: "#1f1f1f",
+        }).showToast();
     return;
   }
 
@@ -761,7 +784,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     const descricao = document.getElementById("descricao").value;
 
     if (!token || !idEmpresa) {
-      alert("Usuário não autenticado ou empresa não identificada.");
+        Toastify({
+            text: "Usuário não autenticado ou empresa não identificada. 😥",
+            duration: 5000,
+            gravity: "top",
+            position: "center",
+            backgroundColor: "#1f1f1f",
+        }).showToast();
       return;
     }
 
@@ -778,7 +807,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.getElementById("servicoForm").reset();
     } catch (error) {
       console.error("Erro ao cadastrar:", error);
-      alert("Erro ao cadastrar serviço.");
+        Toastify({
+            text: "Erro ao cadastrar serviço. 😥",
+            duration: 5000,
+            gravity: "top",
+            position: "center",
+            backgroundColor: "#1f1f1f",
+        }).showToast();
     }
   });
 
@@ -815,7 +850,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Valida se as senhas coincidem
   function validarSenha() {
     if (senha.value !== senhaConfirm.value) {
-      alert("❌ As senhas não coincidem!");
+        Toastify({
+            text: "❌ As senhas não coincidem!",
+            duration: 5000,
+            gravity: "top",
+            position: "center",
+            backgroundColor: "#1f1f1f",
+        }).showToast();
       return false;
     }else{
       atualizarTudo();
@@ -832,7 +873,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     const token = localStorage.getItem("token");
 
     if (!usuario_id || !empresa_id || !token) {
-      alert("⚠️ Sessão inválida. Faça login novamente.");
+        Toastify({
+            text: "⚠️ Sessão inválida. Faça login novamente.",
+            duration: 5000,
+            gravity: "top",
+            position: "center",
+            backgroundColor: "#1f1f1f",
+        }).showToast();
       window.location.href = 'login.html';
       return;
     }
@@ -882,12 +929,22 @@ document.addEventListener("DOMContentLoaded", async () => {
           }
         }
       );
-
-      alert("✅ Dados atualizados com sucesso!");
-
+        Toastify({
+            text: "😄 Dados atualizados com sucesso!",
+            duration: 5000,
+            gravity: "top",
+            position: "center",
+            backgroundColor: "#28a745",
+        }).showToast();
     } catch (error) {
       console.error("Erro ao atualizar:", error);
-      alert("❌ Erro ao atualizar os dados. Verifique os campos e tente novamente.");
+        Toastify({
+            text: "❌ Erro ao atualizar os dados. Verifique os campos e tente novamente.",
+            duration: 3000,
+            gravity: "top",
+            position: "right",
+            backgroundColor: "#1f1f1f",
+        }).showToast();
     } finally {
       botao.disabled = false;
     }
