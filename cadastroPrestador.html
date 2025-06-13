@@ -528,8 +528,9 @@
         position: "center",
         backgroundColor: "#28a745",
       }).showToast();
-      window.location.href = 'login.html'
-
+      setTimeout(() => {
+        window.location.href = 'login.html';
+      }, 5000);
     } catch (error) {
       console.error("Erro no cadastro:", error);
       Toastify({

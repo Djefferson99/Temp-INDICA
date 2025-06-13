@@ -354,7 +354,9 @@ function login() {
             position: "center",
             backgroundColor: "#28a745",
         }).showToast();
-      window.location.href = 'prestadorAdm.html';
+        setTimeout(() => {
+            window.location.href = 'prestadorAdm.html';
+        }, 5000);
     })
     .catch(error => {
         Toastify({
