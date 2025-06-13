@@ -807,6 +807,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     lista.appendChild(li);
   }
 });
+    function validarSenha() {
+    if (senha.value !== senhaConfirm.value) {
+    alert("Senhas não correspondente!!!")
+      return false;
+    } else {
+      atualizarTudo();
+      return true;
+    }
+  }
+
   const fotoPerfilInput = document.getElementById('fotoPerfil');
   const botao = document.getElementById('botaoCadastrar');
 
@@ -826,8 +836,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
       // Atualizar usuário
       const dadosUsuario = {
-        nome: document.getElementById('nome').value,
-        email: document.getElementById('email').value,
+        nome: document.getElementById('nomeUsuario').value,
+        email: document.getElementById('emailUsuario').value,
         telefone: document.getElementById('telefone').value,
       };
 
@@ -843,7 +853,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       // Atualizar empresa
       const empresaFormData = new FormData();
-      empresaFormData.append('nome_empresa', document.getElementById('nome_empresa').value);
+      empresaFormData.append('nome_empresa', document.getElementById('nomeEmpresaInput').value);
       empresaFormData.append('apresentacao', document.getElementById('apresentacao').value);
       empresaFormData.append('descricao', document.getElementById('descricao').value);
       empresaFormData.append('site', document.getElementById('site').value);
