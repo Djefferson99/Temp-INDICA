@@ -773,7 +773,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   } catch (error) {
     console.error("Erro ao buscar dados:", error);
-    alert("Erro ao buscar dados do usuário ou da empresa");
+    alert("Erro ao buscar dados dos serviços");
   }
 })
   // Evento do formulário de serviços
@@ -861,7 +861,7 @@ function adicionarNaLista(servico) {
     ">
       <div>
         <strong>${servico.titulo}</strong><br>
-        R$${servico.valor?.toFixed(2) || '0.00'} • ${servico.prazo} dias<br>
+        R$${(Number(servico.valor) || 0).toFixed(2)} • ${servico.prazo} dias<br>
         ${servico.descricao_servico || ''}
       </div>
       <button class="btn btn-danger btn-sm" style="margin-left: 20px;">
