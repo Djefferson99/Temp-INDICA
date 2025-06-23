@@ -871,30 +871,36 @@ function adicionarNaLista(servico) {
   `;
 
   const btn = li.querySelector("button");
-  btn.onclick = async () => {
-    try {
-      await axios.delete(`https://marketplace-production-4ad4.up.railway.app/servicos/${servico.id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      li.remove();
-      Toastify({
-        text: "Serviço deletado!",
-        duration: 5000,
-        gravity: "top",
-        position: "center",
-        backgroundColor: "#ff0000",
-      }).showToast();
-    } catch (error) {
-      Toastify({
-        text: "Erro ao excluir!",
-        duration: 5000,
-        gravity: "top",
-        position: "center",
-        backgroundColor: "#ff0000",
-      }).showToast();
-      console.error("Erro ao excluir:", error);
-    }
-  };
+btn.onclick = async () => {
+  const token = localStorage.getItem("token"); // <-- necessário aqui
+  try {
+    await axios.delete(`https://marketplace-production-4ad4.up.railway.app/servicos/${servico.id}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    li.remove();
+    Toastify({
+      text: "Serviço deletado!",
+      duration: 5000,
+      gravity: "top",
+      position: "center",
+      style: {
+        background: "#ff0000"
+      }
+    }).showToast();
+  } catch (error) {
+    Toastify({
+      text: "Erro ao excluir!",
+      duration: 5000,
+      gravity: "top",
+      position: "center",
+      style: {
+        background: "#ff0000"
+      }
+    }).showToast();
+    console.error("Erro ao excluir:", error);
+  }
+};
+
 
   lista.appendChild(li);
 }
