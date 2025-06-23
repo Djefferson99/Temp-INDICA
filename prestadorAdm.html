@@ -785,13 +785,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     const novoServico = { 
-      titulo, 
-      valor, 
-      prazo, 
-      descricao, 
-      empresa_id: idEmpresa // campo correto para o backend
+    titulo, 
+    descricao_servico: descricao, // nome correto do campo
+    valor, 
+    prazo, 
+    empresa_id: idEmpresa 
     };
-
+console.log("novoServico")
     try {
       const response = await axios.post(
         "https://marketplace-production-4ad4.up.railway.app/servicos",
