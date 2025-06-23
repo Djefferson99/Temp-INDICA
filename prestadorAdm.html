@@ -854,6 +854,13 @@ console.log("novoServico")
     lista.appendChild(li);
   }
 });
+    function logout() {
+        // Limpa tudo do localStorage
+        localStorage.clear();
+
+        // Redireciona para a página inicial
+        window.location.href = 'index.html';
+    }
 </script>
 
 
