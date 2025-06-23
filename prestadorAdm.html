@@ -780,6 +780,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("servicoForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
+    
+    const token = localStorage.getItem("token");
+    const idEmpresa = localStorage.getItem("idEmpresa");
     const titulo = document.getElementById("nomeServico").value;
     const valor = document.getElementById("valor").value;
     const prazo = document.getElementById("prazo").value;
