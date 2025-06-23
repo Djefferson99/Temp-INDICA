@@ -677,7 +677,6 @@
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
 
-
 <script>
 document.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem('token');
@@ -696,94 +695,134 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   try {
-    // Buscar usuário
-    const usuario = (await axios.get(`https://marketplace-production-4ad4.up.railway.app/usuarios/${idUsuario}`, {
+    // Buscar dados do usuário
+    const responseUsuario = await axios.get(`https://marketplace-production-4ad4.up.railway.app/usuarios/${idUsuario}`, {
       headers: { Authorization: `Bearer ${token}` }
-    })).data;
+    });
 
+    const usuario = responseUsuario.data;
     document.getElementById('nomeUsuario').value = usuario.nome || '';
     document.getElementById('emailUsuario').value = usuario.email || '';
     document.getElementById('telefone').value = usuario.telefone || '';
 
-    // Buscar empresa
-    const empresa = idEmpresa 
-      ? (await axios.get(`https://marketplace-production-4ad4.up.railway.app/empresas/${idEmpresa}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        })).data
-      : (await axios.get(`https://marketplace-production-4ad4.up.railway.app/empresas/usuario/${idUsuario}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        })).data;
+    // Buscar empresa se não tiver idEmpresa salvo
+    if (!idEmpresa) {
+      const responseEmpresa = await axios.get(`https://marketplace-production-4ad4.up.railway.app/empresas/usuario/${idUsuario}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const empresa = responseEmpresa.data;
+      idEmpresa = empresa.id;
+      localStorage.setItem("idEmpresa", idEmpresa);
+      console.log(empresa);
+      document.getElementById("nomeEmpresaTitulo").textContent = empresa.nome_empresa || '';
+      document.getElementById("nomeEmpresaInput").value = empresa.nome_empresa || '';
+      document.getElementById("apresentacao").value = empresa.apresentacao || '';
+      document.getElementById("descricaoMark").value = empresa.descricao || '';
+      document.getElementById("site").value = empresa.site || '';
+      document.getElementById("instagram").value = empresa.instagram || '';
+      document.getElementById("linkedin").value = empresa.linkedin || '';
+      document.getElementById("facebook").value = empresa.facebook || '';
+      document.getElementById("youtube").value = empresa.youtube || '';
 
-    idEmpresa = empresa.id;
-    localStorage.setItem("idEmpresa", idEmpresa);
+      if (empresa.foto_perfil) {
+        const preview = document.getElementById("previewFoto");
+        preview.innerHTML = `
+          <img src="https://marketplace-production-4ad4.up.railway.app/uploads/${empresa.foto_perfil}" 
+               alt="Foto de perfil" 
+               style="max-width: 200px; max-height: 200px; object-fit: cover;" />
+        `;
+      }
+    } else {
+      // Buscar empresa usando idEmpresa salvo
+      const responseEmpresa = await axios.get(`https://marketplace-production-4ad4.up.railway.app/empresas/${idEmpresa}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const empresa = responseEmpresa.data;
+      idEmpresa = empresa.id;
+      localStorage.setItem("idEmpresa", idEmpresa);
+      console.log(empresa);
+      document.getElementById("nomeEmpresaTitulo").textContent = empresa.nome_empresa || '';
+      document.getElementById("nomeEmpresaInput").value = empresa.nome_empresa || '';
+      document.getElementById("apresentacao").value = empresa.apresentacao || '';
+      document.getElementById("descricaoMark").value = empresa.descricao || '';
+      document.getElementById("site").value = empresa.site || '';
+      document.getElementById("instagram").value = empresa.instagram || '';
+      document.getElementById("linkedin").value = empresa.linkedin || '';
+      document.getElementById("facebook").value = empresa.facebook || '';
+      document.getElementById("youtube").value = empresa.youtube || '';
 
-    document.getElementById("nomeEmpresaTitulo").textContent = empresa.nome_empresa || '';
-    document.getElementById("nomeEmpresaInput").value = empresa.nome_empresa || '';
-    document.getElementById("apresentacao").value = empresa.apresentacao || '';
-    document.getElementById("descricaoMark").value = empresa.descricao || '';
-    document.getElementById("site").value = empresa.site || '';
-    document.getElementById("instagram").value = empresa.instagram || '';
-    document.getElementById("linkedin").value = empresa.linkedin || '';
-    document.getElementById("facebook").value = empresa.facebook || '';
-    document.getElementById("youtube").value = empresa.youtube || '';
-
-    if (empresa.foto_perfil) {
-      document.getElementById("previewFoto").innerHTML = `
-        <img src="https://marketplace-production-4ad4.up.railway.app/uploads/${empresa.foto_perfil}" 
-             alt="Foto de perfil" 
-             style="max-width: 200px; max-height: 200px; object-fit: cover;" />
-      `;
+      if (empresa.foto_perfil) {
+        const preview = document.getElementById("previewFoto");
+        preview.innerHTML = `
+          <img src="https://marketplace-production-4ad4.up.railway.app/uploads/${empresa.foto_perfil}" 
+               alt="Foto de perfil" 
+               style="max-width: 200px; max-height: 200px; object-fit: cover;" />
+        `;
+      }
+      if (empresa.id !== idEmpresa) {
+        idEmpresa = empresa.id;
+        localStorage.setItem("idEmpresa", idEmpresa);
+      }
     }
-
-    // Carregar serviços
-    const servicos = (await axios.get(`https://marketplace-production-4ad4.up.railway.app/servicos/empresa/${idEmpresa}`, {
+  
+    // Carregar serviços existentes da empresa usando idEmpresa
+    const responseServicos = await axios.get(`https://marketplace-production-4ad4.up.railway.app/servicos/empresa/${idEmpresa}`, {
       headers: { Authorization: `Bearer ${token}` }
-    })).data;
-
-    servicos.forEach(adicionarNaLista);
+    });
+    responseServicos.data.forEach(servico => adicionarNaLista(servico));
 
   } catch (error) {
     console.error("Erro ao buscar dados:", error);
     alert("Erro ao buscar dados do usuário ou da empresa");
   }
-
-  // Submissão do formulário
+})
+  // Evento do formulário de serviços
   document.getElementById("servicoForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const titulo = document.getElementById("nomeServico").value.trim();
-    const valor = document.getElementById("valor").value.trim();
-    const prazo = document.getElementById("prazo").value.trim();
-    const descricao_servico = document.getElementById("descricao").value.trim();
+    const titulo = document.getElementById("nomeServico").value;
+    const valor = document.getElementById("valor").value;
+    const prazo = document.getElementById("prazo").value;
+    const descricao_servico = document.getElementById("descricao").value;
 
-    if (!titulo || !valor || !prazo || !descricao_servico) {
+    if (!token || !idEmpresa) {
       Toastify({
+        text: "Usuário não autenticado ou empresa não identificada. 😥",
+        duration: 5000,
+        gravity: "top",
+        position: "center",
+        backgroundColor: "#1f1f1f",
+      }).showToast();
+      return;
+    }
+    if (!titulo || !valor || !prazo || !descricao_servico) {
+    Toastify({
         text: "Preencha todos os campos obrigatórios! 😓",
         duration: 5000,
         gravity: "top",
         position: "center",
         backgroundColor: "#dc3545",
-      }).showToast();
-      return;
+    }).showToast();
+    return;
     }
+    // Montar o objeto com os nomes de campos corretos do backend
+    const novoServico = { 
+      empresa_id: idEmpresa, 
+      titulo, 
+      descricao_servico, 
+      valor: parseFloat(valor), 
+      prazo: parseInt(prazo, 10)
+    };
 
     try {
-      const novoServico = { 
-        empresa_id: idEmpresa, 
-        titulo, 
-        descricao_servico, 
-        valor: parseFloat(valor), 
-        prazo: parseInt(prazo, 10)
-      };
-
       const response = await axios.post(
         "https://marketplace-production-4ad4.up.railway.app/servicos",
         novoServico,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
+    
       adicionarNaLista(response.data);
-      Toastify({
+        Toastify({
         text: "Serviço adicionado com sucesso. 😄",
         duration: 5000,
         gravity: "top",
@@ -791,7 +830,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         backgroundColor: "#28a745",
       }).showToast();
       document.getElementById("servicoForm").reset();
-
     } catch (error) {
       console.error("Erro ao cadastrar:", error);
       Toastify({
@@ -804,62 +842,182 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  // Adiciona serviço na lista
-  function adicionarNaLista(servico) {
-    const lista = document.getElementById("listaServicos");
+  // Função para adicionar serviço na lista
+function adicionarNaLista(servico) {
+  const lista = document.getElementById("listaServicos");
 
-    const li = document.createElement("li");
-    li.innerHTML = `
-      <div style="
-        background-color: #2c2c2c;
-        color: white;
-        padding: 15px;
-        border-radius: 10px;
-        margin-bottom: 15px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      ">
-        <div>
-          <strong>${servico.titulo}</strong><br>
-          R$${servico.valor?.toFixed(2) || '0.00'} • ${servico.prazo} dias<br>
-          ${servico.descricao_servico || ''}
-        </div>
-        <button class="btn btn-danger btn-sm" style="margin-left: 20px;">
-          Excluir
-        </button>
+  const li = document.createElement("li");
+  li.innerHTML = `
+    <div style="
+      background-color: #2c2c2c;
+      color: white;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    ">
+      <div>
+        <strong>${servico.titulo}</strong><br>
+        R$${servico.valor?.toFixed(2) || '0.00'} • ${servico.prazo} dias<br>
+        ${servico.descricao_servico || ''}
       </div>
-    `;
+      <button class="btn btn-danger btn-sm" style="margin-left: 20px;">
+        Excluir
+      </button>
+    </div>
+  `;
 
-    li.querySelector("button").onclick = async () => {
-      try {
-        await axios.delete(`https://marketplace-production-4ad4.up.railway.app/servicos/${servico.id}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        li.remove();
-        Toastify({
-          text: "Serviço deletado!",
-          duration: 5000,
-          gravity: "top",
-          position: "center",
-          backgroundColor: "#ff0000",
-        }).showToast();
-      } catch (error) {
-        console.error("Erro ao excluir:", error);
-        Toastify({
-          text: "Erro ao excluir!",
-          duration: 5000,
-          gravity: "top",
-          position: "center",
-          backgroundColor: "#ff0000",
-        }).showToast();
-      }
+  const btn = li.querySelector("button");
+  btn.onclick = async () => {
+    try {
+      await axios.delete(`https://marketplace-production-4ad4.up.railway.app/servicos/${servico.id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      li.remove();
+      Toastify({
+        text: "Serviço deletado!",
+        duration: 5000,
+        gravity: "top",
+        position: "center",
+        backgroundColor: "#ff0000",
+      }).showToast();
+    } catch (error) {
+      Toastify({
+        text: "Erro ao excluir!",
+        duration: 5000,
+        gravity: "top",
+        position: "center",
+        backgroundColor: "#ff0000",
+      }).showToast();
+      console.error("Erro ao excluir:", error);
+    }
+  };
+
+  lista.appendChild(li);
+}
+
+
+// Resto do código para senha, fotoPerfil e atualização continua igual, só corrigi strings e Authorization abaixo:
+
+const senha = document.getElementById('senha');
+const senhaConfirm = document.getElementById('senhaConfirm');
+const fotoPerfilInput = document.getElementById('fotoPerfil');
+const botao = document.getElementById('botaoCadastrar');
+
+// Valida se as senhas coincidem
+function validarSenha() {
+  if (senha.value !== senhaConfirm.value) {
+    Toastify({
+      text: "❌ As senhas não coincidem!",
+      duration: 5000,
+      gravity: "top",
+      position: "center",
+      backgroundColor: "#1f1f1f",
+    }).showToast();
+    return false;
+  } else {
+    atualizarTudo();
+    return true;
+  }
+}
+
+// Atualiza os dados do usuário e da empresa
+async function atualizarTudo() {
+  botao.disabled = true;
+
+  const usuario_id = localStorage.getItem("id");
+  const empresa_id = localStorage.getItem("idEmpresa");
+  const token = localStorage.getItem("token");
+
+  if (!usuario_id || !empresa_id || !token) {
+    Toastify({
+      text: "⚠️ Sessão inválida. Faça login novamente.",
+      duration: 5000,
+      gravity: "top",
+      position: "center",
+      backgroundColor: "#1f1f1f",
+    }).showToast();
+    window.location.href = 'login.html';
+    return;
+  }
+
+  try {
+    // Atualizar dados do usuário
+    const dadosUsuario = {
+      nome: document.getElementById('nomeUsuario').value,
+      email: document.getElementById('emailUsuario').value,
+      telefone: document.getElementById('telefone').value,
+      senha: senha.value // Inclui nova senha se quiser permitir alteração
     };
 
-    lista.appendChild(li);
+    await axios.put(
+      `https://marketplace-production-4ad4.up.railway.app/usuarios/${usuario_id}`,
+      dadosUsuario,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    // Atualizar dados da empresa
+    const empresaFormData = new FormData();
+    empresaFormData.append('nome_empresa', document.getElementById('nomeEmpresaInput').value);
+    empresaFormData.append('apresentacao', document.getElementById('apresentacao').value);
+    empresaFormData.append('descricao', document.getElementById('descricaoMark').value);
+    empresaFormData.append('site', document.getElementById('site').value);
+    empresaFormData.append('facebook', document.getElementById('facebook').value);
+    empresaFormData.append('linkedin', document.getElementById('linkedin').value);
+    empresaFormData.append('instagram', document.getElementById('instagram').value);
+    empresaFormData.append('youtube', document.getElementById('youtube').value);
+
+    const arquivoFoto = fotoPerfilInput.files[0];
+    if (arquivoFoto) {
+      empresaFormData.append('foto_perfil', arquivoFoto);
+    }
+
+    await axios.put(
+      `https://marketplace-production-4ad4.up.railway.app/empresas/${empresa_id}`,
+      empresaFormData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data"
+        }
+      }
+    );
+
+    Toastify({
+      text: "😄 Dados atualizados com sucesso!",
+      duration: 5000,
+      gravity: "top",
+      position: "center",
+      backgroundColor: "#28a745",
+    }).showToast();
+  } catch (error) {
+    console.error("Erro ao atualizar:", error);
+    Toastify({
+      text: "❌ Erro ao atualizar os dados. Verifique os campos e tente novamente.",
+      duration: 5000,
+      gravity: "top",
+      position: "center",
+      backgroundColor: "#1f1f1f",
+    }).showToast();
+  } finally {
+    botao.disabled = false;
   }
-});
+}
+
+function logout() {
+  // Limpa tudo do localStorage
+  localStorage.clear();
+
+  // Redireciona para a página inicial
+  window.location.href = 'index.html';
+}
 </script>
 
 
