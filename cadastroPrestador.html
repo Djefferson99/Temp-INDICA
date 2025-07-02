@@ -514,9 +514,10 @@
 
       // Pega o arquivo da foto de perfil
       const arquivoFoto = fotoPerfilInput.files[0];
-      if (arquivoFoto) {
-        empresaFormData.append('foto_perfil', arquivoFoto);
-      }
+        if (arquivoFoto) {
+          empresaFormData.append('foto_perfil', arquivoFoto);
+          empresaFormData.append('name', arquivoFoto.name); // necessário para salvar no Mongo
+        }
 
       // Envia empresa com foto como multipart/form-data
       await axios.post('https://marketplace-production-4ad4.up.railway.app/empresas', empresaFormData, {
