@@ -520,8 +520,11 @@
         }
 
       // Envia empresa com foto como multipart/form-data
-      await axios.post('https://marketplace-production-4ad4.up.railway.app/empresas', empresaFormData, {
-      });
+    await axios.post('https://marketplace-production-4ad4.up.railway.app/empresas', empresaFormData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
       Toastify({
         text: "😄 Cadastro realizado com sucesso!",
         duration: 5000,
