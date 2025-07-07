@@ -242,51 +242,96 @@
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
-    
-<script>
+     <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f9fa;
+      padding: 20px;
+    }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .col-md-6, .col-lg-4 {
+      flex: 1 1 calc(33.333% - 20px);
+      box-sizing: border-box;
+    }
+    .testimonial-item {
+      background: white;
+      border: 1px solid #ddd;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+      transition: transform 0.3s ease;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .testimonial-item:hover {
+      transform: scale(1.05);
+    }
+    .testimonial-item img {
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(0,0,0,0.15);
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      margin-bottom: 15px;
+    }
+    .testimonial-item h5 {
+      margin: 0 0 10px 0;
+    }
+    .testimonial-item p a {
+      color: #007bff;
+      text-decoration: none;
+    }
+    .testimonial-item p a:hover {
+      text-decoration: underline;
+    }
+  </style>
+  <script>
     document.addEventListener("DOMContentLoaded", async () => {
-    try {
+      try {
         const response = await axios.get("https://marketplace-production-4ad4.up.railway.app/empresas");
-
         const empresas = response.data;
         const container = document.getElementById("testimonials-container");
         container.innerHTML = "";
 
         empresas.forEach(empresa => {
-        const card = document.createElement("div");
-        card.classList.add("col-md-6", "col-lg-4");
+          const card = document.createElement("div");
+          card.classList.add("col-md-6", "col-lg-4");
 
-        const imagem = empresa.foto_perfil 
+          const imagem = empresa.foto_perfil 
             ? `https://marketplace-production-4ad4.up.railway.app/uploads/${empresa.foto_perfil}`
-            : 'img/default.jpg';
+            : 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjY2NjY2NjIiByeD0iMjAiLz4KICA8dGV4dCB4PSIyMCIgeT0iNDAiIGZvbnQtc2l6ZT0iMTUiIGZpbGw9IiM2NjYiPk5vIEltZzwvdGV4dD4KPC9zdmc+';
 
-        card.innerHTML = `
-            <div class="testimonial-item bg-white text-center border p-4 h-100">
-            <img class="bg-white rounded-circle shadow p-1 mx-auto mb-3"
-                src="${imagem}" 
-                style="width: 80px; height: 80px; object-fit: cover;"
-                alt="Logo ${empresa.nome_empresa}">
-            <h5 class="mb-0">${empresa.nome_empresa}</h5>
-            <p><a href="${empresa.instagram}" target="_blank">${empresa.instagram || ''}</a></p>
-            <p class="mb-0">${empresa.apresentacao || ''}</p>
+          card.innerHTML = `
+            <div class="testimonial-item">
+              <img src="${imagem}" alt="Logo ${empresa.nome_empresa}" />
+              <h5>${empresa.nome_empresa}</h5>
+              <p><a href="${empresa.instagram || '#'}" target="_blank">${empresa.instagram || ''}</a></p>
+              <p>${empresa.apresentacao || ''}</p>
             </div>
-        `;
+          `;
 
-        container.appendChild(card);
+          container.appendChild(card);
         });
 
-    } catch (error) {
+      } catch (error) {
         console.error("Erro ao carregar empresas:", error);
         Toastify({
-        text: "Erro ao carregar empresas 😥",
-        duration: 5000,
-        gravity: "top",
-        position: "center",
-        backgroundColor: "#dc3545",
+          text: "Erro ao carregar empresas 😥",
+          duration: 5000,
+          gravity: "top",
+          position: "center",
+          backgroundColor: "#dc3545",
         }).showToast();
-    }
+      }
     });
-</script>
+  </script>
 
 </body>
 
