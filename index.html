@@ -292,7 +292,7 @@
       text-decoration: underline;
     }
   </style>
-  <script>
+ <script>
     document.addEventListener("DOMContentLoaded", async () => {
       try {
         const response = await axios.get("https://marketplace-production-4ad4.up.railway.app/empresas");
@@ -304,9 +304,8 @@
           const card = document.createElement("div");
           card.classList.add("col-md-6", "col-lg-4");
 
-          const imagem = empresa.foto_perfil 
-            ? `https://marketplace-production-4ad4.up.railway.app/uploads/${empresa.foto_perfil}`
-            : 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjY2NjY2NjIiByeD0iMjAiLz4KICA8dGV4dCB4PSIyMCIgeT0iNDAiIGZvbnQtc2l6ZT0iMTUiIGZpbGw9IiM2NjYiPk5vIEltZzwvdGV4dD4KPC9zdmc+';
+          // Sempre imagem local padrão
+          const imagem = 'img/default.jpg';
 
           card.innerHTML = `
             <div class="testimonial-item">
@@ -332,6 +331,7 @@
       }
     });
   </script>
+
 
 </body>
 
