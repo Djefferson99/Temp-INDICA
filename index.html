@@ -235,30 +235,51 @@
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
     
-    <script>
-        async function carregarEmpresas() {
-            const response = await fetch('http://localhost:3000/api/empresas');
-            const empresas = await response.json();
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+    try {
+        const response = await axios.get("https://marketplace-production-4ad4.up.railway.app/empresas");
 
-            const container = document.getElementById('testimonials-container');
-            container.innerHTML = '';
+        const empresas = response.data;
+        const container = document.getElementById("testimonials-container");
+        container.innerHTML = "";
 
-            empresas.forEach((empresa) => {
-            container.innerHTML += `
-                <div class="testimonial-item bg-white text-center border p-4">
-                <img class="bg-white rounded-circle shadow p-1 mx-auto mb-3"
-                    src="${empresa.foto_perfil || 'img/default.jpg'}"
-                    style="width: 80px; height: 80px;" alt="Foto da empresa">
-                <h5 class="mb-0">${empresa.nome_empresa}</h5>
-                <p><a href="${empresa.instagram}" target="_blank">@Instagram</a></p>
-                <p class="mb-0">${empresa.apresentacao}</p>
-                </div>
-            `;
-            });
-        }
+        empresas.forEach(empresa => {
+        const card = document.createElement("div");
+        card.classList.add("col-md-6", "col-lg-4");
 
-        carregarEmpresas();
-    </script>
+        const imagem = empresa.foto_perfil 
+            ? `https://marketplace-production-4ad4.up.railway.app/uploads/${empresa.foto_perfil}`
+            : 'img/default.jpg';
+
+        card.innerHTML = `
+            <div class="testimonial-item bg-white text-center border p-4 h-100">
+            <img class="bg-white rounded-circle shadow p-1 mx-auto mb-3"
+                src="${imagem}" 
+                style="width: 80px; height: 80px; object-fit: cover;"
+                alt="Logo ${empresa.nome_empresa}">
+            <h5 class="mb-0">${empresa.nome_empresa}</h5>
+            <p><a href="${empresa.instagram}" target="_blank">${empresa.instagram || ''}</a></p>
+            <p class="mb-0">${empresa.apresentacao || ''}</p>
+            </div>
+        `;
+
+        container.appendChild(card);
+        });
+
+    } catch (error) {
+        console.error("Erro ao carregar empresas:", error);
+        Toastify({
+        text: "Erro ao carregar empresas 😥",
+        duration: 5000,
+        gravity: "top",
+        position: "center",
+        backgroundColor: "#dc3545",
+        }).showToast();
+    }
+    });
+</script>
+
 </body>
 
 </html>
