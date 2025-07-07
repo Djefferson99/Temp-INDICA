@@ -128,30 +128,7 @@
             <div class="owl-carousel testimonial-carousel position-relative">
 			
 			<!-- Estrutura de repetição para busca dos perfils -->
-                <div class="testimonial-item bg-white text-center border p-4">
-                    <img class="bg-white rounded-circle shadow p-1 mx-auto mb-3" src="img/testimonial-1.jpg" style="width: 80px; height: 80px;">
-                    <h5 class="mb-0">Colocar estrututa de repetição nesse DIV</h5>
-                    <p>New York, USA</p>
-                    <p class="mb-0">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit diam amet diam et eos. Clita erat ipsum et lorem et sit.</p>
-                </div>
-                <div class="testimonial-item bg-white text-center border p-4">
-                    <img class="bg-white rounded-circle shadow p-1 mx-auto mb-3" src="img/testimonial-2.jpg" style="width: 80px; height: 80px;">
-                    <h5 class="mb-0">Apagar esse Div</h5>
-                    <p>New York, USA</p>
-                    <p class="mt-2 mb-0">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit diam amet diam et eos. Clita erat ipsum et lorem et sit.</p>
-                </div>
-                <div class="testimonial-item bg-white text-center border p-4">
-                    <img class="bg-white rounded-circle shadow p-1 mx-auto mb-3" src="img/testimonial-3.jpg" style="width: 80px; height: 80px;">
-                    <h5 class="mb-0">Apagar esse Div</h5>
-                    <p>New York, USA</p>
-                    <p class="mt-2 mb-0">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit diam amet diam et eos. Clita erat ipsum et lorem et sit.</p>
-                </div>
-                <div class="testimonial-item bg-white text-center border p-4">
-                    <img class="bg-white rounded-circle shadow p-1 mx-auto mb-3" src="img/testimonial-4.jpg" style="width: 80px; height: 80px;">
-                    <h5 class="mb-0">Apagar esse Div</h5>
-                    <p>New York, USA</p>
-                    <p class="mt-2 mb-0">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit diam amet diam et eos. Clita erat ipsum et lorem et sit.</p>
-                </div>
+                <div id="testimonials-container"></div>
             </div>
         </div>
     </div>
@@ -257,6 +234,31 @@
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+    
+    <script>
+        async function carregarEmpresas() {
+            const response = await fetch('http://localhost:3000/api/empresas');
+            const empresas = await response.json();
+
+            const container = document.getElementById('testimonials-container');
+            container.innerHTML = '';
+
+            empresas.forEach((empresa) => {
+            container.innerHTML += `
+                <div class="testimonial-item bg-white text-center border p-4">
+                <img class="bg-white rounded-circle shadow p-1 mx-auto mb-3"
+                    src="${empresa.foto_perfil || 'img/default.jpg'}"
+                    style="width: 80px; height: 80px;" alt="Foto da empresa">
+                <h5 class="mb-0">${empresa.nome_empresa}</h5>
+                <p><a href="${empresa.instagram}" target="_blank">@Instagram</a></p>
+                <p class="mb-0">${empresa.apresentacao}</p>
+                </div>
+            `;
+            });
+        }
+
+        carregarEmpresas();
+    </script>
 </body>
 
 </html>
