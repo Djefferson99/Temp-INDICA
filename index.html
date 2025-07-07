@@ -24,16 +24,6 @@
   <link href="css/style.css" rel="stylesheet">
 
   <style>
-    .testimonial-item {
-      background: white;
-      border: 1px solid #ddd;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-      box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
-      transition: transform 0.3s ease;
-    }
-
     .testimonial-item:hover {
       transform: scale(1.05);
     }
@@ -42,15 +32,29 @@
         height: 100px;
         width: 100px;
     }
+    .testimonial-item {
+        background: white;
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+        transition: transform 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+    }
     .testimonial-item img {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      background-color: #fff;
-      object-fit: cover;
-      padding: 4px;
-      border: 1px solid #ddd;
-      margin-bottom: 10px;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background-color: #fff;
+        object-fit: cover;
+        padding: 4px;
+        border: 1px solid #ddd;
+        margin-bottom: 10px;
     }
 
     .testimonial-item h5 {
@@ -64,6 +68,14 @@
 
     .testimonial-item p a:hover {
       text-decoration: underline;
+    }
+    .owl-carousel {
+        overflow: hidden;
+    }
+
+    .owl-stage-outer {
+        padding-left: 30px;
+        padding-right: 30px;
     }
   </style>
 </head>
@@ -179,19 +191,20 @@
       });
 
       // Inicializa o Owl Carousel
-      $("#testimonials-container").owlCarousel({
+        $("#testimonials-container").owlCarousel({
         loop: true,
         margin: 20,
         nav: true,
         autoplay: true,
         autoplayTimeout: 5000,
         autoplayHoverPause: true,
+        stagePadding: 30, // este aqui ativa aquele efeito das bordas
         responsive: {
-          0: { items: 1 },
-          600: { items: 2 },
-          1000: { items: 3 }
+            0: { items: 1 },
+            600: { items: 2 },
+            1000: { items: 3 }
         }
-      });
+        });
 
     } catch (error) {
       console.error("Erro ao carregar empresas:", error);
