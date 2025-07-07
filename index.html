@@ -286,46 +286,67 @@
       text-decoration: underline;
     }
   </style>
-  <script>
-    document.addEventListener("DOMContentLoaded", async () => {
-      try {
-        const response = await axios.get("https://marketplace-production-4ad4.up.railway.app/empresas");
-        const empresas = response.data;
-        const container = document.getElementById("testimonials-container");
-        container.innerHTML = "";
 
-        empresas.forEach(empresa => {
-          const card = document.createElement("div");
-          card.classList.add("col-md-6", "col-lg-4");
+    <!-- jQuery e Owl Carousel -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
 
-         
-          card.innerHTML = `
-            <div class="testimonial-item">
-              <img 
-                src="https://static.vecteezy.com/ti/vetor-gratis/p3/2387693-icone-do-perfil-do-usuario-vetor.jpg" 
-                alt="Logo Empresa" 
-                style="width:80px; height:80px; object-fit:cover; border-radius:50%;" 
-              />
-              <h5>${empresa.nome_empresa}</h5>
-              <p><a href="${empresa.instagram || '#'}" target="_blank">${empresa.instagram || ''}</a></p>
-              <p>${empresa.apresentacao || ''}</p>
-            </div>
-          `;
+    <!-- Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-          container.appendChild(card);
-        });
-      } catch (error) {
-        console.error("Erro ao carregar empresas:", error);
-        Toastify({
-          text: "Erro ao carregar empresas 😥",
-          duration: 5000,
-          gravity: "top",
-          position: "center",
-          backgroundColor: "#dc3545",
-        }).showToast();
-      }
-    });
-  </script>
+<script>
+  document.addEventListener("DOMContentLoaded", async () => {
+    try {
+      const response = await axios.get("https://marketplace-production-4ad4.up.railway.app/empresas");
+      const empresas = response.data;
+      const container = document.getElementById("testimonials-container");
+      container.innerHTML = "";
+
+      empresas.forEach(empresa => {
+        const imagem = empresa.foto_perfil
+          ? `https://marketplace-production-4ad4.up.railway.app/uploads/${empresa.foto_perfil}`
+          : "https://static.vecteezy.com/ti/vetor-gratis/p3/2387693-icone-do-perfil-do-usuario-vetor.jpg";
+
+        const item = document.createElement("div");
+        item.classList.add("testimonial-item");
+
+        item.innerHTML = `
+          <img src="${imagem}" alt="Logo ${empresa.nome_empresa}" />
+          <h5>${empresa.nome_empresa}</h5>
+          <p><a href="${empresa.instagram || '#'}" target="_blank">${empresa.instagram || ''}</a></p>
+          <p>${empresa.apresentacao || ''}</p>
+        `;
+
+        container.appendChild(item);
+      });
+
+      // Inicializar carrossel DEPOIS dos itens inseridos
+      $(".owl-carousel").owlCarousel({
+        loop: true,
+        margin: 20,
+        nav: true,
+        autoplay: true,
+        autoplayTimeout: 5000,
+        autoplayHoverPause: true,
+        responsive: {
+          0: { items: 1 },
+          600: { items: 2 },
+          1000: { items: 3 }
+        }
+      });
+
+    } catch (error) {
+      console.error("Erro ao carregar empresas:", error);
+      Toastify({
+        text: "Erro ao carregar empresas 😥",
+        duration: 5000,
+        gravity: "top",
+        position: "center",
+        backgroundColor: "#dc3545",
+      }).showToast();
+    }
+  });
+</script>
 
 
 </body>
