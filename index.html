@@ -37,7 +37,11 @@
     .testimonial-item:hover {
       transform: scale(1.05);
     }
-
+    .owl-carousel .owl-item img {
+        display: block;
+        height: 100px;
+        width: 100px;
+    }
     .testimonial-item img {
       width: 80px;
       height: 80px;
@@ -149,7 +153,7 @@
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
   <!-- Script de busca e carrossel -->
-  <script>
+<script>
   document.addEventListener("DOMContentLoaded", async () => {
     const spinner = document.getElementById("spinner");
     try {
