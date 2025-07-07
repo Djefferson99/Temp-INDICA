@@ -150,49 +150,55 @@
 
   <!-- Script de busca e carrossel -->
   <script>
-    document.addEventListener("DOMContentLoaded", async () => {
-      try {
-        const response = await axios.get("https://marketplace-production-4ad4.up.railway.app/empresas");
-        const empresas = response.data;
-        const container = document.getElementById("testimonials-container");
-        container.innerHTML = "";
+  document.addEventListener("DOMContentLoaded", async () => {
+    const spinner = document.getElementById("spinner");
+    try {
+      const response = await axios.get("https://marketplace-production-4ad4.up.railway.app/empresas");
+      const empresas = response.data;
+      const container = document.getElementById("testimonials-container");
+      container.innerHTML = "";
 
-        empresas.forEach(empresa => {
-          const imagem = empresa.foto_perfil
-            ? `https://marketplace-production-4ad4.up.railway.app/uploads/${empresa.foto_perfil}`
-            : "https://static.vecteezy.com/ti/vetor-gratis/p3/2387693-icone-do-perfil-do-usuario-vetor.jpg";
+      empresas.forEach(empresa => {
+        const imagem = empresa.foto_perfil
+          ? `https://marketplace-production-4ad4.up.railway.app/uploads/${empresa.foto_perfil}`
+          : "https://static.vecteezy.com/ti/vetor-gratis/p3/2387693-icone-do-perfil-do-usuario-vetor.jpg";
 
-          const item = document.createElement("div");
-          item.classList.add("testimonial-item", "item");
-          item.innerHTML = `
-            <img src="${imagem}" alt="Logo ${empresa.nome_empresa}" />
-            <h5>${empresa.nome_empresa}</h5>
-            <p><a href="${empresa.instagram || '#'}" target="_blank">${empresa.instagram || ''}</a></p>
-            <p>${empresa.apresentacao || ''}</p>
-          `;
-          container.appendChild(item);
-        });
+        const item = document.createElement("div");
+        item.classList.add("testimonial-item", "item");
+        item.innerHTML = `
+          <img src="${imagem}" alt="Logo ${empresa.nome_empresa}" />
+          <h5>${empresa.nome_empresa}</h5>
+          <p><a href="${empresa.instagram || '#'}" target="_blank">${empresa.instagram || ''}</a></p>
+          <p>${empresa.apresentacao || ''}</p>
+        `;
+        container.appendChild(item);
+      });
 
-        // Iniciar o Owl Carousel após os itens serem inseridos
-        $("#testimonials-container").owlCarousel({
-          loop: true,
-          margin: 20,
-          nav: true,
-          autoplay: true,
-          autoplayTimeout: 5000,
-          autoplayHoverPause: true,
-          responsive: {
-            0: { items: 1 },
-            600: { items: 2 },
-            1000: { items: 3 }
-          }
-        });
+      // Inicializa o Owl Carousel
+      $("#testimonials-container").owlCarousel({
+        loop: true,
+        margin: 20,
+        nav: true,
+        autoplay: true,
+        autoplayTimeout: 5000,
+        autoplayHoverPause: true,
+        responsive: {
+          0: { items: 1 },
+          600: { items: 2 },
+          1000: { items: 3 }
+        }
+      });
 
-      } catch (error) {
-        console.error("Erro ao carregar empresas:", error);
-      }
-    });
-  </script>
+    } catch (error) {
+      console.error("Erro ao carregar empresas:", error);
+      alert("Erro ao carregar empresas.");
+    } finally {
+      // Sempre esconde o spinner, mesmo se der erro
+      if (spinner) spinner.classList.remove("show");
+    }
+  });
+</script>
+
   <script>
   window.addEventListener('load', () => {
     const spinner = document.getElementById('spinner');
