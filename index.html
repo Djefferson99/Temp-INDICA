@@ -126,15 +126,15 @@
   </div>
 
   <!-- Carrossel de Parceiros -->
-  <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
-    <div class="container">
-      <div class="text-center">
-        <h6 class="section-title bg-white text-center text-primary px-3">Conheça nossos parceiros</h6>
-        <h1 class="mb-5">SERVIÇOS</h1>
-      </div>
-      <div class="owl-carousel owl-theme" id="testimonials-container"></div>
+ <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+  <div class="container">
+    <div class="text-center">
+      <h6 class="section-title bg-white text-center text-primary px-3">Conheça nossos parceiros</h6>
+      <h1 class="mb-5">SERVIÇOS</h1>
     </div>
+    <div class="owl-carousel owl-theme" id="testimonials-container"></div>
   </div>
+</div>
 
   <!-- Footer -->
   <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
@@ -181,42 +181,49 @@
 
         const item = document.createElement("div");
         item.classList.add("testimonial-item", "item");
+        item.setAttribute("data-id", empresa.id);
+        item.style.cursor = "pointer";
+
         item.innerHTML = `
           <img src="${imagem}" alt="Logo ${empresa.nome_empresa}" />
           <h5>${empresa.nome_empresa}</h5>
           <p><a href="${empresa.instagram || '#'}" target="_blank">${empresa.instagram || ''}</a></p>
           <p>${empresa.apresentacao || ''}</p>
         `;
+
+        // Evento de clique no card
+        item.addEventListener("click", () => {
+          window.location.href = `pagePerfil.html?id=${empresa.id}`;
+        });
+
         container.appendChild(item);
       });
 
-      // Inicializa o Owl Carousel
-        $("#testimonials-container").owlCarousel({
+      $("#testimonials-container").owlCarousel({
         loop: true,
         margin: 20,
         nav: true,
         autoplay: true,
         autoplayTimeout: 5000,
         autoplayHoverPause: true,
-        stagePadding: 30, 
+        stagePadding: 30,
         responsive: {
-            0: { items: 1 },
-            600: { items: 2 },
-            1000: { items: 3 }
+          0: { items: 1 },
+          600: { items: 2 },
+          1000: { items: 3 }
         }
-        });
+      });
 
     } catch (error) {
       console.error("Erro ao carregar empresas:", error);
       alert("Erro ao carregar empresas.");
     } finally {
-      // Sempre esconde o spinner, mesmo se der erro
       if (spinner) spinner.classList.remove("show");
     }
   });
 </script>
 
-  <script>
+<script>
   window.addEventListener('load', () => {
     const spinner = document.getElementById('spinner');
     if (spinner) {
