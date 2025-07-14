@@ -151,6 +151,11 @@
     console.error("Erro ao carregar perfil da empresa:", err);
     alert("Erro ao carregar os dados da empresa.");
   }
+  finally {
+  const spinner = document.getElementById("spinner");
+  if (spinner) spinner.classList.remove("show");
+}
+
 });
 
   </script>
