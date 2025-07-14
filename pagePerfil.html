@@ -15,6 +15,15 @@
   <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <link href="css/style.css" rel="stylesheet">
+  <style>
+    #botao-whats {
+      max-width: 220px;
+      float: right;
+    }
+    #empresa-redes li i {
+      width: 20px;
+    }
+  </style>
 </head>
 
 <body>
@@ -72,8 +81,8 @@
       <div class="row gy-2 gx-4 mb-4" id="servicos-lista">
         <!-- JS adiciona aqui -->
       </div>
-      <a id="botao-whats" target="_blank" class="btn btn-success py-3 px-5 mt-2">
-        <i class="fab fa-whatsapp me-2"></i>Entrar em Contato
+      <a id="botao-whats" target="_blank" class="btn btn-success py-2 px-3 mt-2">
+        <i class="fab fa-whatsapp me-2"></i>Contato
       </a>
     </div>
   </div>
@@ -118,15 +127,21 @@
     }
 
     const redesList = document.getElementById("empresa-redes");
-    const redes = ["site", "instagram", "linkedin", "facebook", "youtube"];
+    const redes = {
+      site: "fas fa-globe",
+      instagram: "fab fa-instagram",
+      linkedin: "fab fa-linkedin",
+      facebook: "fab fa-facebook",
+      youtube: "fab fa-youtube"
+    };
 
-    redes.forEach(rede => {
+    for (const rede in redes) {
       if (empresa[rede]) {
         const li = document.createElement("li");
-        li.innerHTML = `<i class='fas fa-link text-primary me-2'></i><a href='${empresa[rede]}' target='_blank'>${rede}</a>`;
+        li.innerHTML = `<i class='${redes[rede]} text-primary me-2'></i><a href='${empresa[rede]}' target='_blank'>${rede}</a>`;
         redesList.appendChild(li);
       }
-    });
+    }
 
     const servicosRes = await axios.get(`https://marketplace-production-4ad4.up.railway.app/servicos/empresa/${id}`);
 
@@ -152,12 +167,10 @@
     alert("Erro ao carregar os dados da empresa.");
   }
   finally {
-  const spinner = document.getElementById("spinner");
-  if (spinner) spinner.classList.remove("show");
-}
-
+    const spinner = document.getElementById("spinner");
+    if (spinner) spinner.classList.remove("show");
+  }
 });
-
   </script>
 </body>
 
