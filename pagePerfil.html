@@ -99,55 +99,60 @@
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", async () => {
-      const params = new URLSearchParams(window.location.search);
-      const id = params.get("id");
-      if (!id) return alert("ID da empresa não fornecido.");
+   document.addEventListener("DOMContentLoaded", async () => {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
+  if (!id) return alert("ID da empresa não fornecido.");
 
-      try {
-        const empresaRes = await axios.get(`https://marketplace-production-4ad4.up.railway.app/empresas/${id}`);
-        const empresa = empresaRes.data;
+  try {
+    const empresaRes = await axios.get(`https://marketplace-production-4ad4.up.railway.app/empresas/${id}`);
+    const empresa = empresaRes.data;
 
-        document.getElementById("empresa-nome-header").textContent = empresa.nome_empresa;
-        document.getElementById("empresa-nome-span").textContent = empresa.nome_empresa;
-        document.getElementById("empresa-apresentacao").textContent = empresa.apresentacao || "";
-        document.getElementById("empresa-descricao").textContent = empresa.descricao || "";
-        if (empresa.foto_perfil) {
-          document.getElementById("empresa-foto").src = `https://marketplace-production-4ad4.up.railway.app/uploads/${empresa.foto_perfil}`;
-        }
+    document.getElementById("empresa-nome-header").textContent = empresa.nome_empresa;
+    document.getElementById("empresa-nome-span").textContent = empresa.nome_empresa;
+    document.getElementById("empresa-apresentacao").textContent = empresa.apresentacao || "";
+    document.getElementById("empresa-descricao").textContent = empresa.descricao || "";
 
-        const redes = ["site", "instagram", "linkedin", "facebook", "youtube"];
-        const listaRedes = document.getElementById("empresa-redes");
-        redes.forEach(rede => {
-          if (empresa[rede]) {
-            const li = document.createElement("li");
-            li.innerHTML = `<i class='fas fa-link text-primary me-2'></i><a href='${empresa[rede]}' target='_blank'>${rede}</a>`;
-            listaRedes.appendChild(li);
-          }
-        });
+    if (empresa.foto_perfil) {
+      document.getElementById("empresa-foto").src = `https://marketplace-production-4ad4.up.railway.app/uploads/${empresa.foto_perfil}`;
+    }
 
-        const servicosRes = await axios.get(`https://marketplace-production-4ad4.up.railway.app/servicos/empresa/${id}`);
-        const servicosDiv = document.getElementById("servicos-lista");
-        servicosRes.data.forEach(servico => {
-          const item = document.createElement("div");
-          item.classList.add("col-sm-6");
-          item.innerHTML = `<p class='mb-0'><i class='fa fa-arrow-right text-primary me-2'></i>${servico.titulo}</p>`;
-          servicosDiv.appendChild(item);
-        });
+    const redesList = document.getElementById("empresa-redes");
+    const redes = ["site", "instagram", "linkedin", "facebook", "youtube"];
 
-        const usuarioRes = await axios.get(`https://marketplace-production-4ad4.up.railway.app/usuarios/${empresa.usuario_id}`);
-        const telefone = usuarioRes.data.telefone?.replace(/\D/g, "");
-        if (telefone) {
-          const link = `https://wa.me/55${telefone}`;
-          document.getElementById("botao-whats").href = link;
-        } else {
-          document.getElementById("botao-whats").classList.add("disabled");
-        }
-      } catch (err) {
-        console.error("Erro ao carregar perfil da empresa:", err);
-        alert("Erro ao carregar os dados da empresa.");
+    redes.forEach(rede => {
+      if (empresa[rede]) {
+        const li = document.createElement("li");
+        li.innerHTML = `<i class='fas fa-link text-primary me-2'></i><a href='${empresa[rede]}' target='_blank'>${rede}</a>`;
+        redesList.appendChild(li);
       }
     });
+
+    const servicosRes = await axios.get(`https://marketplace-production-4ad4.up.railway.app/servicos/empresa/${id}`);
+
+    const listaServicos = document.getElementById("servicos-lista");
+    listaServicos.innerHTML = "";
+    servicosRes.data.forEach(servico => {
+      const div = document.createElement("div");
+      div.classList.add("col-sm-6");
+      div.innerHTML = `<p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>${servico.titulo}</p>`;
+      listaServicos.appendChild(div);
+    });
+
+    const usuarioRes = await axios.get(`https://marketplace-production-4ad4.up.railway.app/usuarios/${empresa.usuario_id}`);
+    const telefone = usuarioRes.data.telefone?.replace(/\D/g, "");
+    if (telefone) {
+      const link = `https://wa.me/55${telefone}`;
+      document.getElementById("botao-whats").href = link;
+    } else {
+      document.getElementById("botao-whats").classList.add("disabled");
+    }
+  } catch (err) {
+    console.error("Erro ao carregar perfil da empresa:", err);
+    alert("Erro ao carregar os dados da empresa.");
+  }
+});
+
   </script>
 </body>
 
