@@ -232,6 +232,18 @@
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+            <!-- Toastify -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    
+    <style>
+        /* Personalização do estilo do toast */
+        .toastify {
+            font-size: 20px; /* Aumenta o tamanho da fonte */
+            font-family: Arial, sans-serif;
+            border-radius: 50px;
+        }
+    </style>
  <script>
         function parseJwt(token) {
             const base64Url = token.split('.')[1];
@@ -272,7 +284,8 @@ function login() {
             backgroundColor: "#1f1f1f",
         }).showToast();
         return;
-      }     localStorage.setItem('id', userId);
+      }
+       localStorage.setItem('id', userId);
         Toastify({
             text: "Login realizado com sucesso!😄",
             duration: 5000,
