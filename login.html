@@ -232,31 +232,69 @@
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
-	 <script>
-    function login() {
-      const usuario = {
-        
-        email: document.getElementById('email').value,
-        senha: document.getElementById('senha').value,
-        
-      };
+ <script>
+        function parseJwt(token) {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(
+                atob(base64)
+                .split('')
+                .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+                .join('')
+            );
+            return JSON.parse(jsonPayload);
+        }
 
-        console.log(usuario)
-    axios.post('https://marketplace-production-4ad4.up.railway.app/login', usuario)
-        .then(response => {
-		 const { token, id } = response.data;
-		localStorage.setItem('token', token);
-		localStorage.setItem('id', id);
-		
-            alert("Login realizado com sucesso!");
-			window.location.href = 'prestadorAdm.html'
-            console.log(response.data);
-        })
-        .catch(error => {
-            alert("Erro ao logar.");
-            console.error(error);
-        });
-    }
+function login() {
+  const usuario = {
+    email: document.getElementById('email').value,
+    senha: document.getElementById('senha').value,
+  };
+
+  axios.post('https://marketplace-production-4ad4.up.railway.app/login', usuario)
+    .then(response => {
+      const { token } = response.data;
+
+      localStorage.setItem('token', token);
+
+      const decoded = parseJwt(token);
+      console.log('Token decodificado:', decoded);
+
+      // Pega o id do usuário do token decodificado
+      const userId = decoded.id;
+
+      if (!userId) {
+        Toastify({
+            text: "Não foi possível obter o usuário 😥",
+            duration: 5000,
+            gravity: "top",
+            position: "center",
+            backgroundColor: "#1f1f1f",
+        }).showToast();
+        return;
+      }     localStorage.setItem('id', userId);
+        Toastify({
+            text: "Login realizado com sucesso!😄",
+            duration: 5000,
+            gravity: "top",
+            position: "center",
+            backgroundColor: "#28a745",
+        }).showToast();
+        setTimeout(() => {
+            window.location.href = 'prestadorAdm.html';
+        }, 500);
+    })
+    .catch(error => {
+        Toastify({
+            text: "Erro ao logar. 😥",
+            duration: 5000,
+            gravity: "top",
+            position: "center",
+            backgroundColor: "#1f1f1f",
+        }).showToast();
+      console.error(error);
+    });
+}
   </script>
 </body>
 
