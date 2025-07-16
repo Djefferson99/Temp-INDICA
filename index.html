@@ -28,54 +28,50 @@
       transform: scale(1.05);
     }
     .owl-carousel .owl-item img {
-        display: block;
-        height: 100px;
-        width: 100px;
+      display: block;
+      height: 100px;
+      width: 100px;
     }
     .testimonial-item {
-        background: white;
-        border: 1px solid #ddd;
-        padding: 20px;
-        border-radius: 10px;
-        text-align: center;
-        box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
-        transition: transform 0.3s ease;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
+      background: white;
+      border: 1px solid #ddd;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+      transition: transform 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
     }
     .testimonial-item img {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        background-color: #fff;
-        object-fit: cover;
-        padding: 4px;
-        border: 1px solid #ddd;
-        margin-bottom: 10px;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background-color: #fff;
+      object-fit: cover;
+      padding: 4px;
+      border: 1px solid #ddd;
+      margin-bottom: 10px;
     }
-
     .testimonial-item h5 {
       margin: 0 0 10px 0;
     }
-
     .testimonial-item p a {
       color: #007bff;
       text-decoration: none;
     }
-
     .testimonial-item p a:hover {
       text-decoration: underline;
     }
     .owl-carousel {
-        overflow: hidden;
+      overflow: hidden;
     }
-
     .owl-stage-outer {
-        padding-left: 30px;
-        padding-right: 30px;
+      padding-left: 30px;
+      padding-right: 30px;
     }
   </style>
 </head>
@@ -84,7 +80,7 @@
   <!-- Carregando -->
   <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
     <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-      <span class="sr-only">Loading...</span>
+      <span class="visually-hidden">Carregando...</span>
     </div>
   </div>
 
@@ -116,8 +112,8 @@
             <h1 class="display-3 text-white mb-3 animated slideInDown">Buscando um serviço de qualidade?</h1>
             <p class="fs-4 text-white mb-4 animated slideInDown">Conecte-se com os melhores profissionais e receba um serviço de excelência.</p>
             <div class="position-relative w-75 mx-auto animated slideInDown">
-              <input class="form-control border-0 rounded-pill w-100 py-3 ps-4 pe-5" type="text" placeholder="Informe sobre a empresa ou serviço/produtos que procura.">
-              <button type="button" class="btn btn-primary rounded-pill py-2 px-4 position-absolute top-0 end-0 me-2" style="margin-top: 7px;">Buscar</button>
+              <input id="campoBusca" class="form-control border-0 rounded-pill w-100 py-3 ps-4 pe-5" type="text" placeholder="Informe sobre a empresa ou serviço/produtos que procura.">
+              <button id="botaoBusca" type="button" class="btn btn-primary rounded-pill py-2 px-4 position-absolute top-0 end-0 me-2" style="margin-top: 7px;">Buscar</button>
             </div>
           </div>
         </div>
@@ -126,15 +122,15 @@
   </div>
 
   <!-- Carrossel de Parceiros -->
- <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
-  <div class="container">
-    <div class="text-center">
-      <h6 class="section-title bg-white text-center text-primary px-3">Conheça nossos parceiros</h6>
-      <h1 class="mb-5">SERVIÇOS</h1>
+  <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+    <div class="container">
+      <div class="text-center">
+        <h6 class="section-title bg-white text-center text-primary px-3">Conheça nossos parceiros</h6>
+        <h1 class="mb-5">SERVIÇOS</h1>
+      </div>
+      <div class="owl-carousel owl-theme" id="testimonials-container"></div>
     </div>
-    <div class="owl-carousel owl-theme" id="testimonials-container"></div>
   </div>
-</div>
 
   <!-- Footer -->
   <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
@@ -165,16 +161,19 @@
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
   <!-- Script de busca e carrossel -->
-<script>
-  document.addEventListener("DOMContentLoaded", async () => {
-    const spinner = document.getElementById("spinner");
-    try {
-      const response = await axios.get("https://marketplace-production-4ad4.up.railway.app/empresas");
-      const empresas = response.data;
+  <script>
+    let todasEmpresas = [];
+
+    function exibirEmpresas(empresasFiltradas) {
       const container = document.getElementById("testimonials-container");
       container.innerHTML = "";
 
-      empresas.forEach(empresa => {
+      if ($('.owl-carousel').hasClass('owl-loaded')) {
+        $('.owl-carousel').trigger('destroy.owl.carousel').removeClass('owl-loaded');
+        container.classList.remove("owl-loaded");
+      }
+
+      empresasFiltradas.forEach(empresa => {
         const imagem = empresa.foto_perfil
           ? `https://marketplace-production-4ad4.up.railway.app/uploads/${empresa.foto_perfil}`
           : "https://static.vecteezy.com/ti/vetor-gratis/p3/2387693-icone-do-perfil-do-usuario-vetor.jpg";
@@ -191,7 +190,6 @@
           <p>${empresa.apresentacao || ''}</p>
         `;
 
-        // Evento de clique no card
         item.addEventListener("click", () => {
           window.location.href = `pagePerfil.html?id=${empresa.id}`;
         });
@@ -213,23 +211,42 @@
           1000: { items: 3 }
         }
       });
-
-    } catch (error) {
-      console.error("Erro ao carregar empresas:", error);
-      alert("Erro ao carregar empresas.");
-    } finally {
-      if (spinner) spinner.classList.remove("show");
     }
-  });
-</script>
 
-<script>
-  window.addEventListener('load', () => {
-    const spinner = document.getElementById('spinner');
-    if (spinner) {
-      spinner.classList.remove('show');
-    }
-  });
-</script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const spinner = document.getElementById("spinner");
+      try {
+        const response = await axios.get("https://marketplace-production-4ad4.up.railway.app/empresas");
+        todasEmpresas = response.data;
+        exibirEmpresas(todasEmpresas);
+      } catch (error) {
+        console.error("Erro ao carregar empresas:", error);
+        alert("Erro ao carregar empresas.");
+      } finally {
+        if (spinner) spinner.classList.remove("show");
+      }
+
+      document.getElementById("botaoBusca").addEventListener("click", () => {
+        const termo = document.getElementById("campoBusca").value.trim().toLowerCase();
+
+        const resultados = todasEmpresas.filter(empresa => {
+          const nome = empresa.nome_empresa?.toLowerCase() || "";
+          const apresentacao = empresa.apresentacao?.toLowerCase() || "";
+          return nome.includes(termo) || apresentacao.includes(termo);
+        });
+
+        exibirEmpresas(resultados);
+      });
+    });
+  </script>
+
+  <script>
+    window.addEventListener('load', () => {
+      const spinner = document.getElementById('spinner');
+      if (spinner) {
+        spinner.classList.remove('show');
+      }
+    });
+  </script>
 </body>
 </html>
