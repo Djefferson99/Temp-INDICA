@@ -232,8 +232,18 @@
         const resultados = todasEmpresas.filter(empresa => {
           const nome = empresa.nome_empresa?.toLowerCase() || "";
           const apresentacao = empresa.apresentacao?.toLowerCase() || "";
-          return nome.includes(termo) || apresentacao.includes(termo);
+          
+          const titulosServicos = (empresa.servicos || [])
+            .map(servico => servico.titulo?.toLowerCase() || "")
+            .join(" ");
+
+          return (
+            nome.includes(termo) ||
+            apresentacao.includes(termo) ||
+            titulosServicos.includes(termo)
+          );
         });
+
 
         exibirEmpresas(resultados);
       });
