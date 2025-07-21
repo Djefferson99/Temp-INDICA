@@ -171,8 +171,8 @@ document.getElementById('formAgendamento').addEventListener('submit', function (
   // Se tiver só id, faça uma requisição para buscar email, ou inclua email na query string, ou ajuste conforme seu backend.
   // Vou supor que você tenha o email na query string:
   const params = new URLSearchParams(window.location.search);
-  const prestadorEmail = params.get('email');  // precisa garantir que o email está na URL
-
+  // const prestadorEmail = params.get('email');  // precisa garantir que o email está na URL
+  const prestadorEmail = prestadorEmail
   if (!prestadorEmail) {
     alert('Email do prestador não encontrado.');
     return;
