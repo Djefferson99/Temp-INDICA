@@ -172,7 +172,7 @@ document.getElementById('formAgendamento').addEventListener('submit', function (
   // Vou supor que você tenha o email na query string:
   const params = new URLSearchParams(window.location.search);
   // const prestadorEmail = params.get('email');  // precisa garantir que o email está na URL
-  const prestadorEmail = prestadorEmail
+  const prestadorEmail =  localStorage.getItem('email');
   if (!prestadorEmail) {
     alert('Email do prestador não encontrado.');
     return;
