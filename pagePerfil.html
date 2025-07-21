@@ -15,6 +15,10 @@
   <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <link href="css/style.css" rel="stylesheet">
+
+  <!-- Toastify -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
   <style>
     #botao-whats {
       max-width: 220px;
@@ -76,6 +80,23 @@
       </div>
     </div>
 
+    <div class="container-xxl py-5">
+      <div class="container">
+        <h3>Agende um horário com o prestador</h3>
+        <form id="formAgendamento">
+          <div class="mb-3">
+            <label for="data" class="form-label">Data do Agendamento</label>
+            <input type="date" id="data" class="form-control" required />
+          </div>
+          <div class="mb-3">
+            <label for="hora" class="form-label">Hora do Agendamento</label>
+            <input type="time" id="hora" class="form-control" required />
+          </div>
+          <button type="submit" class="btn btn-primary">Agendar</button>
+        </form>
+      </div>
+    </div>
+
     <div class="row mt-5">
       <h4 class="mb-4">Serviços Oferecidos</h4>
       <div class="row gy-2 gx-4 mb-4" id="servicos-lista">
@@ -107,71 +128,133 @@
 
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <!-- Toastify JS -->
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
   <script>
-   document.addEventListener("DOMContentLoaded", async () => {
-  const params = new URLSearchParams(window.location.search);
-  const id = params.get("id");
-  if (!id) return alert("ID da empresa não fornecido.");
+    document.getElementById('formAgendamento').addEventListener('submit', function (e) {
+      e.preventDefault();
 
-  try {
-    const empresaRes = await axios.get(`https://marketplace-production-4ad4.up.railway.app/empresas/${id}`);
-    const empresa = empresaRes.data;
+      const data = document.getElementById('data').value;
+      const hora = document.getElementById('hora').value;
 
-    document.getElementById("empresa-nome-header").textContent = empresa.nome_empresa;
-    document.getElementById("empresa-nome-span").textContent = empresa.nome_empresa;
-    document.getElementById("empresa-apresentacao").textContent = empresa.apresentacao || "";
-    document.getElementById("empresa-descricao").textContent = empresa.descricao || "";
-
-    if (empresa.foto_perfil) {
-      document.getElementById("empresa-foto").src = `https://marketplace-production-4ad4.up.railway.app/uploads/${empresa.foto_perfil}`;
-    }
-
-    const redesList = document.getElementById("empresa-redes");
-    const redes = {
-      site: "fas fa-globe",
-      instagram: "fab fa-instagram",
-      linkedin: "fab fa-linkedin",
-      facebook: "fab fa-facebook",
-      youtube: "fab fa-youtube"
-    };
-
-    for (const rede in redes) {
-      if (empresa[rede]) {
-        const li = document.createElement("li");
-        li.innerHTML = `<i class='${redes[rede]} text-primary me-2'></i><a href='${empresa[rede]}' target='_blank'>${rede}</a>`;
-        redesList.appendChild(li);
+      if (!data || !hora) {
+        alert('Por favor, preencha data e hora.');
+        return;
       }
-    }
 
-    const servicosRes = await axios.get(`https://marketplace-production-4ad4.up.railway.app/servicos/empresa/${id}`);
+      const dataHora = `${data}T${hora}:00`;
+      const agora = new Date();
+      if (new Date(dataHora) <= agora) {
+        alert('Por favor, escolha uma data e hora futura.');
+        return;
+      }
 
-    const listaServicos = document.getElementById("servicos-lista");
-    listaServicos.innerHTML = "";
-    servicosRes.data.forEach(servico => {
-      const div = document.createElement("div");
-      div.classList.add("col-sm-6");
-      div.innerHTML = `<p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>${servico.titulo}</p>`;
-      listaServicos.appendChild(div);
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Você precisa estar logado para agendar.');
+        return;
+      }
+
+      const params = new URLSearchParams(window.location.search);
+      const prestadorId = params.get("id");
+
+      const agendamento = {
+        prestadorId: prestadorId,
+        dataHoraAgendada: dataHora,
+        clienteEmail: localStorage.getItem('email'),
+      };
+
+      axios.post('https://marketplace-production-4ad4.up.railway.app/agendar', agendamento, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+        .then(response => {
+          Toastify({
+            text: "Agendamento realizado com sucesso! ✅",
+            duration: 4000,
+            gravity: "top",
+            position: "center",
+            backgroundColor: "#28a745",
+          }).showToast();
+          e.target.reset();
+        })
+        .catch(error => {
+          Toastify({
+            text: "Erro ao realizar o agendamento 😥",
+            duration: 4000,
+            gravity: "top",
+            position: "center",
+            backgroundColor: "#d9534f",
+          }).showToast();
+          console.error(error);
+        });
     });
 
-    const usuarioRes = await axios.get(`https://marketplace-production-4ad4.up.railway.app/usuarios/${empresa.usuario_id}`);
-    const telefone = usuarioRes.data.telefone?.replace(/\D/g, "");
-    if (telefone) {
-      const link = `https://wa.me/55${telefone}`;
-      document.getElementById("botao-whats").href = link;
-    } else {
-      document.getElementById("botao-whats").classList.add("disabled");
-    }
-  } catch (err) {
-    console.error("Erro ao carregar perfil da empresa:", err);
-    alert("Erro ao carregar os dados da empresa.");
-  }
-  finally {
-    const spinner = document.getElementById("spinner");
-    if (spinner) spinner.classList.remove("show");
-  }
-});
+    document.addEventListener("DOMContentLoaded", async () => {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
+      if (!id) return alert("ID da empresa não fornecido.");
+
+      try {
+        const empresaRes = await axios.get(`https://marketplace-production-4ad4.up.railway.app/empresas/${id}`);
+        const empresa = empresaRes.data;
+
+        document.getElementById("empresa-nome-header").textContent = empresa.nome_empresa;
+        document.getElementById("empresa-nome-span").textContent = empresa.nome_empresa;
+        document.getElementById("empresa-apresentacao").textContent = empresa.apresentacao || "";
+        document.getElementById("empresa-descricao").textContent = empresa.descricao || "";
+
+        if (empresa.foto_perfil) {
+          document.getElementById("empresa-foto").src = `https://marketplace-production-4ad4.up.railway.app/uploads/${empresa.foto_perfil}`;
+        }
+
+        const redesList = document.getElementById("empresa-redes");
+        const redes = {
+          site: "fas fa-globe",
+          instagram: "fab fa-instagram",
+          linkedin: "fab fa-linkedin",
+          facebook: "fab fa-facebook",
+          youtube: "fab fa-youtube"
+        };
+
+        for (const rede in redes) {
+          if (empresa[rede]) {
+            const li = document.createElement("li");
+            li.innerHTML = `<i class='${redes[rede]} text-primary me-2'></i><a href='${empresa[rede]}' target='_blank'>${rede}</a>`;
+            redesList.appendChild(li);
+          }
+        }
+
+        const servicosRes = await axios.get(`https://marketplace-production-4ad4.up.railway.app/servicos/empresa/${id}`);
+
+        const listaServicos = document.getElementById("servicos-lista");
+        listaServicos.innerHTML = "";
+        servicosRes.data.forEach(servico => {
+          const div = document.createElement("div");
+          div.classList.add("col-sm-6");
+          div.innerHTML = `<p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>${servico.titulo}</p>`;
+          listaServicos.appendChild(div);
+        });
+
+        const usuarioRes = await axios.get(`https://marketplace-production-4ad4.up.railway.app/usuarios/${empresa.usuario_id}`);
+        const telefone = usuarioRes.data.telefone?.replace(/\D/g, "");
+        if (telefone) {
+          const link = `https://wa.me/55${telefone}`;
+          document.getElementById("botao-whats").href = link;
+        } else {
+          document.getElementById("botao-whats").classList.add("disabled");
+        }
+      } catch (err) {
+        console.error("Erro ao carregar perfil da empresa:", err);
+        alert("Erro ao carregar os dados da empresa.");
+      }
+      finally {
+        const spinner = document.getElementById("spinner");
+        if (spinner) spinner.classList.remove("show");
+      }
+    });
   </script>
+
 </body>
 
 </html>
