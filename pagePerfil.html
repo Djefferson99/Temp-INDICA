@@ -132,64 +132,90 @@
   <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
   <script>
-    document.getElementById('formAgendamento').addEventListener('submit', function (e) {
-      e.preventDefault();
+    document.getElementById('formAgendamento').addEventListener('submit', async function (e) {
+  e.preventDefault();
 
-      const data = document.getElementById('data').value;
-      const hora = document.getElementById('hora').value;
+  const data = document.getElementById('data').value;
+  const hora = document.getElementById('hora').value;
 
-      if (!data || !hora) {
-        alert('Por favor, preencha data e hora.');
-        return;
-      }
+  if (!data || !hora) {
+    alert('Por favor, preencha data e hora.');
+    return;
+  }
 
-      const dataHora = `${data}T${hora}:00`;
-      const agora = new Date();
-      if (new Date(dataHora) <= agora) {
-        alert('Por favor, escolha uma data e hora futura.');
-        return;
-      }
+  // Monta datetime inicial no formato ISO (com fuso horário -03:00)
+  const horarioInicioStr = `${data}T${hora}:00-03:00`;
 
-      const token = localStorage.getItem('token');
-      if (!token) {
-        alert('Você precisa estar logado para agendar.');
-        return;
-      }
+  const agora = new Date();
+  if (new Date(horarioInicioStr) <= agora) {
+    alert('Por favor, escolha uma data e hora futura.');
+    return;
+  }
 
-      const params = new URLSearchParams(window.location.search);
-      const prestadorId = params.get("id");
+  // Calcula horário fim +1 hora
+  const inicio = new Date(horarioInicioStr);
+  const fim = new Date(inicio.getTime() + 60 * 60 * 1000); // +1 hora
+  const horarioFimStr = fim.toISOString();
 
-      const agendamento = {
-        prestadorId: prestadorId,
-        dataHoraAgendada: dataHora,
-        clienteEmail: localStorage.getItem('email'),
-      };
+  const token = localStorage.getItem('token');
+  if (!token) {
+    alert('Você precisa estar logado para agendar.');
+    return;
+  }
 
-      axios.post('https://marketplace-production-4ad4.up.railway.app/agenda/agendar', agendamento, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-        .then(response => {
-          Toastify({
-            text: "Agendamento realizado com sucesso! ✅",
-            duration: 4000,
-            gravity: "top",
-            position: "center",
-            backgroundColor: "#28a745",
-          }).showToast();
-          e.target.reset();
-        })
-        .catch(error => {
-          Toastify({
-            text: "Erro ao realizar o agendamento 😥",
-            duration: 4000,
-            gravity: "top",
-            position: "center",
-            backgroundColor: "#d9534f",
-          }).showToast();
-          console.error(error);
-        });
+  const params = new URLSearchParams(window.location.search);
+  const prestadorId = params.get("id");
+
+  if (!prestadorId) {
+    alert('ID do prestador não encontrado.');
+    return;
+  }
+
+  // Buscar email e nome do prestador via API para mandar no agendamento
+  let prestadorEmail = '';
+  let clienteNome = localStorage.getItem('nome') || 'Cliente'; // ou ajuste conforme seu armazenamento
+
+  try {
+    const resp = await axios.get(`https://marketplace-production-4ad4.up.railway.app/usuarios/${prestadorId}`);
+    prestadorEmail = resp.data.email;
+  } catch (error) {
+    alert('Erro ao buscar dados do prestador.');
+    console.error(error);
+    return;
+  }
+
+  const agendamento = {
+    prestadorEmail: prestadorEmail,
+    clienteNome: clienteNome,
+    horarioInicio: inicio.toISOString(),
+    horarioFim: horarioFimStr,
+    descricao: `Agendamento feito pelo cliente ${clienteNome}`
+  };
+
+  axios.post('https://marketplace-production-4ad4.up.railway.app/agenda/agendar', agendamento, {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+    .then(response => {
+      Toastify({
+        text: "Agendamento realizado com sucesso! ✅",
+        duration: 4000,
+        gravity: "top",
+        position: "center",
+        backgroundColor: "#28a745",
+      }).showToast();
+      e.target.reset();
+    })
+    .catch(error => {
+      Toastify({
+        text: "Erro ao realizar o agendamento 😥",
+        duration: 4000,
+        gravity: "top",
+        position: "center",
+        backgroundColor: "#d9534f",
+      }).showToast();
+      console.error('Erro no agendamento:', error.response?.data || error.message);
     });
-
+});
     document.addEventListener("DOMContentLoaded", async () => {
       const params = new URLSearchParams(window.location.search);
       const id = params.get("id");
