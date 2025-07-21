@@ -32,6 +32,12 @@
 
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
+    <!-- React e ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <!-- Babel para transpilar JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
 </head>
 
 <body>
@@ -332,9 +338,8 @@
             </div>
         </div>
     </div>
-	
-	
-        
+
+    <div id="agendamentos-root"></div>
 
     <!-- Footer Start -->
          <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
@@ -353,10 +358,9 @@
         </div>
       </div>
     </div
-    <!-- Footer End -->
+ 
 
-
-    <!-- Back to Top -->
+  
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 
 
@@ -390,6 +394,77 @@
     </style>
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+<script type="text/babel">
+  const { useEffect, useState } = React;
+
+  function Agendamentos() {
+    const [agendamentos, setAgendamentos] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    const token = localStorage.getItem('token');
+    let emailPrestador = '';
+
+    if (token) {
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        emailPrestador = JSON.parse(jsonPayload).email;
+      } catch(e) {
+        console.error('Token inválido', e);
+      }
+    }
+
+    useEffect(() => {
+      async function fetchAgendamentos() {
+        if (!emailPrestador) {
+          setLoading(false);
+          return;
+        }
+        try {
+          const res = await axios.get(`http://localhost:3000/agendamentos?emailPrestador=${emailPrestador}`);
+          setAgendamentos(res.data);
+        } catch (err) {
+          console.error('Erro ao buscar agendamentos', err);
+        } finally {
+          setLoading(false);
+        }
+      }
+      fetchAgendamentos();
+    }, [emailPrestador]);
+
+    const cancelarAgendamento = async (eventId) => {
+      try {
+        await axios.delete(`http://localhost:3000/agendamentos/${eventId}`);
+        setAgendamentos(prev => prev.filter(a => a.id !== eventId));
+      } catch (err) {
+        console.error('Erro ao cancelar agendamento', err);
+      }
+    };
+
+    if (loading) return <p>Carregando agendamentos...</p>;
+    if (!emailPrestador) return <p>Usuário não autenticado.</p>;
+
+    return (
+      <div>
+        <h2>Seus Agendamentos</h2>
+        {agendamentos.length === 0 && <p>Nenhum agendamento encontrado.</p>}
+        <ul>
+          {agendamentos.map(ag => (
+            <li key={ag.id}>
+              Cliente: {ag.cliente} | Data: {new Date(ag.inicio).toLocaleDateString()} | Início: {new Date(ag.inicio).toLocaleTimeString()} | Fim: {new Date(ag.fim).toLocaleTimeString()}
+              <button onClick={() => cancelarAgendamento(ag.id)}>Cancelar</button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+
+  ReactDOM.createRoot(document.getElementById('agendamentos-root')).render(<Agendamentos />);
+</script>
 
 <script>
 document.addEventListener("DOMContentLoaded", async () => {
