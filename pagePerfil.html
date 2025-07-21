@@ -132,64 +132,58 @@
   <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
   <script>
-    document.getElementById('formAgendamento').addEventListener('submit', async function (e) {
+document.getElementById('formAgendamento').addEventListener('submit', function (e) {
   e.preventDefault();
 
-  const data = document.getElementById('data').value;
-  const hora = document.getElementById('hora').value;
+  const data = document.getElementById('data').value;  // ex: "2025-07-22"
+  const hora = document.getElementById('hora').value;  // ex: "14:00"
 
   if (!data || !hora) {
     alert('Por favor, preencha data e hora.');
     return;
   }
 
-  // Monta datetime inicial no formato ISO (com fuso horário -03:00)
-  const horarioInicioStr = `${data}T${hora}:00-03:00`;
+  // Criar Date para o início
+  const dataHoraInicio = new Date(`${data}T${hora}:00`);
 
   const agora = new Date();
-  if (new Date(horarioInicioStr) <= agora) {
+  if (dataHoraInicio <= agora) {
     alert('Por favor, escolha uma data e hora futura.');
     return;
   }
 
-  // Calcula horário fim +1 hora
-  const inicio = new Date(horarioInicioStr);
-  const fim = new Date(inicio.getTime() + 60 * 60 * 1000); // +1 hora
-  const horarioFimStr = fim.toISOString();
+  // Adicionar 1 hora para horário fim
+  const dataHoraFim = new Date(dataHoraInicio.getTime() + 60 * 60 * 1000);
 
+  // Pega token JWT do localStorage
   const token = localStorage.getItem('token');
   if (!token) {
     alert('Você precisa estar logado para agendar.');
     return;
   }
 
+  // Pega email do cliente do localStorage (você já usa assim no seu código)
+  const clienteNome = localStorage.getItem('nome') || 'Cliente'; // ou ajuste conforme sua lógica
+  const clienteEmail = localStorage.getItem('email');
+
+  // Pega o email do prestador (você tem id do prestador na URL, mas backend espera email)
+  // Então você precisa do email do prestador aqui. 
+  // Se tiver só id, faça uma requisição para buscar email, ou inclua email na query string, ou ajuste conforme seu backend.
+  // Vou supor que você tenha o email na query string:
   const params = new URLSearchParams(window.location.search);
-  const prestadorId = params.get("id");
+  const prestadorEmail = params.get('email');  // precisa garantir que o email está na URL
 
-  if (!prestadorId) {
-    alert('ID do prestador não encontrado.');
-    return;
-  }
-
-  // Buscar email e nome do prestador via API para mandar no agendamento
-  let prestadorEmail = '';
-  let clienteNome = localStorage.getItem('nome') || 'Cliente'; // ou ajuste conforme seu armazenamento
-
-  try {
-    const resp = await axios.get(`https://marketplace-production-4ad4.up.railway.app/usuarios/${prestadorId}`);
-    prestadorEmail = resp.data.email;
-  } catch (error) {
-    alert('Erro ao buscar dados do prestador.');
-    console.error(error);
+  if (!prestadorEmail) {
+    alert('Email do prestador não encontrado.');
     return;
   }
 
   const agendamento = {
-    prestadorEmail: prestadorEmail,
-    clienteNome: clienteNome,
-    horarioInicio: inicio.toISOString(),
-    horarioFim: horarioFimStr,
-    descricao: `Agendamento feito pelo cliente ${clienteNome}`
+    prestadorEmail,
+    clienteNome,
+    horarioInicio: dataHoraInicio.toISOString(),
+    horarioFim: dataHoraFim.toISOString(),
+    descricao: '', // ou pegue de um campo textarea se tiver
   };
 
   axios.post('https://marketplace-production-4ad4.up.railway.app/agenda/agendar', agendamento, {
@@ -213,7 +207,7 @@
         position: "center",
         backgroundColor: "#d9534f",
       }).showToast();
-      console.error('Erro no agendamento:', error.response?.data || error.message);
+      console.error(error);
     });
 });
     document.addEventListener("DOMContentLoaded", async () => {
