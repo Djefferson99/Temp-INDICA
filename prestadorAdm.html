@@ -339,6 +339,7 @@
         </div>
     </div>
 
+    <button onclick="conectarGoogle()">Conectar com Google para utilizar a Agenda</button>
     <div id="agendamentos-root"></div>
 
     <!-- Footer Start -->
@@ -394,7 +395,19 @@
     </style>
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
-<script type="text/babel">
+    <script>
+  function conectarGoogle() {
+    const email = localStorage.getItem('emailLogado'); // ou uma variável qualquer
+    if (!email) {
+      alert('Usuário não está logado!');
+      return;
+    }
+
+    const url = `https://www.indca.com.br/auth/google?email=${encodeURIComponent(email)}`;
+    window.location.href = url;
+  }
+  </script>
+  <script type="text/babel">
   const { useEffect, useState } = React;
 
   function Agendamentos() {
@@ -488,6 +501,7 @@
 </script>
 
 <script>
+
 document.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem('token');
   const idUsuario = localStorage.getItem('id');
