@@ -400,62 +400,83 @@
   function Agendamentos() {
     const [agendamentos, setAgendamentos] = useState([]);
     const [loading, setLoading] = useState(true);
-
-    const token = localStorage.getItem('token');
-    let emailPrestador = '';
-
-    if (token) {
-      try {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-        emailPrestador = JSON.parse(jsonPayload).email;
-      } catch(e) {
-        console.error('Token inválido', e);
-      }
-    }
+    const [emailPrestador, setEmailPrestador] = useState('');
 
     useEffect(() => {
-      async function fetchAgendamentos() {
-        if (!emailPrestador) {
+      async function carregarEmailEAgendamentos() {
+        const token = localStorage.getItem('token');
+        if (!token) {
           setLoading(false);
           return;
         }
+
+        // Decodificar token para pegar id
+        let userId;
         try {
-          const res = await axios.get(`http://localhost:3000/agendamentos?emailPrestador=${emailPrestador}`);
-          setAgendamentos(res.data);
+          const base64Url = token.split('.')[1];
+          const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+          const jsonPayload = decodeURIComponent(atob(base64).split('').map(c =>
+            '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+          ).join(''));
+          userId = JSON.parse(jsonPayload).id;
+        } catch (e) {
+          console.error('Token inválido:', e);
+          setLoading(false);
+          return;
+        }
+
+        if (!userId) {
+          setLoading(false);
+          return;
+        }
+
+        try {
+          // Buscar email do usuário via API
+          const resUser = await axios.get(`https://marketplace-production-4ad4.up.railway.app/usuarios/${userId}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          const email = resUser.data.email;
+          setEmailPrestador(email);
+
+          // Buscar agendamentos com o email do prestador
+          const resAgendamentos = await axios.get(`https://marketplace-production-4ad4.up.railway.app/agendamentos?emailPrestador=${email}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          setAgendamentos(resAgendamentos.data);
         } catch (err) {
-          console.error('Erro ao buscar agendamentos', err);
+          console.error('Erro ao carregar dados:', err);
         } finally {
           setLoading(false);
         }
       }
-      fetchAgendamentos();
-    }, [emailPrestador]);
 
-    const cancelarAgendamento = async (eventId) => {
+      carregarEmailEAgendamentos();
+    }, []);
+
+    const cancelarAgendamento = async (id) => {
+      const token = localStorage.getItem('token');
       try {
-        await axios.delete(`http://localhost:3000/agendamentos/${eventId}`);
-        setAgendamentos(prev => prev.filter(a => a.id !== eventId));
-      } catch (err) {
-        console.error('Erro ao cancelar agendamento', err);
+        await axios.delete(`https://marketplace-production-4ad4.up.railway.app/agendamentos/${id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setAgendamentos(prev => prev.filter(a => a.id !== id));
+      } catch (error) {
+        console.error('Erro ao cancelar agendamento', error);
       }
     };
 
     if (loading) return <p>Carregando agendamentos...</p>;
     if (!emailPrestador) return <p>Usuário não autenticado.</p>;
+    if (agendamentos.length === 0) return <p>Nenhum agendamento encontrado.</p>;
 
     return (
       <div>
         <h2>Seus Agendamentos</h2>
-        {agendamentos.length === 0 && <p>Nenhum agendamento encontrado.</p>}
         <ul>
           {agendamentos.map(ag => (
-            <li key={ag.id}>
+            <li key={ag.id} style={{ marginBottom: '10px' }}>
               Cliente: {ag.cliente} | Data: {new Date(ag.inicio).toLocaleDateString()} | Início: {new Date(ag.inicio).toLocaleTimeString()} | Fim: {new Date(ag.fim).toLocaleTimeString()}
-              <button onClick={() => cancelarAgendamento(ag.id)}>Cancelar</button>
+              <button onClick={() => cancelarAgendamento(ag.id)} style={{ marginLeft: '10px' }}>Cancelar</button>
             </li>
           ))}
         </ul>
