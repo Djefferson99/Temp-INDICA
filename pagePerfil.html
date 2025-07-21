@@ -165,7 +165,7 @@
         clienteEmail: localStorage.getItem('email'),
       };
 
-      axios.post('https://marketplace-production-4ad4.up.railway.app/agendar', agendamento, {
+      axios.post('https://marketplace-production-4ad4.up.railway.app/agenda/agendar', agendamento, {
         headers: { Authorization: `Bearer ${token}` }
       })
         .then(response => {
