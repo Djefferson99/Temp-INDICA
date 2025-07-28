@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 
 <head>
     <meta charset="utf-8">
@@ -137,7 +137,7 @@
           <a href="index.html" class="nav-item nav-link active">Início</a>
           <a href="about.html" class="nav-item nav-link">Sobre Nós</a>
           <a href="login.html" class="nav-item nav-link">Área do Prestador</a>
-          <a href="contact.html" class="nav-item nav-link">Contato</a>
+          <!-- <a href="contact.html" class="nav-item nav-link">Contato</a> -->
         </div>
         <a href="cadastroPrestador.html" class="btn btn-primary rounded-pill py-2 px-4">Registre sua Empresa</a>
       </div>
@@ -147,7 +147,7 @@
             <div class="container py-5">
                 <div class="row justify-content-center py-5">
                     <div class="col-lg-10 pt-lg-5 mt-lg-5 text-center">
-                        <h1 class="display-3 text-white animated slideInDown"></h1>
+                        <h1 class="display-3 text-white animated slideInDown">INDCA conectando voçê ao serviço certo</h1>
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb justify-content-center">
                                 <li class="breadcrumb-item"><a href="#"></a></li>
@@ -405,21 +405,36 @@
 
         container.appendChild(item);
       });
+$(document).ready(function(){
+  const owl = $('#testimonials-container');
 
-      $("#testimonials-container").owlCarousel({
-        loop: true,
-        margin: 20,
-        nav: true,
-        autoplay: true,
-        autoplayTimeout: 5000,
-        autoplayHoverPause: true,
-        stagePadding: 30,
-        responsive: {
-          0: { items: 1 },
-          600: { items: 2 },
-          1000: { items: 3 }
-        }
-      });
+  owl.owlCarousel({
+    loop: true,
+    margin: 20,
+    nav: false, // desliga os botões padrões
+    dots: true,
+    autoplay: true,
+    autoplayTimeout: 4000,
+    autoplayHoverPause: true,
+    responsive:{
+      0:{ items:1 },
+      600:{ items:2 },
+      1000:{ items:3 }
+    }
+  });
+
+  $('.custom-prev').click(function() {
+    owl.trigger('prev.owl.carousel');
+  });
+
+  $('.custom-next').click(function() {
+    owl.trigger('next.owl.carousel');
+  });
+
+  // Ativa os ícones Lucide
+  lucide.createIcons();
+});
+
     }
 
     document.addEventListener("DOMContentLoaded", async () => {
@@ -464,6 +479,7 @@
         spinner.classList.remove('show');
       }
     });
+    
   </script>
 
     <!-- Template Javascript -->
