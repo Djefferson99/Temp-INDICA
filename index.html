@@ -23,7 +23,7 @@
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <link href="css/style.css" rel="stylesheet">
 <script type="text/javascript" src="jquery.js"></script><script type="text/javascript"></script><link rel="shortcut icon" href="img//logoIndca.jpg" ></head>
- <style>
+<style>
   .testimonial-item:hover {
     transform: scale(1.05);
   }
@@ -74,7 +74,7 @@
     padding-right: 30px;
   }
 
-  /* ====== ESTILIZAÇÃO DOS BOTÕES DE NAVEGAÇÃO ====== */
+  /* ===== ESTILO DOS BOTÕES DE NAVEGAÇÃO ===== */
   .owl-nav {
     position: absolute;
     top: 40%;
@@ -82,15 +82,16 @@
     display: flex;
     justify-content: space-between;
     pointer-events: none;
+    padding: 0 15px;
   }
 
   .owl-nav button.owl-prev,
   .owl-nav button.owl-next {
     background-color: #78be20;
     color: white;
-    font-size: 28px;
-    width: 60px;
-    height: 60px;
+    font-size: 20px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     border: none;
     pointer-events: all;
@@ -106,11 +107,12 @@
     background-color: #5ca218;
   }
 
-  /* Remove texto dos botões (acessibilidade) */
+  /* Remove span vazio do botão */
   .owl-nav button span {
     display: none;
   }
 </style>
+
 </head>
 
 <body>
@@ -239,6 +241,10 @@
         loop: true,
         margin: 20,
         nav: true,
+        navText: [
+          '<i class="fas fa-chevron-left"></i>',
+          '<i class="fas fa-chevron-right"></i>'
+        ],
         autoplay: true,
         autoplayTimeout: 5000,
         autoplayHoverPause: true,
@@ -249,6 +255,7 @@
           1000: { items: 3 }
         }
       });
+
     }
 
     document.addEventListener("DOMContentLoaded", async () => {
