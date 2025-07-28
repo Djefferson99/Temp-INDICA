@@ -76,72 +76,33 @@
     padding-left: 30px;
     padding-right: 30px;
   }
-  .owl-nav {
-      position: absolute;
-      top: 50%;
-      width: 100%;
-      transform: translateY(-50%);
-      pointer-events: none;
-    }
+.carousel-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px; /* espaçamento entre botões e carrossel */
+}
 
-    .owl-nav button.owl-prev,
-    .owl-nav button.owl-next {
-      position: absolute;
-      background-color: #78be20;
-      color: white;
-      font-size: 20px;
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      border: none;
-      pointer-events: all;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-      transition: all 0.3s ease;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 10;
-    }
+.custom-prev, .custom-next {
+  background-color: #78be20;
+  color: white;
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  transition: background-color 0.3s ease;
+  font-size: 24px;
+}
 
-    .owl-nav button.owl-prev {
-      left: -60px;
-    }
+.custom-prev:hover, .custom-next:hover {
+  background-color: #5ca218;
+}
 
-    .owl-nav button.owl-next {
-      right: -60px;
-    }
-
-    .owl-nav button.owl-prev:hover,
-    .owl-nav button.owl-next:hover {
-      background-color: #5ca218;
-    }
-
-    /* Oculta o texto interno do botão */
-    .owl-nav button span {
-      display: none;
-    }
-
-    /* Bolinhas de navegação */
-    .owl-dots {
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    .owl-dot {
-      width: 12px;
-      height: 12px;
-      background-color: #ccc;
-      border-radius: 50%;
-      margin: 5px;
-      display: inline-block;
-      transition: 0.3s;
-    }
-
-    .owl-dot.active {
-      background-color: #78be20;
-    }
 </style>
 
 </head>
@@ -198,8 +159,11 @@
         <h6 class="section-title bg-white text-center text-primary px-3">Conheça nossos parceiros</h6>
         <h1 class="mb-5">PRESTADORES DE SERVIÇO</h1>
       </div>
-      <div class="owl-carousel owl-theme" id="testimonials-container"></div>
-    </div>
+      <div class="carousel-wrapper" style="display: flex; align-items: center; gap: 10px;">
+        <button class="custom-prev" aria-label="Anterior"><i data-lucide="chevron-left"></i></button>
+        <div class="owl-carousel owl-theme" id="testimonials-container"></div>
+        <button class="custom-next" aria-label="Próximo"><i data-lucide="chevron-right"></i></button>
+      </div>
   </div>
 
   <!-- Footer -->
@@ -268,29 +232,35 @@
         container.appendChild(item);
       });
 
-    $(document).ready(function(){
-      $('#testimonials-container').owlCarousel({
-        loop: true,
-        margin: 20,
-        nav: true,
-        dots: true,
-        autoplay: true,
-        autoplayTimeout: 4000,
-        autoplayHoverPause: true,
-        responsive:{
-          0:{ items:1 },
-          600:{ items:2 },
-          1000:{ items:3 }
-        },
-        navText: [
-          '<i data-lucide="chevron-left"></i>',
-          '<i data-lucide="chevron-right"></i>'
-        ]
-      });
+$(document).ready(function(){
+  const owl = $('#testimonials-container');
 
-      // Ativa os ícones Lucide
-      lucide.createIcons();
-    });
+  owl.owlCarousel({
+    loop: true,
+    margin: 20,
+    nav: false, // desliga os botões padrões
+    dots: true,
+    autoplay: true,
+    autoplayTimeout: 4000,
+    autoplayHoverPause: true,
+    responsive:{
+      0:{ items:1 },
+      600:{ items:2 },
+      1000:{ items:3 }
+    }
+  });
+
+  $('.custom-prev').click(function() {
+    owl.trigger('prev.owl.carousel');
+  });
+
+  $('.custom-next').click(function() {
+    owl.trigger('next.owl.carousel');
+  });
+
+  // Ativa os ícones Lucide
+  lucide.createIcons();
+});
 
     }
 
