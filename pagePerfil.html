@@ -3,42 +3,56 @@
 
 <head>
   <meta charset="utf-8">
-  <script type="text/javascript" src="jquery.js"></script><script type="text/javascript"></script><link rel="shortcut icon" href="img//logoIndca.jpg" ></head>
-  <title>Empresa cadastrada</title>
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Empresa Cadastrada</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Fontes e estilos -->
+  <!-- Ícone -->
+  <link rel="shortcut icon" href="img/logoIndca.jpg">
+
+  <!-- Fontes e Ícones -->
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Bibliotecas de estilo -->
   <link href="lib/animate/animate.min.css" rel="stylesheet">
   <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-  <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+  <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet">
+
+  <!-- Estilo do projeto -->
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <link href="css/style.css" rel="stylesheet">
 
   <!-- Toastify -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
+  <!-- Estilos customizados -->
   <style>
     #botao-whats {
       max-width: 220px;
       float: right;
     }
+
     #empresa-redes li i {
       width: 20px;
+    }
+
+    /* Esconder spinner via classe */
+    .hidden {
+      display: none !important;
     }
   </style>
 </head>
 
 <body>
-  <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+  <!-- Spinner de carregamento -->
+  <div id="spinner" class="bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
     <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
       <span class="sr-only">Loading...</span>
     </div>
   </div>
 
-  <!-- Navbar e topo -->
+  <!-- Navbar -->
   <div class="container-fluid position-relative p-0">
     <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
       <a href="#" class="navbar-brand p-0">
@@ -49,14 +63,14 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarCollapse">
         <div class="navbar-nav ms-auto py-0">
-          <a href="index.html" class="nav-item nav-link">Inicio</a>
+          <a href="index.html" class="nav-item nav-link">Início</a>
         </div>
         <a href="cadastroCliente.html" class="btn btn-primary rounded-pill py-2 px-4">Conecte-se ao parceiro</a>
       </div>
     </nav>
   </div>
 
-  <!-- Cabeçalho da empresa -->
+  <!-- Cabeçalho -->
   <div class="container-fluid bg-primary py-5 mb-5 hero-header">
     <div class="container py-5">
       <div class="row justify-content-center py-5">
@@ -67,25 +81,24 @@
     </div>
   </div>
 
-  <!-- Dados da empresa -->
+  <!-- Informações da empresa -->
   <div class="container">
     <div class="row g-5">
       <div class="col-lg-6">
         <img id="empresa-foto" class="img-fluid w-100" src="img/about.jpg" alt="">
       </div>
       <div class="col-lg-6">
-        <h1>Bem vindo a <span id="empresa-nome-span" class="text-primary">Empresa(Recuperada do banco de dados)</span></h1>
-        <p id="empresa-apresentacao">TEXTO RECUPERADO DO BANCO</p>
-        <p id="empresa-descricao">TEXTO RECUPERADO DO BANCO</p>
+        <h1>Bem-vindo à <span id="empresa-nome-span" class="text-primary">Empresa</span></h1>
+        <p id="empresa-apresentacao">Apresentação da empresa</p>
+        <p id="empresa-descricao">Descrição da empresa</p>
         <ul id="empresa-redes" class="list-unstyled"></ul>
       </div>
     </div>
-  </div>
 
-  <div class="row mt-5">
+    <div class="row mt-5">
       <h4 class="mb-4">Serviços Oferecidos</h4>
       <div class="row gy-2 gx-4 mb-4" id="servicos-lista">
-        <!-- JS adiciona aqui -->
+        <!-- Serviços via JS -->
       </div>
       <a id="botao-whats" target="_blank" class="btn btn-success py-2 px-3 mt-2">
         <i class="fab fa-whatsapp me-2"></i>Contato
@@ -93,111 +106,37 @@
     </div>
   </div>
 
-  <!-- Footer -->
-  <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn">
- <div class="row g-5">
-        <div class="col-lg-3 col-md-6">
-          <h4 class="text-white mb-3">I.N.D.C.A</h4>
-          <a class="btn btn-link" href="">Sobre Nós</a>
-          <a class="btn btn-link" href="">Política de Privacidade</a>
-          <a class="btn btn-link" href="">FAQs & Ajuda</a>
-        </div>
-        <div class="col-lg-3 col-md-6">
-          <h4 class="text-white mb-3">Contato</h4>
-          <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+55 11 96372-6508</p>
-          <p class="mb-2"><i class="fa fa-envelope me-3"></i>contato@indca.com.br</p>
-        </div>
+  <!-- Rodapé -->
+  <div class="container-fluid bg-dark text-light footer pt-5 mt-5">
+    <div class="row g-5">
+      <div class="col-lg-3 col-md-6">
+        <h4 class="text-white mb-3">I.N.D.C.A</h4>
+        <a class="btn btn-link" href="#">Sobre Nós</a>
+        <a class="btn btn-link" href="#">Política de Privacidade</a>
+        <a class="btn btn-link" href="#">FAQs & Ajuda</a>
       </div>
+      <div class="col-lg-3 col-md-6">
+        <h4 class="text-white mb-3">Contato</h4>
+        <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+55 11 96372-6508</p>
+        <p class="mb-2"><i class="fa fa-envelope me-3"></i>contato@indca.com.br</p>
+      </div>
+    </div>
   </div>
 
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <!-- Toastify JS -->
   <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
   <script>
-document.getElementById('formAgendamento').addEventListener('submit', function (e) {
-  e.preventDefault();
-
-  const data = document.getElementById('data').value;  // ex: "2025-07-22"
-  const hora = document.getElementById('hora').value;  // ex: "14:00"
-
-  if (!data || !hora) {
-    alert('Por favor, preencha data e hora.');
-    return;
-  }
-
-  // Criar Date para o início
-  const dataHoraInicio = new Date(`${data}T${hora}:00`);
-
-  const agora = new Date();
-  if (dataHoraInicio <= agora) {
-    alert('Por favor, escolha uma data e hora futura.');
-    return;
-  }
-
-  // Adicionar 1 hora para horário fim
-  const dataHoraFim = new Date(dataHoraInicio.getTime() + 60 * 60 * 1000);
-
-  // Pega token JWT do localStorage
-  const token = localStorage.getItem('token');
-  if (!token) {
-    alert('Você precisa estar logado para agendar.');
-    return;
-  }
-
-  // Pega email do cliente do localStorage (você já usa assim no seu código)
-  const clienteNome = localStorage.getItem('nome') || 'Cliente'; // ou ajuste conforme sua lógica
-  const clienteEmail = localStorage.getItem('email');
-
-  // Pega o email do prestador (você tem id do prestador na URL, mas backend espera email)
-  // Então você precisa do email do prestador aqui. 
-  // Se tiver só id, faça uma requisição para buscar email, ou inclua email na query string, ou ajuste conforme seu backend.
-  // Vou supor que você tenha o email na query string:
-  const params = new URLSearchParams(window.location.search);
-  // const prestadorEmail = params.get('email');  // precisa garantir que o email está na URL
-  const prestadorEmail = 'djeff.walla99@gmail.com'
-  if (!prestadorEmail) {
-    alert('Email do prestador não encontrado.');
-    return;
-  }
-
-  const agendamento = {
-    prestadorEmail,
-    clienteNome,
-    horarioInicio: dataHoraInicio.toISOString(),
-    horarioFim: dataHoraFim.toISOString(),
-    descricao: '', // ou pegue de um campo textarea se tiver
-  };
-
-  axios.post('https://marketplace-production-4ad4.up.railway.app/agenda/agendar', agendamento, {
-    headers: { Authorization: `Bearer ${token}` }
-  })
-    .then(response => {
-      Toastify({
-        text: "Agendamento realizado com sucesso! ✅",
-        duration: 4000,
-        gravity: "top",
-        position: "center",
-        backgroundColor: "#28a745",
-      }).showToast();
-      e.target.reset();
-    })
-    .catch(error => {
-      Toastify({
-        text: "Erro ao realizar o agendamento 😥",
-        duration: 4000,
-        gravity: "top",
-        position: "center",
-        backgroundColor: "#d9534f",
-      }).showToast();
-      console.error(error);
-    });
-});
     document.addEventListener("DOMContentLoaded", async () => {
+      const spinner = document.getElementById("spinner");
       const params = new URLSearchParams(window.location.search);
       const id = params.get("id");
-      if (!id) return alert("ID da empresa não fornecido.");
+      if (!id) {
+        alert("ID da empresa não fornecido.");
+        if (spinner) spinner.classList.add("hidden");
+        return;
+      }
 
       try {
         const empresaRes = await axios.get(`https://marketplace-production-4ad4.up.railway.app/empresas/${id}`);
@@ -213,6 +152,8 @@ document.getElementById('formAgendamento').addEventListener('submit', function (
         }
 
         const redesList = document.getElementById("empresa-redes");
+        redesList.innerHTML = ""; // Limpa antes
+
         const redes = {
           site: "fas fa-globe",
           instagram: "fab fa-instagram",
@@ -224,15 +165,15 @@ document.getElementById('formAgendamento').addEventListener('submit', function (
         for (const rede in redes) {
           if (empresa[rede]) {
             const li = document.createElement("li");
-            li.innerHTML = `<i class='${redes[rede]} text-primary me-2'></i><a href='${empresa[rede]}' target='_blank'>${rede}</a>`;
+            li.innerHTML = `<i class='${redes[rede]} text-primary me-2'></i><a href='${empresa[rede]}' target='_blank' rel="noopener noreferrer">${rede}</a>`;
             redesList.appendChild(li);
           }
         }
 
         const servicosRes = await axios.get(`https://marketplace-production-4ad4.up.railway.app/servicos/empresa/${id}`);
-
         const listaServicos = document.getElementById("servicos-lista");
         listaServicos.innerHTML = "";
+
         servicosRes.data.forEach(servico => {
           const div = document.createElement("div");
           div.classList.add("col-sm-6");
@@ -242,19 +183,20 @@ document.getElementById('formAgendamento').addEventListener('submit', function (
 
         const usuarioRes = await axios.get(`https://marketplace-production-4ad4.up.railway.app/usuarios/${empresa.usuario_id}`);
         const telefone = usuarioRes.data.telefone?.replace(/\D/g, "");
+
         if (telefone) {
-          const link = `https://wa.me/55${telefone}`;
-          document.getElementById("botao-whats").href = link;
+          document.getElementById("botao-whats").href = `https://wa.me/55${telefone}`;
+          document.getElementById("botao-whats").classList.remove("disabled");
         } else {
           document.getElementById("botao-whats").classList.add("disabled");
+          document.getElementById("botao-whats").removeAttribute("href");
         }
+
       } catch (err) {
         console.error("Erro ao carregar perfil da empresa:", err);
         alert("Erro ao carregar os dados da empresa.");
-      }
-      finally {
-        const spinner = document.getElementById("spinner");
-        if (spinner) spinner.classList.remove("show");
+      } finally {
+        if (spinner) spinner.classList.add("hidden");  // Usa a classe hidden para sumir
       }
     });
   </script>
