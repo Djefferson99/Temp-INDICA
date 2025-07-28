@@ -23,57 +23,94 @@
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <link href="css/style.css" rel="stylesheet">
 <script type="text/javascript" src="jquery.js"></script><script type="text/javascript"></script><link rel="shortcut icon" href="img//logoIndca.jpg" ></head>
-  <style>
-    .testimonial-item:hover {
-      transform: scale(1.05);
-    }
-    .owl-carousel .owl-item img {
-      display: block;
-      height: 100px;
-      width: 100px;
-    }
-    .testimonial-item {
-      background: white;
-      border: 1px solid #ddd;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-      box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
-      transition: transform 0.3s ease;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-    }
-    .testimonial-item img {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      background-color: #fff;
-      object-fit: cover;
-      padding: 4px;
-      border: 1px solid #ddd;
-      margin-bottom: 10px;
-    }
-    .testimonial-item h5 {
-      margin: 0 0 10px 0;
-    }
-    .testimonial-item p a {
-      color: #007bff;
-      text-decoration: none;
-    }
-    .testimonial-item p a:hover {
-      text-decoration: underline;
-    }
-    .owl-carousel {
-      overflow: hidden;
-    }
-    .owl-stage-outer {
-      padding-left: 30px;
-      padding-right: 30px;
-    }
-  </style>
+ <style>
+  .testimonial-item:hover {
+    transform: scale(1.05);
+  }
+  .owl-carousel .owl-item img {
+    display: block;
+    height: 100px;
+    width: 100px;
+  }
+  .testimonial-item {
+    background: white;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+  .testimonial-item img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #fff;
+    object-fit: cover;
+    padding: 4px;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+  }
+  .testimonial-item h5 {
+    margin: 0 0 10px 0;
+  }
+  .testimonial-item p a {
+    color: #007bff;
+    text-decoration: none;
+  }
+  .testimonial-item p a:hover {
+    text-decoration: underline;
+  }
+  .owl-carousel {
+    overflow: hidden;
+  }
+  .owl-stage-outer {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+
+  /* ====== ESTILIZAÇÃO DOS BOTÕES DE NAVEGAÇÃO ====== */
+  .owl-nav {
+    position: absolute;
+    top: 40%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+  }
+
+  .owl-nav button.owl-prev,
+  .owl-nav button.owl-next {
+    background-color: #78be20;
+    color: white;
+    font-size: 28px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+    pointer-events: all;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+  }
+
+  .owl-nav button.owl-prev:hover,
+  .owl-nav button.owl-next:hover {
+    background-color: #5ca218;
+  }
+
+  /* Remove texto dos botões (acessibilidade) */
+  .owl-nav button span {
+    display: none;
+  }
+</style>
 </head>
 
 <body>
@@ -98,7 +135,7 @@
           <a href="index.html" class="nav-item nav-link active">Início</a>
           <a href="about.html" class="nav-item nav-link">Sobre Nós</a>
           <a href="login.html" class="nav-item nav-link">Área do Prestador</a>
-          <a href="contact.html" class="nav-item nav-link">Contato</a>
+          <!-- <a href="contact.html" class="nav-item nav-link">Contato</a> -->
         </div>
         <a href="cadastroPrestador.html" class="btn btn-primary rounded-pill py-2 px-4">Registre sua Empresa</a>
       </div>
@@ -126,7 +163,7 @@
     <div class="container">
       <div class="text-center">
         <h6 class="section-title bg-white text-center text-primary px-3">Conheça nossos parceiros</h6>
-        <h1 class="mb-5">SERVIÇOS</h1>
+        <h1 class="mb-5">PRESTADORES DE SERVIÇO</h1>
       </div>
       <div class="owl-carousel owl-theme" id="testimonials-container"></div>
     </div>
@@ -138,13 +175,14 @@
       <div class="row g-5">
         <div class="col-lg-3 col-md-6">
           <h4 class="text-white mb-3">I.N.D.C.A</h4>
-          <a class="btn btn-link" href="">Sobre Nós</a>
+          <a class="btn btn-link" href="about.html">Sobre Nós</a>
           <a class="btn btn-link" href="">Política de Privacidade</a>
           <a class="btn btn-link" href="">FAQs & Ajuda</a>
         </div>
         <div class="col-lg-3 col-md-6">
           <h4 class="text-white mb-3">Contato</h4>
           <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+55 11 96372-6508</p>
+          <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+55 11 95218-7802</p>
           <p class="mb-2"><i class="fa fa-envelope me-3"></i>contato@indca.com.br</p>
         </div>
       </div>
