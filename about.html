@@ -31,98 +31,6 @@
 
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
-
-    <!-- Ícones (usando Lucide como exemplo, pode mudar para FontAwesome se quiser) -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-  .testimonial-item:hover {
-    transform: scale(1.05);
-  }
-  .owl-carousel .owl-item img {
-    display: block;
-    height: 100px;
-    width: 100px;
-  }
-  .testimonial-item {
-    background: white;
-    border: 1px solid #ddd;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
-    transition: transform 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-  }
-  .testimonial-item img {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background-color: #fff;
-    object-fit: cover;
-    padding: 4px;
-    border: 1px solid #ddd;
-    margin-bottom: 10px;
-  }
-  .testimonial-item h5 {
-    margin: 0 0 10px 0;
-  }
-  .testimonial-item p a {
-    color: #007bff;
-    text-decoration: none;
-  }
-  .testimonial-item p a:hover {
-    text-decoration: underline;
-  }
-  .owl-carousel {
-    overflow: hidden;
-  }
-  .owl-stage-outer {
-    padding-left: 30px;
-    padding-right: 30px;
-  }
-.carousel-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px; /* espaçamento entre botões e carrossel */
-  margin-left:-60px;
-  margin-right: -60px;
-}
-
-.custom-prev, .custom-next {
-  background-color: #78be20;
-  color: white;
-  border: none;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-  transition: background-color 0.3s ease;
-  font-size: 24px;
-}
-
-.custom-prev:hover, .custom-next:hover {
-  background-color: #5ca218;
-}
-@media (max-width: 767px) {
-  .custom-prev, .custom-next {
-    display: none !important;
-  }
-}
-.container, .container-fluid, .container-sm, .container-md, .container-lg, .container-xl, .container-xxl{
-  padding: inherit;
-  max-height: 100vh;
-}
- 
-</style>
 </head>
 
 <body>
@@ -149,7 +57,6 @@
           <a href="index.html" class="nav-item nav-link active">Início</a>
           <a href="about.html" class="nav-item nav-link">Sobre Nós</a>
           <a href="login.html" class="nav-item nav-link">Área do Prestador</a>
-          <!-- <a href="contact.html" class="nav-item nav-link">Contato</a> -->
         </div>
         <a href="cadastroPrestador.html" class="btn btn-primary rounded-pill py-2 px-4">Registre sua Empresa</a>
       </div>
@@ -159,7 +66,7 @@
             <div class="container py-5">
                 <div class="row justify-content-center py-5">
                     <div class="col-lg-10 pt-lg-5 mt-lg-5 text-center">
-                        <h1 class="display-3 text-white animated slideInDown">INDCA conectando voçê ao serviço certo</h1>
+                        <h1 class="display-3 text-white animated slideInDown">INDCA Conetando você ao serviço certo.</h1>
                     </div>
                 </div>
             </div>
@@ -318,20 +225,6 @@
     <!-- About End -->
 
 
-     <!-- Carrossel de Parceiros -->
-  <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
-    <div class="container">
-      <div class="text-center">
-        <h6 class="section-title bg-white text-center text-primary px-3">Conheça nossos parceiros</h6>
-        <h1 class="mb-5">PRESTADORES DE SERVIÇO</h1>
-      </div>
-      <div class="carousel-wrapper" style="display: flex; align-items: center; gap: 10px;">
-        <button class="custom-prev" aria-label="Anterior"><i data-lucide="chevron-left"></i></button>
-        <div class="owl-carousel owl-theme" id="testimonials-container"></div>
-        <button class="custom-next" aria-label="Próximo"><i data-lucide="chevron-right"></i></button>
-      </div>
-  </div>
-
     <!-- Team End -->
         
 
@@ -375,108 +268,6 @@
     <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
     <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
   <!-- Script de busca e carrossel -->
-  <script>
-    let todasEmpresas = [];
-
-    function exibirEmpresas(empresasFiltradas) {
-      const container = document.getElementById("testimonials-container");
-      container.innerHTML = "";
-
-      if ($('.owl-carousel').hasClass('owl-loaded')) {
-        $('.owl-carousel').trigger('destroy.owl.carousel').removeClass('owl-loaded');
-        container.classList.remove("owl-loaded");
-      }
-
-      empresasFiltradas.forEach(empresa => {
-        const imagem = empresa.foto_perfil
-          ? `https://marketplace-production-4ad4.up.railway.app/uploads/${empresa.foto_perfil}`
-          : "https://static.vecteezy.com/ti/vetor-gratis/p3/2387693-icone-do-perfil-do-usuario-vetor.jpg";
-
-        const item = document.createElement("div");
-        item.classList.add("testimonial-item", "item");
-        item.setAttribute("data-id", empresa.id);
-        item.style.cursor = "pointer";
-
-        item.innerHTML = `
-          <img src="${imagem}" alt="Logo ${empresa.nome_empresa}" />
-          <h5>${empresa.nome_empresa}</h5>
-          <p><a href="${empresa.instagram || '#'}" target="_blank">${empresa.instagram || ''}</a></p>
-          <p>${empresa.apresentacao || ''}</p>
-        `;
-
-        item.addEventListener("click", () => {
-          window.location.href = `pagePerfil.html?id=${empresa.id}`;
-        });
-
-        container.appendChild(item);
-      });
-$(document).ready(function(){
-  const owl = $('#testimonials-container');
-
-  owl.owlCarousel({
-    loop: true,
-    margin: 20,
-    nav: false, // desliga os botões padrões
-    dots: true,
-    autoplay: true,
-    autoplayTimeout: 4000,
-    autoplayHoverPause: true,
-    responsive:{
-      0:{ items:1 },
-      600:{ items:2 },
-      1000:{ items:3 }
-    }
-  });
-
-  $('.custom-prev').click(function() {
-    owl.trigger('prev.owl.carousel');
-  });
-
-  $('.custom-next').click(function() {
-    owl.trigger('next.owl.carousel');
-  });
-
-  // Ativa os ícones Lucide
-  lucide.createIcons();
-});
-
-    }
-
-    document.addEventListener("DOMContentLoaded", async () => {
-      const spinner = document.getElementById("spinner");
-      try {
-        const response = await axios.get("https://marketplace-production-4ad4.up.railway.app/empresas");
-        todasEmpresas = response.data;
-        exibirEmpresas(todasEmpresas);
-      } catch (error) {
-        console.error("Erro ao carregar empresas:", error);
-        alert("Erro ao carregar empresas.");
-      } finally {
-        if (spinner) spinner.classList.remove("show");
-      }
-
-      document.getElementById("botaoBusca").addEventListener("click", () => {
-        const termo = document.getElementById("campoBusca").value.trim().toLowerCase();
-
-        const resultados = todasEmpresas.filter(empresa => {
-          const nome = empresa.nome_empresa?.toLowerCase() || "";
-          const apresentacao = empresa.apresentacao?.toLowerCase() || "";
-          
-          const titulosServicos = (empresa.servicos || [])
-            .map(servico => servico.titulo?.toLowerCase() || "")
-            .join(" ");
-
-          return (
-            nome.includes(termo) ||
-            apresentacao.includes(termo) ||
-            titulosServicos.includes(termo)
-          );
-        });
-        exibirEmpresas(resultados);
-      });
-    });
-  </script>
-  
    <script>
     window.addEventListener('load', () => {
       const spinner = document.getElementById('spinner');
@@ -484,7 +275,6 @@ $(document).ready(function(){
         spinner.classList.remove('show');
       }
     });
-    
   </script>
 
     <!-- Template Javascript -->
