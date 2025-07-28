@@ -204,7 +204,7 @@
   <input type="file" id="fotoPerfil" name="foto_perfil" accept="image/*" style="display:none" />
   <div id="previewFoto" style="margin-top: 10px; margin-bottom: 10px;"></div>
 </div> -->
-  <div onclick={validarSenha()} id="botaoCadastrar" class="btn btn-primary w-100 py-3">
+  <div id="botaoCadastrar" class="btn btn-primary w-100 py-3">
   Salvar dados de sua empresa
 </div>
 </div></center>
@@ -266,157 +266,125 @@
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
-	  <script>
-      const fotoPerfilInput = document.getElementById('fotoPerfil');
-      const previewFoto = document.getElementById('previewFoto');
-      const labelFoto = document.querySelector('label[for="fotoPerfil"]');
+	 <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const fotoPerfilInput = document.getElementById('fotoPerfil');
+    const previewFoto = document.getElementById('previewFoto');
+    const labelFoto = document.querySelector('label[for="fotoPerfil"]');
+    const botao = document.getElementById('botaoCadastrar');
+    const senha = document.getElementById('senha');
+    const senhaConfirm = document.getElementById('senhaConfirm');
 
-      // Quando o usuário soltar arquivo na label (drop)
+    // Eventos de drag & drop para imagem
+    if (labelFoto && fotoPerfilInput) {
       labelFoto.addEventListener('dragover', (e) => {
         e.preventDefault();
         labelFoto.style.borderColor = 'green';
       });
+
       labelFoto.addEventListener('dragleave', (e) => {
         e.preventDefault();
         labelFoto.style.borderColor = '#aaa';
       });
+
       labelFoto.addEventListener('drop', (e) => {
         e.preventDefault();
         labelFoto.style.borderColor = '#aaa';
 
-    const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith('image/')) {
-      fotoPerfilInput.files = e.dataTransfer.files; // Atualiza o input file com o arquivo dropado
-      mostrarPreview(file);
-    } else {
+        const file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith('image/')) {
+          fotoPerfilInput.files = e.dataTransfer.files;
+          mostrarPreview(file);
+        } else {
+          mostrarToast("❌ Por favor, envie um arquivo de imagem válido.");
+        }
+      });
+
+      fotoPerfilInput.addEventListener('change', () => {
+        const file = fotoPerfilInput.files[0];
+        if (file) {
+          mostrarPreview(file);
+        }
+      });
+    }
+
+    function mostrarPreview(file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        previewFoto.innerHTML = `<img src="${e.target.result}" alt="Foto de Perfil" style="max-width: 150px; max-height: 150px; border-radius: 50%;">`;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function mostrarToast(mensagem, cor = "#1f1f1f") {
       Toastify({
-        text: "❌ Por favor, envie um arquivo de imagem válido.",
+        text: mensagem,
         duration: 5000,
         gravity: "top",
         position: "center",
-        backgroundColor: "#1f1f1f",
+        backgroundColor: cor,
       }).showToast();
     }
-  });
 
-  // Quando clicar no label, abre o seletor de arquivos
-  fotoPerfilInput.addEventListener('change', () => {
-    const file = fotoPerfilInput.files[0];
-    if (file) {
-      mostrarPreview(file);
+    async function validarSenha() {
+      if (!senha || !senhaConfirm || senha.value !== senhaConfirm.value) {
+        mostrarToast("❌ Senhas não correspondem!");
+        return;
+      }
+      await cadastrarTudo();
     }
-  });
 
-  // Função para mostrar preview da imagem selecionada
-  function mostrarPreview(file) {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      previewFoto.innerHTML = `<img src="${e.target.result}" alt="Foto de Perfil" style="max-width: 150px; max-height: 150px; border-radius: 50%;">`;
-    };
-    reader.readAsDataURL(file);
-  }
-    const senha = document.getElementById('senha');
-    const senhaConfirm = document.getElementById('senhaConfirm');
-    const msgErroSenha = document.getElementById('msgErroSenha');
-    const botao = document.getElementById('botaoCadastrar');
+    async function cadastrarTudo() {
+      botao.disabled = true;
 
-    // Função para validar senha e confirmação
-    function validarSenha() {
-      if (senha.value !== senhaConfirm.value) {
-        Toastify({
-          text: "❌ Senhas não correspondente!!!",
-          duration: 5000,
-          gravity: "top",
-          position: "center",
-          backgroundColor: "#1f1f1f",
-        }).showToast();
-        return false;
-      } else {
-        cadastrarTudo();
-        return true;
+      try {
+        const usuario = {
+          nome: document.getElementById('nome').value,
+          email: document.getElementById('email').value,
+          senha: senha.value,
+          telefone: document.getElementById('telefone').value,
+        };
+
+        const responseUsuario = await axios.post('https://marketplace-production-4ad4.up.railway.app/usuarios', usuario);
+        const usuarioId = responseUsuario.data.id;
+
+        const empresaFormData = new FormData();
+        empresaFormData.append('usuario_id', usuarioId);
+        empresaFormData.append('nome_empresa', document.getElementById('nome_empresa').value);
+        empresaFormData.append('apresentacao', document.getElementById('apresentacao').value);
+        empresaFormData.append('descricao', document.getElementById('descricao').value);
+        empresaFormData.append('site', document.getElementById('site').value);
+        empresaFormData.append('facebook', document.getElementById('facebook').value);
+        empresaFormData.append('linkedin', document.getElementById('linkedin').value);
+        empresaFormData.append('instagram', document.getElementById('instagram').value);
+        empresaFormData.append('youtube', document.getElementById('youtube').value);
+
+        const arquivoFoto = fotoPerfilInput?.files?.[0];
+        if (arquivoFoto) {
+          empresaFormData.append('foto_perfil', arquivoFoto);
+          empresaFormData.append('name', arquivoFoto.name);
+        }
+
+        await axios.post('https://marketplace-production-4ad4.up.railway.app/empresas', empresaFormData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+
+        mostrarToast("✅ Cadastro realizado com sucesso!", "#28a745");
+        setTimeout(() => window.location.href = 'login.html', 500);
+
+      } catch (error) {
+        console.error("Erro no cadastro:", error);
+        mostrarToast("❌ Erro no cadastro. Verifique os dados e tente novamente.");
+      } finally {
+        botao.disabled = false;
       }
     }
 
-  
-
-  async function cadastrarTudo() {
-    botao.disabled = true;
-
-    try {
-      // Cria o FormData para envio multipart/form-data (imagem + dados)
-      const formData = new FormData();
-
-      // Adiciona dados do usuário
-      formData.append('nome', document.getElementById('nome').value);
-      formData.append('email', document.getElementById('email').value);
-      formData.append('senha', senha.value);
-      formData.append('telefone', document.getElementById('telefone').value);
-
-      // Primeiro cria usuário (se sua API aceita FormData para isso, senão, faça separadamente)
-      // Vou assumir que o usuário é criado separadamente com JSON (igual seu código original)
-
-      const usuario = {
-        nome: document.getElementById('nome').value,
-        email: document.getElementById('email').value,
-        senha: senha.value,
-        telefone: document.getElementById('telefone').value,
-      };
-
-      const responseUsuario = await axios.post('https://marketplace-production-4ad4.up.railway.app/usuarios', usuario);
-      const usuarioId = responseUsuario.data.id;
-      console.log("✅ Cadastro de usuário realizado com sucesso!");
-
-      // Agora cria o FormData para a empresa (incluindo a foto)
-      const empresaFormData = new FormData();
-
-      empresaFormData.append('usuario_id', usuarioId);
-      empresaFormData.append('nome_empresa', document.getElementById('nome_empresa').value);
-      empresaFormData.append('apresentacao', document.getElementById('apresentacao').value);
-      empresaFormData.append('descricao', document.getElementById('descricao').value);
-      empresaFormData.append('site', document.getElementById('site').value);
-      empresaFormData.append('facebook', document.getElementById('facebook').value);
-      empresaFormData.append('linkedin', document.getElementById('linkedin').value);
-      empresaFormData.append('instagram', document.getElementById('instagram').value);
-      empresaFormData.append('youtube', document.getElementById('youtube').value);
-
-      // Pega o arquivo da foto de perfil
-      const arquivoFoto = fotoPerfilInput.files[0];
-        if (arquivoFoto) {
-          empresaFormData.append('foto_perfil', arquivoFoto);
-          empresaFormData.append('name', arquivoFoto.name); // necessário para salvar no Mongo
-        }
-
-      // Envia empresa com foto como multipart/form-data
-    await axios.post('https://marketplace-production-4ad4.up.railway.app/empresas', empresaFormData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-      Toastify({
-        text: "😄 Cadastro realizado com sucesso!",
-        duration: 5000,
-        gravity: "top",
-        position: "center",
-        backgroundColor: "#28a745",
-      }).showToast();
-      setTimeout(() => {
-        window.location.href = 'login.html';
-      }, 500);
-    } catch (error) {
-      console.error("Erro no cadastro:", error);
-      Toastify({
-        text: "❌ Erro no cadastro. Verifique os dados e tente novamente.",
-        duration: 5000,
-        gravity: "top",
-        position: "center",
-        backgroundColor: "#1f1f1f",
-      }).showToast();
-    } finally {
-      botao.disabled = false;
-    }
-  }
-
-
+    // ⏺️ Ativa o botão após o DOM estar carregado
+    botao.addEventListener('click', validarSenha);
+  });
 </script>
 </body>
 
