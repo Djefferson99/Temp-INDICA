@@ -31,6 +31,86 @@
 
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
+    <style>
+  .testimonial-item:hover {
+    transform: scale(1.05);
+  }
+  .owl-carousel .owl-item img {
+    display: block;
+    height: 100px;
+    width: 100px;
+  }
+  .testimonial-item {
+    background: white;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+  .testimonial-item img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #fff;
+    object-fit: cover;
+    padding: 4px;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+  }
+  .testimonial-item h5 {
+    margin: 0 0 10px 0;
+  }
+  .testimonial-item p a {
+    color: #007bff;
+    text-decoration: none;
+  }
+  .testimonial-item p a:hover {
+    text-decoration: underline;
+  }
+  .owl-carousel {
+    overflow: hidden;
+  }
+  .owl-stage-outer {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+.carousel-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px; /* espaçamento entre botões e carrossel */
+  margin-left:-60px;
+  margin-right: -60px;
+}
+
+.custom-prev, .custom-next {
+  background-color: #78be20;
+  color: white;
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  transition: background-color 0.3s ease;
+  font-size: 24px;
+}
+
+.custom-prev:hover, .custom-next:hover {
+  background-color: #5ca218;
+}
+
+</style>
 </head>
 
 <body>
@@ -237,11 +317,14 @@
   <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
     <div class="container">
       <div class="text-center">
-        <h6 class="section-title bg-white text-center text-primary px-3">Empresas</h6>
-        <h1 class="mb-5">Cadastradas</h1>
+        <h6 class="section-title bg-white text-center text-primary px-3">Conheça nossos parceiros</h6>
+        <h1 class="mb-5">PRESTADORES DE SERVIÇO</h1>
       </div>
-      <div class="owl-carousel owl-theme" id="testimonials-container"></div>
-    </div>
+      <div class="carousel-wrapper" style="display: flex; align-items: center; gap: 10px;">
+        <button class="custom-prev" aria-label="Anterior"><i data-lucide="chevron-left"></i></button>
+        <div class="owl-carousel owl-theme" id="testimonials-container"></div>
+        <button class="custom-next" aria-label="Próximo"><i data-lucide="chevron-right"></i></button>
+      </div>
   </div>
 
     <!-- Team End -->
