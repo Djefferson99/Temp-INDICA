@@ -19,99 +19,138 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css"/>
 
+  <!-- Ícones (usando Lucide como exemplo, pode mudar para FontAwesome se quiser) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
   <!-- Bootstrap & CSS personalizado -->
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <link href="css/style.css" rel="stylesheet">
 <script type="text/javascript" src="jquery.js"></script><script type="text/javascript"></script><link rel="shortcut icon" href="img//logoIndca.jpg" ></head>
 <style>
-  .testimonial-item:hover {
-    transform: scale(1.05);
-  }
-  .owl-carousel .owl-item img {
-    display: block;
-    height: 100px;
-    width: 100px;
-  }
-  .testimonial-item {
-    background: white;
-    border: 1px solid #ddd;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
-    transition: transform 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-  }
-  .testimonial-item img {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background-color: #fff;
-    object-fit: cover;
-    padding: 4px;
-    border: 1px solid #ddd;
-    margin-bottom: 10px;
-  }
-  .testimonial-item h5 {
-    margin: 0 0 10px 0;
-  }
-  .testimonial-item p a {
-    color: #007bff;
-    text-decoration: none;
-  }
-  .testimonial-item p a:hover {
-    text-decoration: underline;
-  }
-  .owl-carousel {
-    overflow: hidden;
-  }
-  .owl-stage-outer {
-    padding-left: 30px;
-    padding-right: 30px;
-  }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+    }
 
-  /* ===== ESTILO DOS BOTÕES DE NAVEGAÇÃO ===== */
-  .owl-nav {
-    position: absolute;
-    top: 40%;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    pointer-events: none;
-    padding: 0 60px;
-  }
+    h2 {
+      text-align: center;
+      font-size: 32px;
+      margin-top: 40px;
+      color: #263238;
+    }
 
-  .owl-nav button.owl-prev,
-  .owl-nav button.owl-next {
-    background-color: #78be20;
-    color: white;
-    font-size: 20px;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    border: none;
-    pointer-events: all;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
-  }
+    .container-carousel-wrapper {
+      position: relative;
+      padding: 40px 0;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
 
-  .owl-nav button.owl-prev:hover,
-  .owl-nav button.owl-next:hover {
-    background-color: #5ca218;
-  }
+    .owl-carousel .item {
+      background: #fff;
+      padding: 30px 20px;
+      margin: 10px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
 
-  /* Remove span vazio do botão */
-  .owl-nav button span {
-    display: none;
-  }
-</style>
+    .item img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-bottom: 15px;
+    }
+
+    .item h3 {
+      font-size: 20px;
+      margin-bottom: 5px;
+      color: #263238;
+    }
+
+    .item a {
+      color: #1e88e5;
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    .item p {
+      color: #757575;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+
+    /* Botões customizados fora do carrossel */
+    .owl-nav {
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    .owl-nav button.owl-prev,
+    .owl-nav button.owl-next {
+      position: absolute;
+      background-color: #78be20;
+      color: white;
+      font-size: 20px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: none;
+      pointer-events: all;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+    }
+
+    .owl-nav button.owl-prev {
+      left: -30px;
+    }
+
+    .owl-nav button.owl-next {
+      right: -30px;
+    }
+
+    .owl-nav button.owl-prev:hover,
+    .owl-nav button.owl-next:hover {
+      background-color: #5ca218;
+    }
+
+    /* Oculta o texto interno do botão */
+    .owl-nav button span {
+      display: none;
+    }
+
+    /* Bolinhas de navegação */
+    .owl-dots {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .owl-dot {
+      width: 12px;
+      height: 12px;
+      background-color: #ccc;
+      border-radius: 50%;
+      margin: 5px;
+      display: inline-block;
+      transition: 0.3s;
+    }
+
+    .owl-dot.active {
+      background-color: #78be20;
+    }
+  </style>
 
 </head>
 
@@ -237,25 +276,29 @@
         container.appendChild(item);
       });
 
-      $("#testimonials-container").owlCarousel({
+    $(document).ready(function(){
+      $('#testimonials-container').owlCarousel({
         loop: true,
         margin: 20,
         nav: true,
-        navText: [
-          '<i class="fas fa-chevron-left"></i>',
-          '<i class="fas fa-chevron-right"></i>'
-        ],
+        dots: true,
         autoplay: true,
-        autoplayTimeout: 5000,
+        autoplayTimeout: 4000,
         autoplayHoverPause: true,
-        stagePadding: 30,
-        responsive: {
-          0: { items: 1 },
-          600: { items: 2 },
-          1000: { items: 3 }
-        }
+        responsive:{
+          0:{ items:1 },
+          600:{ items:2 },
+          1000:{ items:3 }
+        },
+        navText: [
+          '<i data-lucide="chevron-left"></i>',
+          '<i data-lucide="chevron-right"></i>'
+        ]
       });
 
+      // Ativa os ícones Lucide
+      lucide.createIcons();
+    });
     }
 
     document.addEventListener("DOMContentLoaded", async () => {
