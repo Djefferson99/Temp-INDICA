@@ -393,110 +393,8 @@
     </style>
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
-    <script>
-  function conectarGoogle() {
-    const email = localStorage.getItem('email'); // ou uma variável qualquer
-    if (!email) {
-      alert('Usuário não está logado!');
-      return;
-    }
 
-    const url = `https://www.indca.com.br/auth/google?email=${encodeURIComponent(email)}`;
-    window.location.href = url;
-  }
-  </script>
-  <script type="text/babel">
-  const { useEffect, useState } = React;
-
-  function Agendamentos() {
-    const [agendamentos, setAgendamentos] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [emailPrestador, setEmailPrestador] = useState('');
-
-    useEffect(() => {
-      async function carregarEmailEAgendamentos() {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          setLoading(false);
-          return;
-        }
-
-        // Decodificar token para pegar id
-        let userId;
-        try {
-          const base64Url = token.split('.')[1];
-          const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-          const jsonPayload = decodeURIComponent(atob(base64).split('').map(c =>
-            '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
-          ).join(''));
-          userId = JSON.parse(jsonPayload).id;
-        } catch (e) {
-          console.error('Token inválido:', e);
-          setLoading(false);
-          return;
-        }
-
-        if (!userId) {
-          setLoading(false);
-          return;
-        }
-
-        try {
-          // Buscar email do usuário via API
-          const resUser = await axios.get(`https://marketplace-production-4ad4.up.railway.app/usuarios/${userId}`, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          const email = resUser.data.email;
-          setEmailPrestador(email);
-
-          // Buscar agendamentos com o email do prestador
-          const resAgendamentos = await axios.get(`https://marketplace-production-4ad4.up.railway.app/agendamentos?emailPrestador=${email}`, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          setAgendamentos(resAgendamentos.data);
-        } catch (err) {
-          console.error('Erro ao carregar dados:', err);
-        } finally {
-          setLoading(false);
-        }
-      }
-
-      carregarEmailEAgendamentos();
-    }, []);
-
-    const cancelarAgendamento = async (id) => {
-      const token = localStorage.getItem('token');
-      try {
-        await axios.delete(`https://marketplace-production-4ad4.up.railway.app/agendamentos/${id}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setAgendamentos(prev => prev.filter(a => a.id !== id));
-      } catch (error) {
-        console.error('Erro ao cancelar agendamento', error);
-      }
-    };
-
-    if (loading) return <p>Carregando agendamentos...</p>;
-    if (!emailPrestador) return <p>Usuário não autenticado.</p>;
-    if (agendamentos.length === 0) return <p>Nenhum agendamento encontrado.</p>;
-
-    return (
-      <div>
-        <h2>Seus Agendamentos</h2>
-        <ul>
-          {agendamentos.map(ag => (
-            <li key={ag.id} style={{ marginBottom: '10px' }}>
-              Cliente: {ag.cliente} | Data: {new Date(ag.inicio).toLocaleDateString()} | Início: {new Date(ag.inicio).toLocaleTimeString()} | Fim: {new Date(ag.fim).toLocaleTimeString()}
-              <button onClick={() => cancelarAgendamento(ag.id)} style={{ marginLeft: '10px' }}>Cancelar</button>
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
-  }
-
-  ReactDOM.createRoot(document.getElementById('agendamentos-root')).render(<Agendamentos />);
-</script>
+ 
 
 <script>
 
@@ -752,91 +650,81 @@ function validarSenha() {
 
 // Atualiza os dados do usuário e da empresa
 async function atualizarTudo() {
-  botao.disabled = true;
+  const idEmpresa = localStorage.getItem("id_empresa");
+  const nomeFantasia = document.getElementById("nomeFantasia").value;
+  const cnpj = document.getElementById("cnpj").value;
+  const telefone = document.getElementById("telefone").value;
+  const descricao = document.getElementById("descricao").value;
+  const senha = document.getElementById("senha").value;
+  const senhaConfirm = document.getElementById("senhaConfirm").value;
 
-  const usuario_id = localStorage.getItem("id");
-  const empresa_id = localStorage.getItem("idEmpresa");
-  const token = localStorage.getItem("token");
-
-  if (!usuario_id || !empresa_id || !token) {
+  if (senha !== senhaConfirm) {
     Toastify({
-      text: "⚠️ Sessão inválida. Faça login novamente.",
-      duration: 5000,
+      text: "As senhas não coincidem!",
+      duration: 4000,
       gravity: "top",
       position: "center",
-      backgroundColor: "#1f1f1f",
+      style: {
+        background: "#dc3545"
+      }
     }).showToast();
-    window.location.href = 'login.html';
     return;
   }
 
+  const formData = new FormData();
+  formData.append("nome_fantasia", nomeFantasia);
+  formData.append("cnpj", cnpj);
+  formData.append("telefone", telefone);
+  formData.append("descricao", descricao);
+  formData.append("senha", senha);
+
+  const fotoPerfilInput = document.getElementById("fotoPerfil");
+  if (fotoPerfilInput && fotoPerfilInput.files.length > 0) {
+    formData.append("foto_perfil", fotoPerfilInput.files[0]);
+  }
+
   try {
-    // Atualizar dados do usuário
-    const dadosUsuario = {
-      nome: document.getElementById('nomeUsuario').value,
-      email: document.getElementById('emailUsuario').value,
-      telefone: document.getElementById('telefone').value,
-      senha: senha.value // Inclui nova senha se quiser permitir alteração
-    };
+    const response = await fetch(`https://www.indca.com.br/api/empresas/${idEmpresa}`, {
+      method: "PUT",
+      body: formData,
+    });
 
-    await axios.put(
-      `https://marketplace-production-4ad4.up.railway.app/usuarios/${usuario_id}`,
-      dadosUsuario,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
+    if (response.ok) {
+      Toastify({
+        text: "✅ Dados atualizados com sucesso!",
+        duration: 4000,
+        gravity: "top",
+        position: "center",
+        style: {
+          background: "#28a745"
         }
-      }
-    );
-
-    // Atualizar dados da empresa
-    const empresaFormData = new FormData();
-    empresaFormData.append('nome_empresa', document.getElementById('nomeEmpresaInput').value);
-    empresaFormData.append('apresentacao', document.getElementById('apresentacao').value);
-    empresaFormData.append('descricao', document.getElementById('descricaoMark').value);
-    empresaFormData.append('site', document.getElementById('site').value);
-    empresaFormData.append('facebook', document.getElementById('facebook').value);
-    empresaFormData.append('linkedin', document.getElementById('linkedin').value);
-    empresaFormData.append('instagram', document.getElementById('instagram').value);
-    empresaFormData.append('youtube', document.getElementById('youtube').value);
-
-    const arquivoFoto = fotoPerfilInput.files[0];
-    if (arquivoFoto) {
-      empresaFormData.append('foto_perfil', arquivoFoto);
+      }).showToast();
+    } else {
+      const erro = await response.text();
+      console.error("Erro ao atualizar:", erro);
+      Toastify({
+        text: "Erro ao atualizar os dados!",
+        duration: 4000,
+        gravity: "top",
+        position: "center",
+        style: {
+          background: "#dc3545"
+        }
+      }).showToast();
     }
-
-    await axios.put(
-      `https://marketplace-production-4ad4.up.railway.app/empresas/${empresa_id}`,
-      empresaFormData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data"
-        }
-      }
-    );
-
-    Toastify({
-      text: "😄 Dados atualizados com sucesso!",
-      duration: 5000,
-      gravity: "top",
-      position: "center",
-      backgroundColor: "#28a745",
-    }).showToast();
   } catch (error) {
     console.error("Erro ao atualizar:", error);
     Toastify({
-      text: "❌ Erro ao atualizar os dados. Verifique os campos e tente novamente.",
-      duration: 5000,
+      text: "Erro inesperado ao atualizar!",
+      duration: 4000,
       gravity: "top",
       position: "center",
-      backgroundColor: "#1f1f1f",
+      style: {
+        background: "#dc3545"
+      }
     }).showToast();
-  } finally {
-    botao.disabled = false;
   }
 }
-
 function logout() {
   // Limpa tudo do localStorage
   localStorage.clear();
