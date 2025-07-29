@@ -6,6 +6,11 @@
     --dark: #14141F;
 }
 
+.logo-nav{
+    width: 195px;
+    height: 70px;
+}
+
 .fw-medium {
     font-weight: 600 !important;
 }
