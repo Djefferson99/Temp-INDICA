@@ -63,9 +63,6 @@
             <div class="collapse navbar-collapse" id="navbarCollapse">
                  <div class="collapse navbar-collapse" id="navbarCollapse">
         <div class="navbar-nav ms-auto py-0">
-          <a href="index.html" class="nav-item nav-link active">Início</a>
-          <a href="about.html" class="nav-item nav-link">Sobre Nós</a>
-          <!-- <a href="contact.html" class="nav-item nav-link">Contato</a> -->
         </div>
         
       </div>
@@ -272,6 +269,58 @@
                 </div></center>
             </div>
         </div>
+
+ <section class="mb-5">
+   <h6 class="section-title bg-white text-center text-primary px-3">Monte sua Agenda</h6>
+      <h2 class="h2title">Cadastrar Horários Disponíveis</h2>
+      <form id="formHorario" class="row g-3">
+    <div class="col-md-6">
+          <label for="diaSemana" class="form-label">Dia da Semana</label>
+          <select id="diaSemana" class="form-select" required>
+            <option value="">Selecione o dia</option>
+            <option value="Domingo">Domingo</option>
+            <option value="Segunda">Segunda-feira</option>
+            <option value="Terça">Terça-feira</option>
+            <option value="Quarta">Quarta-feira</option>
+            <option value="Quinta">Quinta-feira</option>
+            <option value="Sexta">Sexta-feira</option>
+            <option value="Sábado">Sábado</option>
+          </select>
+        </div>
+
+        <div class="col-md-6">
+          <label for="horaHorario" class="form-label">Hora</label>
+          <input type="time" class="form-control" id="horaHorario" required />
+        </div>
+        <div class="col-12">
+          <button class="btn btn-primary w-100 py-3">Adicionar Horário</button>
+        </div>
+      </form>
+      <h6 class="section-title bg-white text-center text-primary px-3">Agenda</h6>
+      <h2 class="h2title">Horários Disponíveis</h2>
+      <div class="filtro">
+      <label for="filtroDia">Filtrar por dia da semana:</label>
+      <select id="filtroDia" class="form-select">
+            <option value="">Todos os dias</option>
+            <option value="Domingo">Domingo</option>
+            <option value="Segunda">Segunda-feira</option>
+            <option value="Terça">Terça-feira</option>
+            <option value="Quarta">Quarta-feira</option>
+            <option value="Quinta">Quinta-feira</option>
+            <option value="Sexta">Sexta-feira</option>
+            <option value="Sábado">Sábado</option>
+      </select>
+      </div>
+      <div id="listaHorarios" class="listaHorarios"></div>
+    </section>
+    
+    <!-- Lista de agendamentos feitos -->
+    <section class="mb-5">
+      <h6 class="section-title bg-white text-center text-primary px-3">Seus Clientes</h6>
+      <h2>Agendamentos Confirmados</h2>
+      <div id="listaAgendamentos"  class="listaHorarios"></div>
+    </section>
+  </div>
 <!-- Planos(monetizção -->
  <div class="container-xxl py-5">
         <div class="container">
@@ -390,11 +439,218 @@
             font-family: Arial, sans-serif;
             border-radius: 50px;
         }
+        .mb-5{
+          margin-bottom: 5rem !important;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+        .listaHorarios{
+          width: 80vw;
+        }
+        .filtro{
+          display: flex;
+          margin-bottom: 25px;
+          width: 40%;
+        }
+        .section-title {
+          margin-top: 5rem;
+        }
     </style>
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
 
  
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const token = localStorage.getItem('token');
+  const idUsuario = localStorage.getItem('id');
+  let idEmpresa = localStorage.getItem("idEmpresa");
+
+  if (!token || !idUsuario) {
+    Toastify({
+      text: "Usuário não está logado! 😥",
+      duration: 5000,
+      gravity: "top",
+      position: "center",
+      backgroundColor: "#1f1f1f",
+    }).showToast();
+    return;
+  }
+
+  try {
+    // Busca empresa se não tiver idEmpresa salvo
+    if (!idEmpresa) {
+      const responseEmpresa = await axios.get(`https://marketplace-production-4ad4.up.railway.app/empresas/usuario/${idUsuario}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const empresa = responseEmpresa.data;
+      idEmpresa = empresa.id;
+      localStorage.setItem("idEmpresa", idEmpresa);
+    }
+
+   const filtroDia = document.getElementById('filtroDia');
+
+async function carregarHorarios(diaSelecionado = '') {
+  try {
+    const res = await axios.get(`https://marketplace-production-4ad4.up.railway.app/horarios/empresa/${idEmpresa}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    const listaHorarios = document.getElementById("listaHorarios");
+    listaHorarios.innerHTML = "";
+
+    // Filtra horários pelo dia, se um dia foi selecionado
+    const horariosFiltrados = diaSelecionado
+      ? res.data.filter(horario => horario.dia_semana === diaSelecionado)
+      : res.data;
+
+    horariosFiltrados.forEach(horario => {
+      const div = document.createElement("div");
+
+      let horaFormatada = '';
+      if (typeof horario.hora === 'string') {
+        horaFormatada = horario.hora.length > 5 ? horario.hora.slice(0, 5) : horario.hora;
+      }
+
+      div.style = "background:#1f1f1f;color:white;padding:10px;margin-bottom:10px;border-radius:6px;display:flex;justify-content:space-between;align-items:center;";
+      div.innerHTML = `
+        <div>
+          <strong>Dia:</strong> ${horario.dia_semana} <br>
+          <strong>Hora:</strong> ${horaFormatada} <br>
+          <strong>Status:</strong> ${horario.disponivel ? "Disponível" : "Indisponível"}
+        </div>
+        <button class="btn btn-danger btn-sm">Excluir</button>
+      `;
+
+      const btnExcluir = div.querySelector("button");
+      btnExcluir.onclick = async () => {
+        try {
+          await axios.delete(`https://marketplace-production-4ad4.up.railway.app/horarios/${horario.id}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          Toastify({ text: "Horário deletado!", duration: 3000, backgroundColor: "#dc3545" }).showToast();
+          carregarHorarios(diaSelecionado); // recarrega mantendo filtro
+        } catch {
+          Toastify({ text: "Erro ao excluir horário.", duration: 3000, backgroundColor: "#dc3545" }).showToast();
+        }
+      };
+
+      listaHorarios.appendChild(div);
+    });
+  } catch (error) {
+    console.error("Erro ao carregar horários:", error);
+  }
+}
+
+// Chama a função inicialmente sem filtro
+carregarHorarios();
+
+// Atualiza a lista quando o filtro muda
+filtroDia.addEventListener('change', () => {
+  carregarHorarios(filtroDia.value);
+});
+
+
+    // Função para carregar agendamentos
+    async function carregarAgendamentos() {
+      try {
+        const res = await axios.get(`https://marketplace-production-4ad4.up.railway.app/agendamentos/empresa/${idEmpresa}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const listaAgendamentos = document.getElementById("listaAgendamentos");
+        listaAgendamentos.innerHTML = "";
+        if (res.data.length === 0) {
+          listaAgendamentos.innerHTML = "<p style='color:white;'>Nenhum agendamento encontrado.</p>";
+          return;
+        }
+      res.data.forEach(agendamento => {
+        const div = document.createElement("div");
+        const horario = agendamento.hora ? agendamento.hora.substring(0, 5) : '';
+        div.style = "background:#1f1f1f;color:white;padding:10px;margin-bottom:10px;border-radius:6px;display:flex;justify-content:space-between;align-items:center;"
+        div.innerHTML = `
+        <div>
+          <strong>Cliente:</strong> ${agendamento.nome_cliente} <br>
+          <strong>Número:</strong> ${agendamento.telefone_cliente}<br>
+          <strong>Serviço:</strong> ${agendamento.servico_titulo} <br>
+          <strong>Dia:</strong> ${agendamento.dia_semana || agendamento.data || 'N/A'} <br>
+          <strong>Hora:</strong> ${horario} <br>
+          <strong>Status:</strong> ${agendamento.status || "Confirmado"}
+        </div>  
+        <button class="btn-excluir" style="margin-top:8px;padding:5px 10px;background:#dc3545;color:#fff;border:none;border-radius:4px;cursor:pointer;">
+          Excluir
+        </button>
+  `;
+
+  // Adiciona evento de exclusão
+  div.querySelector(".btn-excluir").addEventListener("click", async () => {
+    if (confirm("Deseja realmente excluir este agendamento?")) {
+      try {
+        await axios.delete(`https://marketplace-production-4ad4.up.railway.app/agendamentos/${agendamento.id}`);
+        div.remove(); // Remove visualmente da tela
+        alert("Agendamento excluído com sucesso.");
+      } catch (error) {
+        console.error("Erro ao excluir agendamento:", error);
+        alert("Erro ao excluir. Tente novamente.");
+      }
+    }
+  });
+
+  listaAgendamentos.appendChild(div);
+});
+      } catch (error) {
+        console.error("Erro ao carregar agendamentos:", error);
+      }
+    }
+
+    // Evento do formulário para cadastrar horário
+    document.getElementById("formHorario").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const diaSemana = document.getElementById("diaSemana").value;
+      const hora = document.getElementById("horaHorario").value;
+     
+    console.log(diaSemana, hora)
+      if (!diaSemana || !hora) {
+        Toastify({
+          text: "Selecione o dia da semana e a hora",
+          duration: 3000,
+          backgroundColor: "#dc3545",
+        }).showToast();
+        return;
+      }
+      try {
+        await axios.post("https://marketplace-production-4ad4.up.railway.app/horarios", {
+          empresa_id: idEmpresa,
+          dia_semana: diaSemana,
+          hora,
+        }, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        Toastify({
+          text: "Horário cadastrado com sucesso!",
+          duration: 3000,
+          backgroundColor: "#28a745",
+        }).showToast();
+        e.target.reset();
+        carregarHorarios();
+      } catch {
+        Toastify({
+          text: "Erro ao cadastrar horário.",
+          duration: 3000,
+          backgroundColor: "#dc3545",
+        }).showToast();
+      }
+    });
+
+    // Inicializa carregando os horários e agendamentos
+    carregarHorarios();
+    carregarAgendamentos();
+
+  } catch (error) {
+    console.error("Erro ao buscar dados:", error);
+  }
+});
+</script>
 
 <script>
 

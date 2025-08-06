@@ -53,6 +53,7 @@
   </div>
 
   <!-- Navbar -->
+     <!-- Navbar & Hero Start -->
   <div class="container-fluid position-relative p-0">
     <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
       <a href="#" class="navbar-brand p-0">
@@ -103,6 +104,39 @@
       <div class="row gy-2 gx-4 mb-4" id="servicos-lista">
         <!-- Serviços via JS -->
       </div>
+      <hr class="my-5">
+      <div class="row">
+        <h4 class="mb-4">Agendar um Horário</h4>
+
+        <!-- Formulário de Agendamento -->
+        <form id="formAgendamento" class="mb-4">
+          <div class="mb-3">
+            <label class="form-label">Nome:</label>
+            <input type="text" class="form-control" id="nome_cliente" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Telefone:</label>
+            <input type="text" class="form-control" id="telefone_cliente" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Serviço:</label>
+            <select class="form-select" id="select_servico" required></select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Dia da Semana:</label>
+            <select class="form-select" id="select_dia" required>
+              <option value="">Selecione um dia</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Horário Disponível:</label>
+            <select class="form-select" id="select_horario" required>
+              <option value="">Selecione um horário</option>
+            </select>
+          </div>                 
+          <button type="submit" class="btn btn-primary">Agendar</button>
+        </form>
+      </div>
       <a id="botao-whats" target="_blank" class="btn btn-success py-2 px-3 mt-2">
         <i class="fab fa-whatsapp me-2"></i>Contato
       </a>
@@ -130,7 +164,115 @@
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+  
+  
+<script>
+  document.addEventListener("DOMContentLoaded", async () => {
+    const spinner = document.getElementById("spinner");
+    const params = new URLSearchParams(window.location.search);
+    const empresaId = params.get("id");
 
+    if (!empresaId) {
+      alert("ID da empresa não fornecido.");
+      if (spinner) spinner.classList.add("hidden");
+      return;
+    }
+
+    const servicoSelect = document.getElementById("select_servico");
+    const diaSelect = document.getElementById("select_dia");
+    const horarioSelect = document.getElementById("select_horario");
+    const formAgendamento = document.getElementById("formAgendamento");
+
+    let horariosDisponiveis = [];
+
+    try {
+      // Preencher serviços
+      const servicosRes = await axios.get(`https://marketplace-production-4ad4.up.railway.app/servicos/empresa/${empresaId}`);
+      servicosRes.data.forEach(servico => {
+        const option = document.createElement("option");
+        option.value = servico.titulo;
+        option.textContent = servico.titulo;
+        servicoSelect.appendChild(option);
+      });
+
+      // Carregar horários disponíveis
+      const horariosRes = await axios.get(`https://marketplace-production-4ad4.up.railway.app/horarios/empresa/${empresaId}`);
+      horariosDisponiveis = horariosRes.data.filter(h => h.disponivel);
+
+      // Extrair e preencher dias únicos disponíveis
+      const diasUnicos = [...new Set(horariosDisponiveis.map(h => h.dia_semana))];
+      diasUnicos.forEach(dia => {
+        const option = document.createElement("option");
+        option.value = dia;
+        option.textContent = dia.charAt(0).toUpperCase() + dia.slice(1);
+        diaSelect.appendChild(option);
+      });
+
+      // Atualizar horários quando um dia for selecionado
+      diaSelect.addEventListener("change", () => {
+        const diaSelecionado = diaSelect.value;
+        horarioSelect.innerHTML = '<option value="">Selecione um horário</option>';
+
+        const horariosFiltrados = horariosDisponiveis.filter(h => h.dia_semana === diaSelecionado);
+        horariosFiltrados.forEach(horario => {
+          const option = document.createElement("option");
+          option.value = horario.id;
+          option.textContent = horario.hora.slice(0, 5);
+          horarioSelect.appendChild(option);
+        });
+      });
+
+      // Submeter agendamento
+      formAgendamento.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const nome = document.getElementById("nome_cliente").value.trim();
+  const telefone = document.getElementById("telefone_cliente").value.trim();
+  const servico = document.getElementById("select_servico").value;
+  const horarioId = document.getElementById("select_horario").value;
+
+  if (!nome || !telefone || !servico || !horarioId) {
+    alert("Preencha todos os campos.");
+    return;
+  }
+
+  try {
+    // Buscar os dados completos do horário selecionado
+    const horarioRes = await axios.get(`https://marketplace-production-4ad4.up.railway.app/horarios/${horarioId}`);
+    const horarioData = horarioRes.data;
+console.log(horarioData, nome, telefone, servico, horarioId)
+    await axios.post(`https://marketplace-production-4ad4.up.railway.app/agendamentos`, {
+      empresa_id: empresaId,
+      servico_titulo: servico,
+      nome_cliente: nome,
+      telefone_cliente: telefone,
+      dia_semana: horarioData.dia_semana,  // ← agora incluído corretamente
+      hora: horarioData.hora
+    });
+    alert("Agendamento realizado com sucesso!");
+    formAgendamento.reset();
+  } catch (err) {
+    console.error("Erro ao agendar:", err);
+    alert("Erro ao tentar agendar.");
+  }
+   
+});
+
+    } catch (err) {
+      console.error("Erro ao carregar dados:", err);
+      alert("Erro ao carregar horários ou serviços.");
+    } finally {
+      if (spinner) spinner.classList.add("hidden");
+    }
+  });
+</script>
+
+
+
+  
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
       const spinner = document.getElementById("spinner");
