@@ -285,7 +285,8 @@
     formAgendamento.reset();
 
   // Criar mensagem personalizada para o WhatsApp
-  const mensagem = `Olá, sou ${nome} e estou confirmando meu agendamento para o serviço ${servico} no dia ${horarioData.dia_semana} às ${horarioData.hora.slice(0,5)}.`;
+ const mensagem = `Olá! Aqui é ${nome}, entrando em contato pelo INDCA para confirmar meu agendamento do serviço "${servico}" no dia ${horarioData.dia_semana} às ${horarioData.hora.slice(0,5)}.  
+Aguardo confirmação e agradeço a atenção!`;
 
   // Detectar celular
   const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
