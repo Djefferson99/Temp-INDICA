@@ -53,22 +53,27 @@
 
     <!-- Navbar & Hero Start -->
     <div class="container-fluid position-relative p-0">
-        <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
-            <a href="" class="navbar-brand p-0">
-                <h1 class="text-primary m-0"id="nomeEmpresaTitulo"><i class="fa fa-map-marker-alt me-3"></i></h1>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-                <span class="fa fa-bars"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarCollapse">
-                 <div class="collapse navbar-collapse" id="navbarCollapse">
-        <div class="navbar-nav ms-auto py-0">
-        </div>
-        
-      </div>
-                <div class="btn btn-primary rounded-pill py-2 px-4" onclick={logout()}>Sair</div>
-            </div>
-        </nav>
+<nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
+  <a href="" class="navbar-brand p-0">
+    <h1 class="text-primary m-0" id="nomeEmpresaTitulo">
+      <i class="fa fa-map-marker-alt me-3"></i>
+    </h1>
+  </a>
+  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+    <span class="fa fa-bars"></span>
+  </button>
+  
+  <div class="collapse navbar-collapse" id="navbarCollapse">
+    <div class="navbar-nav ms-auto py-0">
+      <a class="nav-link" href="#servico">Serviço</a>
+      <a class="nav-link" href="#seusDados">Perfil</a>
+      <a class="nav-link" href="#cadastrarH">Horários</a>
+      <a class="nav-link" href="#agenda">Agenda</a>
+      <a class="nav-link" href="#clientes">Clientes</a>
+    </div>
+    <div class="btn btn-primary rounded-pill py-2 px-4 ms-3" onclick="logout()">Sair</div>
+  </div>
+</nav>
 
         <div class="container-fluid bg-primary py-5 mb-5 hero-header">
             <div class="container py-5">
@@ -87,7 +92,7 @@
                 <div class="row g-5 align-items-center">
                     <div class="col-md-6 text-white">
                         <h6 class="text-white text-uppercase">Serviços</h6>
-                        <h1 class="text-white mb-4">Valorize o que você sabe fazer. Cadastre seus serviços agora!</h1>
+                        <h1 class="text-white mb-4" id="servico">Valorize o que você sabe fazer. Cadastre seus serviços agora!</h1>
                         <p class="mb-4">Você tem talento, experiência e sabe fazer um bom trabalho — agora é hora de mostrar isso para quem realmente está procurando por você.</p>
                         <p class="mb-4">Ao cadastrar os serviços que você oferece, você amplia suas chances de ser encontrado por clientes reais, interessados exatamente no que você faz.</p>
 						<p class="mb-4">Seja você eletricista, encanador, designer, fotógrafo, manicure ou qualquer outro profissional, existe alguém precisando da sua habilidade <strong>agora mesmo</strong>.</p>
@@ -144,7 +149,7 @@
  <div class="container-xxl py-5">
         <div class="container">
             <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-                <h6 class="section-title bg-white text-center text-primary px-3">Informe seus dados</h6>
+                <h6 class="section-title bg-white text-center text-primary px-3" id="seusDados">Informe seus dados</h6>
                  <!--<h1 class="mb-5">Contact For Any Query</h1> <!-->
             </div>
             <div class="row g-4">
@@ -272,7 +277,7 @@
 
  <section class="mb-5">
    <h6 class="section-title bg-white text-center text-primary px-3">Monte sua Agenda</h6>
-      <h2 class="h2title">Cadastrar Horários Disponíveis</h2>
+      <h2 class="h2title" id="cadastrarH">Cadastrar Horários Disponíveis</h2>
       <form id="formHorario" class="row g-3">
     <div class="col-md-6">
           <label for="diaSemana" class="form-label">Dia da Semana</label>
@@ -296,7 +301,7 @@
           <button class="btn btn-primary w-100 py-3">Adicionar Horário</button>
         </div>
       </form>
-      <h6 class="section-title bg-white text-center text-primary px-3">Agenda</h6>
+      <h6 class="section-title bg-white text-center text-primary px-3" id="agenda">Agenda</h6>
       <h2 class="h2title">Horários Disponíveis</h2>
       <div class="filtro">
       <label for="filtroDia">Filtrar por dia da semana:</label>
@@ -315,12 +320,26 @@
     </section>
     
     <!-- Lista de agendamentos feitos -->
-    <section class="mb-5">
-      <h6 class="section-title bg-white text-center text-primary px-3">Seus Clientes</h6>
-      <h2>Agendamentos Confirmados</h2>
-      <div id="listaAgendamentos"  class="listaHorarios"></div>
-    </section>
+<section class="mb-5">
+  <h6 class="section-title bg-white text-center text-primary px-3" id="clientes">Seus Clientes</h6>
+  <h2>Agendamentos Confirmados</h2>
+  
+  <div class="filtro">
+    <label for="filtroDiaClientes">Filtrar por dia da semana:</label>
+    <select id="filtroDiaClientes" class="form-select">
+      <option value="">Todos os dias</option>
+      <option value="Domingo">Domingo</option>
+      <option value="Segunda">Segunda-feira</option>
+      <option value="Terça">Terça-feira</option>
+      <option value="Quarta">Quarta-feira</option>
+      <option value="Quinta">Quinta-feira</option>
+      <option value="Sexta">Sexta-feira</option>
+      <option value="Sábado">Sábado</option>
+    </select>
   </div>
+  
+  <div id="listaAgendamentos" class="listaHorarios"></div>
+</section>
 <!-- Planos(monetizção -->
  <div class="container-xxl py-5">
         <div class="container">
@@ -460,7 +479,87 @@
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
 
- 
+ <script>
+  document.addEventListener("DOMContentLoaded", () => {
+  const token = localStorage.getItem('token');
+  const idEmpresa = localStorage.getItem("idEmpresa");
+  const filtroDiaClientes = document.getElementById('filtroDiaClientes');
+  const listaAgendamentos = document.getElementById("listaAgendamentos");
+
+  if (!token || !idEmpresa) {
+    console.warn("Token ou idEmpresa não encontrados.");
+    return;
+  }
+
+  async function carregarAgendamentos(diaSelecionado = '') {
+    try {
+      const res = await axios.get(`https://marketplace-production-4ad4.up.railway.app/agendamentos/empresa/${idEmpresa}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      listaAgendamentos.innerHTML = "";
+
+      const agendamentosFiltrados = diaSelecionado
+        ? res.data.filter(agendamento => {
+            return agendamento.dia_semana === diaSelecionado || agendamento.data === diaSelecionado;
+          })
+        : res.data;
+
+      if (agendamentosFiltrados.length === 0) {
+        listaAgendamentos.innerHTML = "<p style='color:white;'>Nenhum agendamento encontrado.</p>";
+        return;
+      }
+
+      agendamentosFiltrados.forEach(agendamento => {
+        const div = document.createElement("div");
+        const horario = agendamento.hora ? agendamento.hora.substring(0, 5) : '';
+        div.style = "background:#1f1f1f;color:white;padding:10px;margin-bottom:10px;border-radius:6px;display:flex;justify-content:space-between;align-items:center;";
+        div.innerHTML = `
+          <div>
+            <strong>Cliente:</strong> ${agendamento.nome_cliente} <br>
+            <strong>Número:</strong> ${agendamento.telefone_cliente}<br>
+            <strong>Serviço:</strong> ${agendamento.servico_titulo} <br>
+            <strong>Dia:</strong> ${agendamento.dia_semana || agendamento.data || 'N/A'} <br>
+            <strong>Hora:</strong> ${horario} <br>
+            <strong>Status:</strong> ${agendamento.status || "Confirmado"}
+          </div>
+          <button class="btn-excluir" style="margin-top:8px;padding:5px 10px;background:#dc3545;color:#fff;border:none;border-radius:4px;cursor:pointer;">
+            Excluir
+          </button>
+        `;
+
+        div.querySelector(".btn-excluir").addEventListener("click", async () => {
+          if (confirm("Deseja realmente excluir este agendamento?")) {
+            try {
+              await axios.delete(`https://marketplace-production-4ad4.up.railway.app/agendamentos/${agendamento.id}`, {
+                headers: { Authorization: `Bearer ${token}` }
+              });
+              div.remove();
+              alert("Agendamento excluído com sucesso.");
+            } catch (error) {
+              console.error("Erro ao excluir agendamento:", error);
+              alert("Erro ao excluir. Tente novamente.");
+            }
+          }
+        });
+
+        listaAgendamentos.appendChild(div);
+      });
+    } catch (error) {
+      console.error("Erro ao carregar agendamentos:", error);
+    }
+  }
+
+  // Quando o filtro mudar, carrega a lista filtrada
+  filtroDiaClientes.addEventListener('change', () => {
+    carregarAgendamentos(filtroDiaClientes.value);
+  });
+
+  // Carrega todos inicialmente
+  carregarAgendamentos();
+});
+
+ </script>
 <script>
 document.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem('token');
