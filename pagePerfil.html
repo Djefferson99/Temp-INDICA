@@ -41,6 +41,11 @@
     .hidden {
       display: none !important;
     }
+    .whastB{
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
   </style>
 </head>
 
@@ -137,9 +142,14 @@
           <button type="submit" class="btn btn-primary">Agendar</button>
         </form>
       </div>
-      <a id="botao-whats" target="_blank" class="btn btn-success py-2 px-3 mt-2">
+      <div class="whastB">
+        <a id="botao-whats" target="_blank" class="btn btn-success py-2 px-3 mt-2 hidden">
+          <i class="fab fa-whatsapp me-2"></i>Contato
+        </a>
+              <a id="botao-whats" target="_blank" class="btn btn-success py-2 px-3 mt-2">
         <i class="fab fa-whatsapp me-2"></i>Contato
       </a>
+      </div>
     </div>
   </div>
 
@@ -226,7 +236,7 @@
       });
 
       // Submeter agendamento
-      formAgendamento.addEventListener("submit", async (e) => {
+ formAgendamento.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const nome = document.getElementById("nome_cliente").value.trim();
@@ -243,23 +253,61 @@
     // Buscar os dados completos do horário selecionado
     const horarioRes = await axios.get(`https://marketplace-production-4ad4.up.railway.app/horarios/${horarioId}`);
     const horarioData = horarioRes.data;
-console.log(horarioData, nome, telefone, servico, horarioId)
+
+    // Buscar telefone do prestador
+    const empresaRes = await axios.get(`https://marketplace-production-4ad4.up.railway.app/empresas/${empresaId}`);
+    const usuarioRes = await axios.get(`https://marketplace-production-4ad4.up.railway.app/usuarios/${empresaRes.data.usuario_id}`);
+    const telefonePrestador = usuarioRes.data.telefone?.replace(/\D/g, "");
+
+    // Criar o agendamento
     await axios.post(`https://marketplace-production-4ad4.up.railway.app/agendamentos`, {
       empresa_id: empresaId,
       servico_titulo: servico,
       nome_cliente: nome,
       telefone_cliente: telefone,
-      dia_semana: horarioData.dia_semana,  // ← agora incluído corretamente
+      dia_semana: horarioData.dia_semana,
       hora: horarioData.hora
     });
+
+    // Apagar o horário do banco
+    await axios.delete(`https://marketplace-production-4ad4.up.railway.app/horarios/${horarioId}`);
+
+    // Atualizar a lista local removendo o horário usado
+    horariosDisponiveis = horariosDisponiveis.filter(h => h.id != horarioId);
+
+    // Remover a opção do select sem recarregar
+    const optionToRemove = horarioSelect.querySelector(`option[value="${horarioId}"]`);
+    if (optionToRemove) {
+      optionToRemove.remove();
+    }
+
     alert("Agendamento realizado com sucesso!");
     formAgendamento.reset();
+
+  // Criar mensagem personalizada para o WhatsApp
+  const mensagem = `Olá, sou ${nome} e estou confirmando meu agendamento para o serviço ${servico} no dia ${horarioData.dia_semana} às ${horarioData.hora.slice(0,5)}.`;
+
+  // Detectar celular
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+  // Escolher formato de link
+  const linkWhats = isMobile
+    ? `https://wa.me/55${telefonePrestador}?text=${encodeURIComponent(mensagem)}`
+    : `https://web.whatsapp.com/send?phone=55${telefonePrestador}&text=${encodeURIComponent(mensagem)}`;
+
+  // Mostrar botão de confirmação
+  const botaoWhats = document.getElementById("botao-whats");
+  botaoWhats.href = linkWhats;
+  botaoWhats.innerHTML = `<i class="fab fa-whatsapp me-2"></i>Confirme seu agendamento`;
+  botaoWhats.classList.remove("hidden");
+
   } catch (err) {
     console.error("Erro ao agendar:", err);
     alert("Erro ao tentar agendar.");
   }
-   
 });
+
+
 
     } catch (err) {
       console.error("Erro ao carregar dados:", err);
