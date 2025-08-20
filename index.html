@@ -236,29 +236,30 @@ element.style {
         container.classList.remove("owl-loaded");
       }
 
-      empresasFiltradas.forEach(empresa => {
-        const imagem = empresa.foto_perfil
-          ? `https://marketplace-production-4ad4.up.railway.app/uploads/${empresa.foto_perfil}`
-          : "https://static.vecteezy.com/ti/vetor-gratis/p3/2387693-icone-do-perfil-do-usuario-vetor.jpg";
+ empresasFiltradas.forEach(empresa => {
+  // Se tiver foto_perfil no banco, monta a URL dentro da pasta img/imgPerfil
+  const imagem = empresa.foto_perfil
+    ? `img/imgPerfil/${empresa.foto_perfil}`
+    : "https://static.vecteezy.com/ti/vetor-gratis/p3/2387693-icone-do-perfil-do-usuario-vetor.jpg";
 
-        const item = document.createElement("div");
-        item.classList.add("testimonial-item", "item");
-        item.setAttribute("data-id", empresa.id);
-        item.style.cursor = "pointer";
+  const item = document.createElement("div");
+  item.classList.add("testimonial-item", "item");
+  item.setAttribute("data-id", empresa.id);
+  item.style.cursor = "pointer";
 
-        item.innerHTML = `
-          <img src="${imagem}" alt="Logo ${empresa.nome_empresa}" />
-          <h5>${empresa.nome_empresa}</h5>
-          <p><a href="${empresa.instagram || '#'}" target="_blank">Instagram da Empresa</a></p>
-          <p>${empresa.apresentacao || ''}</p>
-        `;
+  item.innerHTML = `
+    <img src="${imagem}" alt="Logo ${empresa.nome_empresa}" style="border-radius:50%; max-width:150px;" />
+    <h5>${empresa.nome_empresa}</h5>
+    <p><a href="${empresa.instagram || '#'}" target="_blank">Instagram da Empresa</a></p>
+    <p>${empresa.apresentacao || ''}</p>
+  `;
 
-        item.addEventListener("click", () => {
-          window.location.href = `pagePerfil.html?id=${empresa.id}`;
-        });
+  item.addEventListener("click", () => {
+    window.location.href = `pagePerfil.html?id=${empresa.id}`;
+  });
 
-        container.appendChild(item);
-      });
+  container.appendChild(item);
+});
 
 $(document).ready(function(){
   const owl = $('#testimonials-container');

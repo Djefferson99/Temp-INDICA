@@ -94,7 +94,8 @@
   <div class="container">
     <div class="row g-5">
       <div class="col-lg-6">
-        <img id="empresa-foto" class="img-fluid w-100" src="img/about.jpg" alt="">
+       <img id="empresa-foto" src="img/about.jpg" alt="Foto da Empresa" style="width:500px; height:600px;">
+
       </div>
       <div class="col-lg-6">
         <h1>Bem-vindo à <span id="empresa-nome-span" class="text-primary">Empresa</span></h1>
@@ -337,14 +338,20 @@ Aguardo confirmação e agradeço a atenção!`;
         const empresaRes = await axios.get(`https://marketplace-production-4ad4.up.railway.app/empresas/${id}`);
         const empresa = empresaRes.data;
 
+        // Atualiza textos da empresa
         document.getElementById("empresa-nome-header").textContent = empresa.nome_empresa;
         document.getElementById("empresa-nome-span").textContent = empresa.nome_empresa;
         document.getElementById("empresa-apresentacao").textContent = empresa.apresentacao || "";
         document.getElementById("empresa-descricao").textContent = empresa.descricao || "";
 
+        // Atualiza foto de perfil usando a pasta local img/imgPerfil
         if (empresa.foto_perfil) {
-          document.getElementById("empresa-foto").src = `https://marketplace-production-4ad4.up.railway.app/uploads/${empresa.foto_perfil}`;
+          document.getElementById("empresa-foto").src = `img/imgPerfil/${empresa.foto_perfil}`;
+        } else {
+          // Se não houver foto, pode colocar uma padrão
+          document.getElementById("empresa-foto").src = "img/about.jpg";
         }
+
 
         const redesList = document.getElementById("empresa-redes");
         redesList.innerHTML = ""; // Limpa antes

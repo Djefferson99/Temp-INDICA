@@ -1,391 +1,266 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
- <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <meta charset="utf-8">
     <title>Cadastro de prestador de serviços</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
-	<script type="text/javascript" src="jquery.js"></script><script type="text/javascript"></script><link rel="shortcut icon" href="img//logoIndca.jpg" ></head>
-
-    <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
-
-    <!-- Google Web Fonts -->
+    <link rel="shortcut icon" href="img/logoIndca.jpg">
+    
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
-
-    <!-- Icon Font Stylesheet -->
+    
+    <!-- Icones -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
-    <!-- Libraries Stylesheet -->
+    <!-- Libraries -->
     <link href="lib/animate/animate.min.css" rel="stylesheet">
     <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
     <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
 
-    <!-- Customized Bootstrap Stylesheet -->
+    <!-- Bootstrap & Custom CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
-</head>
-
-<body>
-    <!-- Spinner Start -->
-    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>
-    </div>
-    <!-- Spinner End -->
-
-
-    <!-- Navbar & Hero Start -->
-    <div class="container-fluid position-relative p-0">
-        <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
-          <a href="#" class="navbar-brand p-0">
-            <img src="./img/indca.png" alt="logo" class="logo-nav">
-            <!-- <h1 class="text-primary m-0"><i class="fa fa-map-marker-alt me-3"></i>IN.D.C.A</h1> -->
-          </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-                <span class="fa fa-bars"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarCollapse">
-                <div class="navbar-nav ms-auto py-0">
-                    <a href="index.html" class="nav-item nav-link">Inicio</a>
-                    <a href="about.html" class="nav-item nav-link">sobre Nós</a>
-                
-                    <div class="nav-item dropdown">
-                       
-                    </div>
-                </div>
-                <a href="login.html" class="btn btn-primary rounded-pill py-2 px-4">Login</a>
-            </div>
-        </nav>
-
-        <div class="container-fluid bg-primary py-5 mb-5 hero-header">
-            <div class="container py-5">
-                <div class="row justify-content-center py-5">
-                    <div class="col-lg-10 pt-lg-5 mt-lg-5 text-center">
-                        <h1 class="display-3 text-white animated slideInDown">Conte um pouco sobre sua empresa</h1>
-                        <nav aria-label="breadcrumb">
-                            
-                        </nav>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Navbar & Hero End -->
-
-
-    <!-- Contact Start -->
-    <div class="container-xxl py-5">
-        <div class="container">
-            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-                <h6 class="section-title bg-white text-center text-primary px-3">Informe seus dados</h6>
-                 <!--<h1 class="mb-5">Contact For Any Query</h1> <!-->
-            </div>
-            <div class="row g-4">
-               
-                <center><div class="col-lg-4 col-md-12 wow fadeInUp" data-wow-delay="0.5s">
-                    <center><div class="col-12">
-    <div class="form-floating">
-      <input type="text" class="form-control" id="nome" placeholder="Seu Nome">
-      <label for="nome">Seu Nome</label>
-    </div>
-  </div>
-
-  <!-- Email -->
-  <div class="col-12">
-    <div class="form-floating">
-      <input type="email" class="form-control" id="email" placeholder="Seu Email">
-      <label for="email">Email</label>
-    </div>
-  </div>
-
-  <!-- Telefone -->
-  <div class="col-md-12">
-    <div class="form-floating">
-      <input type="tel" class="form-control" id="telefone" placeholder="Seu Telefone">
-      <label for="telefone">Telefone</label>
-    </div>
-  </div>
-
-  <!-- Senha -->
-  <div class="col-md-12">
-    <div class="form-floating">
-      <input type="password" class="form-control" id="senha" placeholder="Senha">
-      <label for="senha">Senha</label>
-    </div>
-  </div>
-
-  <!-- Confirmar Senha -->
-  <div class="col-md-12">
-    <div class="form-floating">
-      <input type="password" class="form-control" id="senhaConfirm" placeholder="Confirme sua Senha">
-      <label for="senhaConfirm">Confirme sua Senha</label>
-    </div>
-  </div>
-
-  <!-- Nome da Empresa -->
-  <div class="col-12">
-    <div class="form-floating">
-      <input type="text" class="form-control" id="nome_empresa" placeholder="Nome da Empresa">
-      <label for="nome_empresa">Nome da Sua Empresa</label>
-    </div>
-  </div>
-
-  <!-- Site -->
-  <div class="col-12">
-    <div class="form-floating">
-      <input type="text" class="form-control" id="site" placeholder="Site da Empresa">
-      <label for="site">Site da Empresa</label>
-    </div>
-  </div>
-
-  <!-- Apresentação / Título -->
-  <div class="col-12">
-    <div class="form-floating">
-      <textarea class="form-control" placeholder="Breve apresentação" id="apresentacao" style="height: 100px"></textarea>
-      <label for="apresentacao">Apresentação - Breve descrição da sua atuação</label>
-    </div>
-  </div>
-
-  <!-- Descrição / Marketing -->
-  <div class="col-12">
-    <div class="form-floating">
-      <textarea class="form-control" placeholder="Descrição detalhada" id="descricao" style="height: 100px"></textarea>
-      <label for="descricao">Marketing da sua empresa</label>
-    </div>
-  </div>
-
-  <!-- Linkedin -->
-  <div class="col-12">
-    <div class="form-floating">
-      <input type="text" class="form-control" id="linkedin" placeholder="LinkedIn">
-      <label for="linkedin">Link do LinkedIn</label>
-    </div>
-  </div>
-
-  <!-- Facebook -->
-  <div class="col-12">
-    <div class="form-floating">
-      <input type="text" class="form-control" id="facebook" placeholder="Facebook">
-      <label for="facebook">Link do Facebook</label>
-    </div>
-  </div>
-
-  <!-- Instagram -->
-  <div class="col-12">
-    <div class="form-floating">
-      <input type="text" class="form-control" id="instagram" placeholder="Instagram">
-      <label for="instagran">Link do Instagram</label>
-    </div>
-  </div>
-
-  <!-- YouTube -->
-  <div class="col-12">
-    <div class="form-floating">
-      <input type="text" class="form-control" id="youtube" placeholder="YouTube">
-      <label for="youtube">Link do YouTube</label>
-    </div>
-  </div>
-
-  <!-- Foto de perfil -->
-<!-- <div class="col-12">
-  <label for="fotoPerfil" style="display:block; border: 2px dashed #aaa; padding: 20px; text-align: center; cursor: pointer;">
-    Arraste e solte sua foto de perfil aqui ou clique para selecionar
-  </label>
-  <input type="file" id="fotoPerfil" name="foto_perfil" accept="image/*" style="display:none" />
-  <div id="previewFoto" style="margin-top: 10px; margin-bottom: 10px;"></div>
-</div> -->
-  <div id="botaoCadastrar" class="btn btn-primary w-100 py-3">
-  Salvar dados de sua empresa
-</div>
-</div></center>
-                </div></center>
-            </div>
-        </div>
-    </div>
-    <!-- Contact End -->
-
-
-    <!-- Footer Start -->
-          <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
-    <div class="container py-5">
-      <div class="row g-5">
-        <div class="col-lg-3 col-md-6">
-          <h4 class="text-white mb-3">I.N.D.C.A</h4>
-          <a class="btn btn-link" href="">Sobre Nós</a>
-          <a class="btn btn-link" href="">Política de Privacidade</a>
-          <a class="btn btn-link" href="">FAQs & Ajuda</a>
-        </div>
-        <div class="col-lg-3 col-md-6">
-          <h4 class="text-white mb-3">Contato</h4>
-          <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+55 11 96372-6508</p>
-          <p class="mb-2"><i class="fa fa-envelope me-3"></i>contato@indca.com.br</p>
-        </div>
-      </div>
-    </div>
-  </div>
-    <!-- Footer End -->
-
-
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
-
-
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/wow/wow.min.js"></script>
-    <script src="lib/easing/easing.min.js"></script>
-    <script src="lib/waypoints/waypoints.min.js"></script>
-    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="lib/tempusdominus/js/moment.min.js"></script>
-    <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
     <!-- Toastify -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-    
-    <style>
-    /* Personalização do estilo do toast */
-      .toastify {
-        font-size: 20px; /* Aumenta o tamanho da fonte */
-        font-family: Arial, sans-serif;
-        border-radius: 50px;
-      }
-    </style>
+</head>
+<body>
 
-    <!-- Template Javascript -->
-    <script src="js/main.js"></script>
-	 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const fotoPerfilInput = document.getElementById('fotoPerfil');
-    const previewFoto = document.getElementById('previewFoto');
-    const labelFoto = document.querySelector('label[for="fotoPerfil"]');
-    const botao = document.getElementById('botaoCadastrar');
-    const senha = document.getElementById('senha');
-    const senhaConfirm = document.getElementById('senhaConfirm');
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
+    <a href="#" class="navbar-brand p-0">
+        <img src="./img/indca.png" alt="logo" class="logo-nav">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="fa fa-bars"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav ms-auto py-0">
+            <a href="index.html" class="nav-item nav-link">Inicio</a>
+            <a href="about.html" class="nav-item nav-link">Sobre Nós</a>
+        </div>
+        <a href="login.html" class="btn btn-primary rounded-pill py-2 px-4">Login</a>
+    </div>
+</nav>
 
-    // Eventos de drag & drop para imagem
-    if (labelFoto && fotoPerfilInput) {
-      labelFoto.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        labelFoto.style.borderColor = 'green';
-      });
+<!-- Hero -->
+<div class="container-fluid bg-primary py-5 mb-5 hero-header">
+    <div class="container py-5">
+        <div class="row justify-content-center py-5">
+            <div class="col-lg-10 pt-lg-5 mt-lg-5 text-center">
+                <h1 class="display-3 text-white animated slideInDown">Conte um pouco sobre sua empresa</h1>
+            </div>
+        </div>
+    </div>
+</div>
 
-      labelFoto.addEventListener('dragleave', (e) => {
-        e.preventDefault();
-        labelFoto.style.borderColor = '#aaa';
-      });
+<!-- Formulário -->
+<div class="container-xxl py-5">
+  <div class="container">
+    <div class="text-center">
+      <h6 class="section-title bg-white text-center text-primary px-3">Informe seus dados</h6>
+    </div>
 
-      labelFoto.addEventListener('drop', (e) => {
-        e.preventDefault();
-        labelFoto.style.borderColor = '#aaa';
+    <div class="row g-4 justify-content-center">
+      <div class="col-lg-4 col-md-12">
+        <div class="form-floating mb-2">
+          <input type="text" class="form-control" id="nome" placeholder="Seu Nome">
+          <label for="nome">Seu Nome</label>
+        </div>
+        <div class="form-floating mb-2">
+          <input type="email" class="form-control" id="email" placeholder="Seu Email">
+          <label for="email">Email</label>
+        </div>
+        <div class="form-floating mb-2">
+          <input type="tel" class="form-control" id="telefone" placeholder="Seu Telefone">
+          <label for="telefone">Telefone</label>
+        </div>
+        <div class="form-floating mb-2">
+          <input type="password" class="form-control" id="senha" placeholder="Senha">
+          <label for="senha">Senha</label>
+        </div>
+        <div class="form-floating mb-2">
+          <input type="password" class="form-control" id="senhaConfirm" placeholder="Confirme sua Senha">
+          <label for="senhaConfirm">Confirme sua Senha</label>
+        </div>
+        <div class="form-floating mb-2">
+          <input type="text" class="form-control" id="nome_empresa" placeholder="Nome da Empresa">
+          <label for="nome_empresa">Nome da Sua Empresa</label>
+        </div>
+        <div class="form-floating mb-2">
+          <input type="text" class="form-control" id="site" placeholder="Site da Empresa">
+          <label for="site">Site da Empresa</label>
+        </div>
+        <div class="form-floating mb-2">
+          <textarea class="form-control" id="apresentacao" placeholder="Breve apresentação" style="height:100px"></textarea>
+          <label for="apresentacao">Apresentação</label>
+        </div>
+        <div class="form-floating mb-2">
+          <textarea class="form-control" id="descricao" placeholder="Descrição detalhada" style="height:100px"></textarea>
+          <label for="descricao">Marketing da sua empresa</label>
+        </div>
+        <div class="form-floating mb-2">
+          <input type="text" class="form-control" id="linkedin" placeholder="LinkedIn">
+          <label for="linkedin">LinkedIn</label>
+        </div>
+        <div class="form-floating mb-2">
+          <input type="text" class="form-control" id="facebook" placeholder="Facebook">
+          <label for="facebook">Facebook</label>
+        </div>
+        <div class="form-floating mb-2">
+          <input type="text" class="form-control" id="instagram" placeholder="Instagram">
+          <label for="instagram">Instagram</label>
+        </div>
+        <div class="form-floating mb-2">
+          <input type="text" class="form-control" id="youtube" placeholder="YouTube">
+          <label for="youtube">YouTube</label>
+        </div>
 
-        const file = e.dataTransfer.files[0];
-        if (file && file.type.startsWith('image/')) {
-          fotoPerfilInput.files = e.dataTransfer.files;
-          mostrarPreview(file);
-        } else {
-          mostrarToast("❌ Por favor, envie um arquivo de imagem válido.");
-        }
-      });
+        <!-- Carrossel de perfis -->
+        <h5 class="text-center mt-4">Escolha sua foto de perfil</h5>
+<div id="carouselPerfil" class="carousel slide" data-bs-ride="false">
+  <div class="carousel-inner text-center" id="carouselInner"></div>
 
-      fotoPerfilInput.addEventListener('change', () => {
-        const file = fotoPerfilInput.files[0];
-        if (file) {
-          mostrarPreview(file);
-        }
-      });
-    }
+  <!-- Botão anterior personalizado -->
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselPerfil" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" style="background-color: black; border-radius: 20%; width: 30px; height: 30px;"></span>
+  </button>
 
-    function mostrarPreview(file) {
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        previewFoto.innerHTML = `<img src="${e.target.result}" alt="Foto de Perfil" style="max-width: 150px; max-height: 150px; border-radius: 50%;">`;
-      };
-      reader.readAsDataURL(file);
-    }
+  <!-- Botão próximo personalizado -->
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselPerfil" data-bs-slide="next">
+    <span class="carousel-control-next-icon" style="background-color: black; border-radius: 20%; width: 30px; height: 30px;"></span>
+  </button>
+  <div id="botaoCadastrar" class="btn btn-primary w-100 py-3 mt-3">Salvar dados de sua empresa</div>
+      </div>
+</div>
+        </div>
+        <!-- Campo escondido -->
+        <input type="hidden" id="foto_perfil" name="foto_perfil">
+    </div>
+  </div>
+</div>
 
-    function mostrarToast(mensagem, cor = "#1f1f1f") {
-      Toastify({
-        text: mensagem,
-        duration: 5000,
-        gravity: "top",
-        position: "center",
-        backgroundColor: cor,
-      }).showToast();
-    }
+<!-- Footer -->
+<div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+    <div class="container py-5">
+        <div class="row g-5">
+            <div class="col-lg-3 col-md-6">
+                <h4 class="text-white mb-3">I.N.D.C.A</h4>
+                <a class="btn btn-link" href="">Sobre Nós</a>
+                <a class="btn btn-link" href="">Política de Privacidade</a>
+                <a class="btn btn-link" href="">FAQs & Ajuda</a>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <h4 class="text-white mb-3">Contato</h4>
+                <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+55 11 96372-6508</p>
+                <p class="mb-2"><i class="fa fa-envelope me-3"></i>contato@indca.com.br</p>
+            </div>
+        </div>
+    </div>
+</div>
 
-    async function validarSenha() {
-      if (!senha || !senhaConfirm || senha.value !== senhaConfirm.value) {
-        mostrarToast("❌ Senhas não correspondem!");
-        return;
-      }
-      await cadastrarTudo();
-    }
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="lib/owlcarousel/owl.carousel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
-    async function cadastrarTudo() {
-      botao.disabled = true;
 
-      try {
-        const usuario = {
-          nome: document.getElementById('nome').value,
-          email: document.getElementById('email').value,
-          senha: senha.value,
-          telefone: document.getElementById('telefone').value,
-        };
+<script>
+const imagens = [
+  "Corte com Estilo.png",
+  "Groomer e seu cão estilizado.png",
+  "Mecânico com chave inglesa e ícones.png",
+  "Profissional de TI com ícones digitais.png",
+  "Professora com expressão criativa.png"
+];
 
-        const responseUsuario = await axios.post('https://marketplace-production-4ad4.up.railway.app/usuarios', usuario);
-        const usuarioId = responseUsuario.data.id;
+const carouselInner = document.getElementById("carouselInner");
 
-        const empresaFormData = new FormData();
-        empresaFormData.append('usuario_id', usuarioId);
-        empresaFormData.append('nome_empresa', document.getElementById('nome_empresa').value);
-        empresaFormData.append('apresentacao', document.getElementById('apresentacao').value);
-        empresaFormData.append('descricao', document.getElementById('descricao').value);
-        empresaFormData.append('site', document.getElementById('site').value);
-        empresaFormData.append('facebook', document.getElementById('facebook').value);
-        empresaFormData.append('linkedin', document.getElementById('linkedin').value);
-        empresaFormData.append('instagram', document.getElementById('instagram').value);
-        empresaFormData.append('youtube', document.getElementById('youtube').value);
+imagens.forEach((nome, index) => {
+  const div = document.createElement("div");
+  div.classList.add("carousel-item");
+  if (index === 0) div.classList.add("active");
 
-        const arquivoFoto = fotoPerfilInput?.files?.[0];
-        if (arquivoFoto) {
-          empresaFormData.append('foto_perfil', arquivoFoto);
-          empresaFormData.append('name', arquivoFoto.name);
-        }
-
-        await axios.post('https://marketplace-production-4ad4.up.railway.app/empresas', empresaFormData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-
-        mostrarToast("✅ Cadastro realizado com sucesso!", "#28a745");
-        setTimeout(() => window.location.href = 'login.html', 500);
-
-      } catch (error) {
-        console.error("Erro no cadastro:", error);
-        mostrarToast("❌ Erro no cadastro. Verifique os dados e tente novamente.");
-      } finally {
-        botao.disabled = false;
-      }
-    }
-
-    // ⏺️ Ativa o botão após o DOM estar carregado
-    botao.addEventListener('click', validarSenha);
-  });
+  div.innerHTML = `<img src="img/imgPerfil/${nome}" class="d-block mx-auto perfil-opcao" data-nome="${nome}" style="width:150px; border-radius:50%; cursor:pointer;">`;
+  carouselInner.appendChild(div);
+});
 </script>
-</body>
 
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const botao = document.getElementById('botaoCadastrar');
+  const hiddenFoto = document.getElementById('foto_perfil');
+  const senha = document.getElementById('senha');
+  const senhaConfirm = document.getElementById('senhaConfirm');
+
+  // Seleção via carrossel
+  document.querySelectorAll('.perfil-opcao').forEach(img => {
+    img.addEventListener('click', () => {
+      document.querySelectorAll('.perfil-opcao').forEach(i => i.style.border = "none");
+      img.style.border = "3px solid blue";
+      hiddenFoto.value = img.dataset.nome;
+    });
+  });
+
+  function mostrarToast(msg, cor = "#1f1f1f") {
+    Toastify({
+      text: msg,
+      duration: 4000,
+      gravity: "top",
+      position: "center",
+      style: { background: cor }
+    }).showToast();
+  }
+
+  async function validarSenha() {
+    if (senha.value !== senhaConfirm.value) {
+      mostrarToast("❌ Senhas não correspondem!");
+      return false;
+    }
+    return true;
+  }
+
+  async function cadastrarTudo() {
+    if (!await validarSenha()) return;
+    botao.disabled = true;
+
+    const formData = new FormData();
+    formData.append('nome', document.getElementById('nome').value);
+    formData.append('email', document.getElementById('email').value);
+    formData.append('senha', senha.value);
+    formData.append('telefone', document.getElementById('telefone').value);
+    formData.append('nome_empresa', document.getElementById('nome_empresa').value);
+    formData.append('apresentacao', document.getElementById('apresentacao').value);
+    formData.append('descricao', document.getElementById('descricao').value);
+    formData.append('site', document.getElementById('site').value);
+    formData.append('facebook', document.getElementById('facebook').value);
+    formData.append('linkedin', document.getElementById('linkedin').value);
+    formData.append('instagram', document.getElementById('instagram').value);
+    formData.append('youtube', document.getElementById('youtube').value);
+    formData.append('foto_perfil', hiddenFoto.value);
+
+    try {
+      const response = await axios.post('https://marketplace-production-4ad4.up.railway.app/empresas', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      mostrarToast("✅ Empresa cadastrada com sucesso!", "green");
+      console.log(response.data);
+    } catch (error) {
+      mostrarToast("❌ Erro ao cadastrar empresa", "red");
+      console.error(error);
+    } finally {
+      botao.disabled = false;
+    }
+  }
+
+  botao.addEventListener('click', cadastrarTudo);
+});
+</script>
+
+</body>
 </html>
