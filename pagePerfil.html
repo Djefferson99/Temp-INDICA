@@ -46,6 +46,7 @@
       gap: 15px;
       align-items: center;
     }
+
   </style>
 </head>
 
@@ -94,22 +95,21 @@
   <div class="container">
     <div class="row g-5">
       <div class="col-lg-6">
-       <img id="empresa-foto" src="img/about.jpg" alt="Foto da Empresa" style="width:500px; height:600px;">
-
+        <img id="empresa-foto" class="img-fluid w-100" src="img/about.jpg" alt="">
       </div>
       <div class="col-lg-6">
         <h1>Bem-vindo à <span id="empresa-nome-span" class="text-primary">Empresa</span></h1>
         <p id="empresa-apresentacao">Apresentação da empresa</p>
         <p id="empresa-descricao">Descrição da empresa</p>
         <ul id="empresa-redes" class="list-unstyled"></ul>
+        <h4 class="mb-4">Serviços Oferecidos</h4>
+      <div class="row gy-2 gx-4 mb-4" id="servicos-lista">
+        <!-- Serviços via JS -->
+      </div>
       </div>
     </div>
 
     <div class="row mt-5">
-      <h4 class="mb-4">Serviços Oferecidos</h4>
-      <div class="row gy-2 gx-4 mb-4" id="servicos-lista">
-        <!-- Serviços via JS -->
-      </div>
       <hr class="my-5">
       <div class="row">
         <h4 class="mb-4">Agendar um Horário</h4>
