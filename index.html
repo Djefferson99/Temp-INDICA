@@ -105,7 +105,12 @@
 .custom-prev:hover, .custom-next:hover {
   background-color: #5ca218;
 }
-
+.testimonial-item{
+  height: 400px;
+  p{
+    overflow-y: auto;
+  }
+}
 
 @media (max-width: 767px) {
   .custom-prev, .custom-next {
@@ -114,6 +119,9 @@
   .row{
     margin-left: 10px;
   }
+  .testimonial-item{
+  height: 100%;
+}
 }
 .container, .container-fluid, .container-sm, .container-md, .container-lg, .container-xl, .container-xxl{
   padding: inherit;
@@ -250,7 +258,7 @@ element.style {
   item.innerHTML = `
     <img src="${imagem}" alt="Logo ${empresa.nome_empresa}" style="border-radius:50%; max-width:150px;" />
     <h5>${empresa.nome_empresa}</h5>
-    <p><a href="${empresa.instagram || '#'}" target="_blank">Instagram da Empresa</a></p>
+    <a href="${empresa.instagram || '#'}" target="_blank">Instagram da Empresa</a>
     <p>${empresa.apresentacao || ''}</p>
   `;
 
