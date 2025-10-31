@@ -176,150 +176,188 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
   
-  
 <script>
-  document.addEventListener("DOMContentLoaded", async () => {
-    const spinner = document.getElementById("spinner");
-    const params = new URLSearchParams(window.location.search);
-    const empresaId = params.get("id");
+document.addEventListener("DOMContentLoaded", async () => {
+  const spinner = document.getElementById("spinner");
+  const params = new URLSearchParams(window.location.search);
+  const empresaId = params.get("id");
 
-    if (!empresaId) {
-      alert("ID da empresa não fornecido.");
-      if (spinner) spinner.classList.add("hidden");
-      return;
-    }
-
-    const servicoSelect = document.getElementById("select_servico");
-    const diaSelect = document.getElementById("select_dia");
-    const horarioSelect = document.getElementById("select_horario");
-    const formAgendamento = document.getElementById("formAgendamento");
-
-    let horariosDisponiveis = [];
-
-    try {
-      // Preencher serviços
-      const servicosRes = await axios.get(`https://marketplace-production-4ad4.up.railway.app/servicos/empresa/${empresaId}`);
-      servicosRes.data.forEach(servico => {
-        const option = document.createElement("option");
-        option.value = servico.titulo;
-        option.textContent = servico.titulo;
-        servicoSelect.appendChild(option);
-      });
-
-      // Carregar horários disponíveis
-      const horariosRes = await axios.get(`https://marketplace-production-4ad4.up.railway.app/horarios/empresa/${empresaId}`);
-      horariosDisponiveis = horariosRes.data.filter(h => h.disponivel);
-
-      // Extrair e preencher dias únicos disponíveis
-      const diasUnicos = [...new Set(horariosDisponiveis.map(h => h.dia_semana))];
-      diasUnicos.forEach(dia => {
-        const option = document.createElement("option");
-        option.value = dia;
-        option.textContent = dia.charAt(0).toUpperCase() + dia.slice(1);
-        diaSelect.appendChild(option);
-      });
-
-      // Atualizar horários quando um dia for selecionado
-      diaSelect.addEventListener("change", () => {
-        const diaSelecionado = diaSelect.value;
-        horarioSelect.innerHTML = '<option value="">Selecione um horário</option>';
-
-        const horariosFiltrados = horariosDisponiveis.filter(h => h.dia_semana === diaSelecionado);
-        horariosFiltrados.forEach(horario => {
-          const option = document.createElement("option");
-          option.value = horario.id;
-          option.textContent = horario.hora.slice(0, 5);
-          horarioSelect.appendChild(option);
-        });
-      });
-
-      // Submeter agendamento
- formAgendamento.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const nome = document.getElementById("nome_cliente").value.trim();
-  const telefone = document.getElementById("telefone_cliente").value.trim();
-  const servico = document.getElementById("select_servico").value;
-  const horarioId = document.getElementById("select_horario").value;
-
-  if (!nome || !telefone || !servico || !horarioId) {
-    alert("Preencha todos os campos.");
+  if (!empresaId) {
+    alert("ID da empresa não fornecido.");
+    if (spinner) spinner.classList.add("hidden");
     return;
   }
 
+  const servicoSelect = document.getElementById("select_servico");
+  const diaSelect = document.getElementById("select_dia");
+  const horarioSelect = document.getElementById("select_horario");
+  const formAgendamento = document.getElementById("formAgendamento");
+  const botaoWhats = document.getElementById("botao-whats");
+
+  let horariosDisponiveis = [];
+  let contadorAtual = 0;
+
+  // Função para decrementar contador
+  async function decrementarContador() {
+    try {
+      const contadorRes = await axios.patch(`https://marketplace-production-4ad4.up.railway.app/empresas/${empresaId}/contador`);
+      contadorAtual = contadorRes.data.contador ?? contadorAtual - 1;
+      document.getElementById("contador-info").textContent = `Restam ${contadorAtual} interações disponíveis.`;
+
+      // Bloquear se zerar
+      if (contadorAtual <= 0) {
+        formAgendamento.querySelector("button[type='submit']").disabled = true;
+        botaoWhats.style.pointerEvents = "none";
+        botaoWhats.style.opacity = "0.5";
+        document.getElementById("contador-info").textContent = "Limite de interações atingido. Tente novamente mais tarde.";
+      }
+    } catch (err) {
+      console.error("Erro ao decrementar contador:", err);
+    }
+  }
+
   try {
-    // Buscar os dados completos do horário selecionado
-    const horarioRes = await axios.get(`https://marketplace-production-4ad4.up.railway.app/horarios/${horarioId}`);
-    const horarioData = horarioRes.data;
-
-    // Buscar telefone do prestador
+    // Buscar dados da empresa
     const empresaRes = await axios.get(`https://marketplace-production-4ad4.up.railway.app/empresas/${empresaId}`);
-    const usuarioRes = await axios.get(`https://marketplace-production-4ad4.up.railway.app/usuarios/${empresaRes.data.usuario_id}`);
-    const telefonePrestador = usuarioRes.data.telefone?.replace(/\D/g, "");
+    contadorAtual = empresaRes.data.contador ?? 0;
 
-    // Criar o agendamento
-    await axios.post(`https://marketplace-production-4ad4.up.railway.app/agendamentos`, {
-      empresa_id: empresaId,
-      servico_titulo: servico,
-      nome_cliente: nome,
-      telefone_cliente: telefone,
-      dia_semana: horarioData.dia_semana,
-      hora: horarioData.hora
+    // Mostrar contador na tela
+    const contadorInfo = document.createElement("p");
+    contadorInfo.id = "contador-info";
+    contadorInfo.className = "text-muted mt-2";
+    contadorInfo.textContent = `Restam ${contadorAtual} interações disponíveis.`;
+    formAgendamento.insertAdjacentElement("beforebegin", contadorInfo);
+
+    // Bloquear se contador zerado
+    if (contadorAtual <= 0) {
+      formAgendamento.querySelector("button[type='submit']").disabled = true;
+      botaoWhats.style.pointerEvents = "none";
+      botaoWhats.style.opacity = "0.5";
+      contadorInfo.textContent = "Limite de interações atingido. Tente novamente mais tarde.";
+    }
+
+    // Preencher serviços
+    const servicosRes = await axios.get(`https://marketplace-production-4ad4.up.railway.app/servicos/empresa/${empresaId}`);
+    servicosRes.data.forEach(servico => {
+      const option = document.createElement("option");
+      option.value = servico.titulo;
+      option.textContent = servico.titulo;
+      servicoSelect.appendChild(option);
     });
 
-    // Apagar o horário do banco
-    await axios.delete(`https://marketplace-production-4ad4.up.railway.app/horarios/${horarioId}`);
+    // Carregar horários disponíveis
+    const horariosRes = await axios.get(`https://marketplace-production-4ad4.up.railway.app/horarios/empresa/${empresaId}`);
+    horariosDisponiveis = horariosRes.data.filter(h => h.disponivel);
 
-    // Atualizar a lista local removendo o horário usado
-    horariosDisponiveis = horariosDisponiveis.filter(h => h.id != horarioId);
+    // Preencher dias únicos
+    const diasUnicos = [...new Set(horariosDisponiveis.map(h => h.dia_semana))];
+    diasUnicos.forEach(dia => {
+      const option = document.createElement("option");
+      option.value = dia;
+      option.textContent = dia.charAt(0).toUpperCase() + dia.slice(1);
+      diaSelect.appendChild(option);
+    });
 
-    // Remover a opção do select sem recarregar
-    const optionToRemove = horarioSelect.querySelector(`option[value="${horarioId}"]`);
-    if (optionToRemove) {
-      optionToRemove.remove();
-    }
+    // Atualizar horários ao mudar dia
+    diaSelect.addEventListener("change", () => {
+      const diaSelecionado = diaSelect.value;
+      horarioSelect.innerHTML = '<option value="">Selecione um horário</option>';
+      const horariosFiltrados = horariosDisponiveis.filter(h => h.dia_semana === diaSelecionado);
+      horariosFiltrados.forEach(horario => {
+        const option = document.createElement("option");
+        option.value = horario.id;
+        option.textContent = horario.hora.slice(0, 5);
+        horarioSelect.appendChild(option);
+      });
+    });
 
-    alert("Agendamento realizado com sucesso!");
-    formAgendamento.reset();
+    // Submeter agendamento
+    formAgendamento.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-  // Criar mensagem personalizada para o WhatsApp
- const mensagem = `Olá! Aqui é ${nome}, entrando em contato pelo INDCA para confirmar meu agendamento do serviço "${servico}" no dia ${horarioData.dia_semana} às ${horarioData.hora.slice(0,5)}.  
-Aguardo confirmação e agradeço a atenção!`;
+      const nome = document.getElementById("nome_cliente").value.trim();
+      const telefone = document.getElementById("telefone_cliente").value.trim();
+      const servico = servicoSelect.value;
+      const horarioId = horarioSelect.value;
 
-  // Detectar celular
-  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      if (!nome || !telefone || !servico || !horarioId) {
+        alert("Preencha todos os campos.");
+        return;
+      }
 
-  // Escolher formato de link
-  const linkWhats = isMobile
-    ? `https://wa.me/55${telefonePrestador}?text=${encodeURIComponent(mensagem)}`
-    : `https://web.whatsapp.com/send?phone=55${telefonePrestador}&text=${encodeURIComponent(mensagem)}`;
+      if (contadorAtual <= 0) {
+        alert("O limite de interações foi atingido. Aguarde para tentar novamente.");
+        return;
+      }
 
-  // Mostrar botão de confirmação
-  const botaoWhats = document.getElementById("botao-whats");
-  botaoWhats.href = linkWhats;
-  botaoWhats.innerHTML = `<i class="fab fa-whatsapp me-2"></i>Confirme seu agendamento`;
-  botaoWhats.classList.remove("hidden");
+      try {
+        await decrementarContador();
+
+        // Buscar os dados do horário
+        const horarioRes = await axios.get(`https://marketplace-production-4ad4.up.railway.app/horarios/${horarioId}`);
+        const horarioData = horarioRes.data;
+
+        // Buscar telefone do prestador
+        const usuarioRes = await axios.get(`https://marketplace-production-4ad4.up.railway.app/usuarios/${empresaRes.data.usuario_id}`);
+        const telefonePrestador = usuarioRes.data.telefone?.replace(/\D/g, "");
+
+        // Criar o agendamento
+        await axios.post(`https://marketplace-production-4ad4.up.railway.app/agendamentos`, {
+          empresa_id: empresaId,
+          servico_titulo: servico,
+          nome_cliente: nome,
+          telefone_cliente: telefone,
+          dia_semana: horarioData.dia_semana,
+          hora: horarioData.hora
+        });
+
+        // Apagar horário do banco
+        await axios.delete(`https://marketplace-production-4ad4.up.railway.app/horarios/${horarioId}`);
+        horariosDisponiveis = horariosDisponiveis.filter(h => h.id != horarioId);
+        const optionToRemove = horarioSelect.querySelector(`option[value="${horarioId}"]`);
+        if (optionToRemove) optionToRemove.remove();
+
+        alert("Agendamento realizado com sucesso!");
+        formAgendamento.reset();
+
+        // Criar link WhatsApp
+        const mensagem = `Olá! Aqui é ${nome}, entrando em contato pelo INDCA para confirmar meu agendamento do serviço "${servico}" no dia ${horarioData.dia_semana} às ${horarioData.hora.slice(0,5)}. Aguardo confirmação e agradeço a atenção!`;
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        const linkWhats = isMobile
+          ? `https://wa.me/55${telefonePrestador}?text=${encodeURIComponent(mensagem)}`
+          : `https://web.whatsapp.com/send?phone=55${telefonePrestador}&text=${encodeURIComponent(mensagem)}`;
+
+        botaoWhats.href = linkWhats;
+        botaoWhats.innerHTML = `<i class="fab fa-whatsapp me-2"></i>Confirme seu agendamento`;
+        botaoWhats.classList.remove("hidden");
+
+      } catch (err) {
+        console.error("Erro ao agendar:", err);
+        alert("Erro ao tentar agendar.");
+      }
+    });
+
+    // Decremento ao clicar no WhatsApp (caso já tenha link pronto)
+    botaoWhats.addEventListener("click", async (e) => {
+      if (contadorAtual <= 0) {
+        e.preventDefault();
+        alert("Limite de interações atingido. Tente novamente mais tarde.");
+        return;
+      }
+      await decrementarContador();
+    });
 
   } catch (err) {
-    console.error("Erro ao agendar:", err);
-    alert("Erro ao tentar agendar.");
+    console.error("Erro ao carregar dados:", err);
+    alert("Erro ao carregar horários ou serviços.");
+  } finally {
+    if (spinner) spinner.classList.add("hidden");
   }
 });
-
-
-
-    } catch (err) {
-      console.error("Erro ao carregar dados:", err);
-      alert("Erro ao carregar horários ou serviços.");
-    } finally {
-      if (spinner) spinner.classList.add("hidden");
-    }
-  });
 </script>
 
 
 
-  
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
       const spinner = document.getElementById("spinner");
